@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OTP Code - {merchant name}</title>
+    <!--[if mso]>
+      <noscript>
+        <xml>
+          <o:OfficeDocumentSettings>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+      </noscript>
+    <![endif]-->
+    <style type="text/css">
+      /* Reset styles */
+      body,
+      table,
+      td,
+      p,
+      a,
+      li,
+      blockquote {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        height: auto;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+      }
+
+      /* Main styles */
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+      }
+
+      .email-wrapper {
+        width: 100%;
+        background-color: #f9f9f9;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+      }
+
+      .content-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border: 1px solid #eaebed;
+      }
+
+      .welcome-section {
+        background-color: #eff6ff;
+        padding: 24px 16px 32px;
+        text-align: center;
+        border-radius: 8px;
+      }
+
+      .welcome-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 8px;
+        text-align: center;
+        line-height: 100px;
+        font-size: 40px;
+        color: #1b84ff;
+        font-weight: bold;
+      }
+
+      .greeting {
+        color: #071437;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 25px;
+        margin: 0 0 12px 0;
+      }
+
+      .description {
+        color: #4b5675;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 25px;
+        margin: 0 0 32px 0;
+      }
+
+      .otp-container {
+        background-color: #f9f9f9;
+        border: 1px solid #99a1b7;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .otp-digit {
+        display: inline-block;
+        /* width: 40px;
+        height: 40px; */
+        /* background-color: white; */
+        /* border: 1px solid #e5e5e5; */
+        /* border-radius: 8px; */
+        text-align: center;
+        line-height: 40px;
+        font-size: 26px;
+        font-weight: 600;
+        color: #071437;
+        margin: 0 5px;
+      }
+
+      .divider {
+        height: 1px;
+        background-color: #f1f1f4;
+        margin: 32px 0;
+      }
+
+      .security-notice {
+        color: #071437;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 25px;
+        margin: 0 0 12px 0;
+      }
+
+      .ignore-notice {
+        color: #4b5675;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 25px;
+        margin: 0 0 32px 0;
+      }
+
+      .signature-greeting {
+        color: #4b5675;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 25px;
+        margin: 0 0 8px 0;
+      }
+
+      .signature-company {
+        color: #071437;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 25px;
+        margin: 0 0 32px 0;
+      }
+
+      .footer-notice {
+        color: #4b5675;
+        font-size: 12px;
+        font-style: italic;
+        font-weight: 400;
+        line-height: 16px;
+        margin: 0;
+      }
+
+      .footer-address {
+        color: #374151;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 18px;
+        margin: 0 0 12px 0;
+        text-align: center;
+      }
+
+      .footer-company {
+        color: #78829d;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 18px;
+        padding-right: 8px;
+      }
+
+      .footer-separator {
+        width: 18px;
+        height: 1px;
+        background-color: rgba(27, 132, 255, 0.2);
+        margin: 0 8px;
+      }
+
+      .footer-phone {
+        color: #78829d;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 18px;
+      }
+
+      .logo {
+        width: 158px;
+        height: 66px;
+        border-radius: 4px;
+        margin: 0 auto;
+      }
+      .logo-image {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <table
+      role="presentation"
+      cellspacing="0"
+      cellpadding="0"
+      border="0"
+      width="100%"
+      class="email-wrapper"
+    >
+      <tr>
+        <td align="center" style="padding: 24px 100px">
+          <table
+            role="presentation"
+            cellspacing="0"
+            cellpadding="0"
+            border="0"
+            width="100%"
+            class="email-container"
+          >
+            <!-- Logo Section -->
+            <tr>
+              <td align="center" style="padding-bottom: 24px">
+                <table
+                  role="presentation"
+                  cellspacing="0"
+                  cellpadding="0"
+                  border="0"
+                >
+                  <tr>
+                    <td class="welcome-icon">
+                      <!-- Logo placeholder - replace with actual logo -->
+                      <!-- {merchant logo} -->
+                      <img
+                        src="https://t4.ftcdn.net/jpg/06/59/37/09/360_F_659370930_7f4Iuy35H4HmkLmZKABNralmfvqTDMe2.jpg"
+                        alt="Merchant Logo"
+                        class="logo-image"
+                      />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Main Content Card -->
+            <tr>
+              <td>
+                <table
+                  role="presentation"
+                  cellspacing="0"
+                  cellpadding="0"
+                  border="0"
+                  width="100%"
+                  class="content-table"
+                >
+                  <!-- Welcome Section -->
+                  <tr>
+                    <td style="padding: 32px 24px 0 24px">
+                      <table
+                        role="presentation"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                        width="100%"
+                        class="welcome-section"
+                      >
+                        <tr>
+                          <td align="center">
+                            <table
+                              role="presentation"
+                              cellspacing="0"
+                              cellpadding="0"
+                              border="0"
+                            >
+                              <tr>
+                                <td class="welcome-icon">
+                                  <img
+                                    src="https://t4.ftcdn.net/jpg/06/59/37/09/360_F_659370930_7f4Iuy35H4HmkLmZKABNralmfvqTDMe2.jpg"
+                                    alt="OTP Icon"
+                                    class="logo-image"
+                                  />
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Greeting and Description -->
+                  <tr>
+                    <td style="padding: 32px 24px 0 24px">
+                      <h3 class="greeting">Hello [User Name],</h3>
+                      <p class="description">
+                        To verify your account, please use the following
+                        One-Time Password (OTP):
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- OTP Code Section -->
+                  <tr>
+                    <td style="padding: 0 24px 32px 24px">
+                      <table
+                        role="presentation"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                        width="100%"
+                        style="
+                          background-color: #f9f9f9;
+                          border: 1px solid #99a1b7;
+                          border-radius: 16px;
+                        "
+                      >
+                        <tr>
+                          <td style="padding: 20px; text-align: center">
+                            <table
+                              role="presentation"
+                              cellspacing="0"
+                              cellpadding="0"
+                              border="0"
+                              style="margin: 0 auto"
+                            >
+                              <tr>
+                                <td style="padding: 0 5px">
+                                  <div class="otp-digit">x x x x x x</div>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Divider -->
+                  <tr>
+                    <td style="padding: 0 24px">
+                      <table
+                        role="presentation"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                        width="100%"
+                      >
+                        <tr>
+                          <td class="divider"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Security Notice -->
+                  <tr>
+                    <td style="padding: 32px 24px 0 24px">
+                      <p class="security-notice">
+                        For security reasons, this OTP will expire in 1 hour.
+                      </p>
+                      <p class="ignore-notice">
+                        If you feel didn't request for this OTP, you can safely
+                        ignore this email.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Signature -->
+                  <tr>
+                    <td style="padding: 0 24px 32px 24px">
+                      <p class="signature-greeting">Best Regards,</p>
+                      <p class="signature-company">{company name}</p>
+                    </td>
+                  </tr>
+
+                  <!-- Divider -->
+                  <tr>
+                    <td style="padding: 0 24px">
+                      <table
+                        role="presentation"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                        width="100%"
+                      >
+                        <tr>
+                          <td class="divider"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Footer Notice -->
+                  <tr>
+                    <td style="padding: 32px 24px 32px 24px">
+                      <p class="footer-notice">
+                        This email was sent automatically. Please do not reply.
+                        If you need assistance, contact our support team.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding-top: 24px">
+                <table
+                  role="presentation"
+                  cellspacing="0"
+                  cellpadding="0"
+                  border="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td align="center">
+                      <p class="footer-address">{merchant address}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center">
+                      <table
+                        role="presentation"
+                        cellspacing="0"
+                        cellpadding="0"
+                        border="0"
+                      >
+                        <tr>
+                          <td class="footer-company">{company name}</td>
+                          <!-- <td class="footer-separator"></td> -->
+                          <td class="footer-phone">{merchant phone number}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe ",
+    "email": "john@example.com",
+    "role": "admin",
+    "status": "active",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2025-09-24T04:57:03.695Z"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "role": "user",
+    "status": "active",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "name": "Bob Johnson",
+    "email": "bob@example.com",
+    "role": "moderator",
+    "status": "inactive",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "1758689648742",
+    "name": "Mira Doe",
+    "email": "miradoe@gmail.com",
+    "role": "user",
+    "status": "active",
+    "createdAt": "2025-09-24T04:54:08.742Z",
+    "updatedAt": "2025-09-24T04:54:08.744Z"
+  }
+]

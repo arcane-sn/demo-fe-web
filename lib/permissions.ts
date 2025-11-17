@@ -1,0 +1,295 @@
+import { ROLES } from "./roles";
+
+// Define all possible permissions
+export const PERMISSIONS = {
+  // Admin permissions
+  ADMIN_ALL: "admin:*",
+
+  // Account permissions
+  ACCOUNT_READ: "account:read",
+  ACCOUNT_WRITE: "account:write",
+  ACCOUNT_APPROVE: "account:approve",
+
+  // Merchant permissions
+  MERCHANT_READ: "merchant:read",
+  MERCHANT_WRITE: "merchant:write",
+  MERCHANT_REVIEW: "merchant:review",
+  MERCHANT_APPROVE: "merchant:approve",
+
+  // Transaction permissions
+  TRANSACTION_READ: "transaction:read",
+  TRANSACTION_WRITE: "transaction:write",
+  TRANSACTION_APPROVE: "transaction:approve",
+
+  // Balance permissions
+  BALANCE_READ: "balance:read",
+  BALANCE_WRITE: "balance:write",
+  BALANCE_APPROVE: "balance:approve",
+
+  // Settlement permissions
+  SETTLEMENT_READ: "settlement:read",
+  SETTLEMENT_WRITE: "settlement:write",
+  SETTLEMENT_APPROVE: "settlement:approve",
+
+  // Disbursement permissions
+  DISBURSEMENT_READ: "disbursement:read",
+  DISBURSEMENT_WRITE: "disbursement:write",
+
+  // User permissions
+  USER_READ: "user:read",
+  USER_WRITE: "user:write",
+  USER_APPROVE: "user:approve",
+
+  // Permission management
+  PERMISSION_READ: "permission:read",
+  PERMISSION_WRITE: "permission:write",
+
+  // Role management
+  ROLE_READ: "role:read",
+  ROLE_WRITE: "role:write",
+
+  // Activity logs
+  ACTIVITY_READ: "activity:read",
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+// Define permissions for each role
+export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
+  // Internal Super Admin - Full access
+  [ROLES.INTERNAL_SUPER_ADMIN]: [PERMISSIONS.ADMIN_ALL],
+
+  // Internal Admin - Most internal operations
+  [ROLES.INTERNAL_ADMIN]: [
+    PERMISSIONS.ACCOUNT_READ,
+    PERMISSIONS.ACCOUNT_WRITE,
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.MERCHANT_REVIEW,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_WRITE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_WRITE,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_WRITE,
+    PERMISSIONS.PERMISSION_READ,
+    PERMISSIONS.PERMISSION_WRITE,
+    PERMISSIONS.ROLE_READ,
+    PERMISSIONS.ROLE_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Internal Maker - Create operations
+  [ROLES.INTERNAL_MAKER]: [
+    PERMISSIONS.ACCOUNT_READ,
+    PERMISSIONS.ACCOUNT_WRITE,
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_WRITE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_WRITE,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Internal Approver - Approval operations
+  [ROLES.INTERNAL_APPROVER]: [
+    PERMISSIONS.ACCOUNT_READ,
+    PERMISSIONS.ACCOUNT_APPROVE,
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_REVIEW,
+    PERMISSIONS.MERCHANT_APPROVE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_APPROVE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_APPROVE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_APPROVE,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_APPROVE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Internal Viewer - Read only
+  [ROLES.INTERNAL_VIEWER]: [
+    PERMISSIONS.ACCOUNT_READ,
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Internal Finance - Finance operations
+  [ROLES.INTERNAL_FINANCE]: [
+    PERMISSIONS.ACCOUNT_READ,
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_WRITE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_WRITE,
+    PERMISSIONS.DISBURSEMENT_READ,
+    PERMISSIONS.DISBURSEMENT_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Merchant Admin - Merchant management
+  [ROLES.MERCHANT_ADMIN]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Merchant Maker - Merchant create operations
+  [ROLES.MERCHANT_MAKER]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Merchant Approval - Merchant approval operations
+  [ROLES.MERCHANT_APPROVAL]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_REVIEW,
+    PERMISSIONS.MERCHANT_APPROVE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_APPROVE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_APPROVE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Merchant Viewer - Merchant read only
+  [ROLES.MERCHANT_VIEWER]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Merchant Finance - Merchant finance operations
+  [ROLES.MERCHANT_FINANCE]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_WRITE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Parent Sub Admin - Parent/Sub merchant management
+  [ROLES.PARENT_SUB_ADMIN]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Parent Sub Maker - Parent/Sub create operations
+  [ROLES.PARENT_SUB_MAKER]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_WRITE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Parent Sub Approval - Parent/Sub approval operations
+  [ROLES.PARENT_SUB_APPROVAL]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.MERCHANT_REVIEW,
+    PERMISSIONS.MERCHANT_APPROVE,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_APPROVE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_APPROVE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Parent Sub Viewer - Parent/Sub read only
+  [ROLES.PARENT_SUB_VIEWER]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+
+  // Parent Sub Finance - Parent/Sub finance operations
+  [ROLES.PARENT_SUB_FINANCE]: [
+    PERMISSIONS.MERCHANT_READ,
+    PERMISSIONS.TRANSACTION_READ,
+    PERMISSIONS.TRANSACTION_WRITE,
+    PERMISSIONS.BALANCE_READ,
+    PERMISSIONS.BALANCE_WRITE,
+    PERMISSIONS.SETTLEMENT_READ,
+    PERMISSIONS.SETTLEMENT_WRITE,
+    PERMISSIONS.ACTIVITY_READ,
+  ],
+};
+
+// Helper functions
+export function getPermissionsForRole(role: string): Permission[] {
+  return ROLE_PERMISSIONS[role] || [];
+}
+
+export function hasPermission(
+  userPermissions: Permission[],
+  requiredPermission: Permission
+): boolean {
+  // Check for admin:* wildcard
+  if (userPermissions.includes(PERMISSIONS.ADMIN_ALL)) {
+    return true;
+  }
+
+  return userPermissions.includes(requiredPermission);
+}
+
+export function hasAnyPermission(
+  userPermissions: Permission[],
+  requiredPermissions: Permission[]
+): boolean {
+  return requiredPermissions.some((permission) =>
+    hasPermission(userPermissions, permission)
+  );
+}
+
+export function hasAllPermissions(
+  userPermissions: Permission[],
+  requiredPermissions: Permission[]
+): boolean {
+  return requiredPermissions.every((permission) =>
+    hasPermission(userPermissions, permission)
+  );
+}
