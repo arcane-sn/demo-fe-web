@@ -98,7 +98,7 @@ export function SidebarNavigation({
                   )}
                 ></span>
               </span>
-              {section.title}
+              <span className="ml-2">{section.title}</span>
             </div>
           );
         })}

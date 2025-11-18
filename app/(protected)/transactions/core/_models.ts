@@ -5,3 +5,9 @@ export interface ResendCallbackDataTypes {
   responseMessage: string;
   retryLimit: number;
 }
+
+// Shared AmountDetail interface
+export interface AmountDetail {
+  value: number | null;
+  breakdown?: string | null;
+}

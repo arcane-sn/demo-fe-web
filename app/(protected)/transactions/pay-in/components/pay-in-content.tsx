@@ -1,7 +1,7 @@
 "use client";
 
 import PayInOverview from "./PayInOverview";
-import { TablePayInHistory } from "./TablePayInHistory";
+import { TablePayInHistory } from "./table/TablePayInHistory";
 
 export function PayInContent() {
   return (

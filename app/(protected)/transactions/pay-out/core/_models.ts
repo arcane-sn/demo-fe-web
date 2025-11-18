@@ -12,6 +12,11 @@ export type PayOutTransactionAction = {
   color?: string;
 };
 
+export interface AmountDetail {
+  value: number | null;
+  breakdown?: string | null;
+}
+
 export type PayOutTransaction = {
   id: string;
   transactionDate: string;
@@ -34,17 +39,19 @@ export type PayOutTransaction = {
   totalTransferAmount: number;
   beneficiaryAccountNumber: string;
   bankName: string;
+  beneficiaryAccountName?: string;
+  virtualAccount?: boolean;
+  providerRefNumber?: string;
+  providerName?: string;
+  providerRate?: AmountDetail;
+  merchantReferralRate?: AmountDetail;
+  flypayRate?: AmountDetail;
+  merchantReferralFee?: AmountDetail;
+  salesReferralFee?: AmountDetail;
   remark: string;
   servedDate: string;
   servedTime: string;
 };
-
-export interface CheckboxOption {
-  id: string;
-  label: string;
-  checked: boolean;
-  children?: CheckboxOption[];
-}
 
 export interface FilterOption {
   id: string;

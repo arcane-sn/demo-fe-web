@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { SectionHeader } from "./SectionHeader";
-import { CheckboxList, CheckboxOption } from "./CheckboxList";
+import { SectionHeader } from "../../../../components/reusable/SectionHeader";
+import { CheckboxList } from "../../../../components/reusable/CheckboxList";
+import type { CheckboxOption } from "../../../../components/reusable/CheckboxList";
 
 interface FilterSectionGenericProps {
   title: string;

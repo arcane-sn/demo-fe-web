@@ -1,9 +1,9 @@
-'use client';
-'use client';
+"use client";
+"use client";
 
-import * as React from 'react';
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export function ThemeProvider({
   children,
@@ -11,9 +11,8 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="light"
       storageKey="nextjs-theme"
-      enableSystem
       disableTransitionOnChange
       enableColorScheme
     >

@@ -17,14 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Alert,
-  AlertContent,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-} from "@/components/ui/alert";
-import { AlertTriangle, BadgeInfo } from "lucide-react";
+import { HexagonBadge } from "@/app/components/partials/common/hexagon-badge";
 
 const ModalUpdateStatus = ({
   open,
@@ -43,14 +36,18 @@ const ModalUpdateStatus = ({
             Update Status
           </DialogTitle>
         </DialogHeader>
-        <DialogBody className="flex flex-col gap-5 pb-5">
-          <img
-            src="/media/illustrations/29.svg"
-            alt="Confirmation illustration"
-            className="w-full h-full object-contain mb-5 text-center"
-          />
-          <div>
-            <p className="text-b-16-16-500 text-center text-gray-900 mb-1">
+        <DialogBody className="flex flex-col gap-5 pb-5 px-5">
+          <div className="flex flex-col items-center justify-center gap-5">
+            <div className="w-40 h-40 flex items-center justify-center">
+              <img
+                src="/media/illustrations/29.svg"
+                alt="Confirmation illustration"
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <p className="text-b-16-16-500 text-center text-gray-900">
               Change Transaction Status?
             </p>
             <p className="text-b-13-20-400 text-center text-gray-600">
@@ -81,21 +78,28 @@ const ModalUpdateStatus = ({
             </Select>
           </div>
 
-          <Alert variant="warning" appearance="light" size="md">
-            <AlertIcon>
-              <BadgeInfo className="h-7 w-7" />
-            </AlertIcon>
-            <AlertContent>
-              <AlertTitle className="text-b-15-16-600 text-gray-800">
+          <div className="flex items-start gap-3 p-4 rounded-lg border-2 border-dashed border-yellow-400 bg-yellow-50">
+            <div className="flex-shrink-0">
+              <HexagonBadge
+                size="size-[44px]"
+                stroke="stroke-yellow-400"
+                fill="fill-yellow-100"
+                badge={
+                  <span className="text-yellow-400 text-2xl font-bold leading-none">!</span>
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-1 flex-1">
+              <h4 className="text-b-15-16-600 text-gray-800 font-semibold">
                 Review Before Update
-              </AlertTitle>
-              <AlertDescription className="text-b-13-20-500 text-gray-600">
+              </h4>
+              <p className="text-b-13-20-500 text-gray-600">
                 Please review the transaction details carefully before updating
                 the status. The updated status will take immediate effect on the
                 merchant's side
-              </AlertDescription>
-            </AlertContent>
-          </Alert>
+              </p>
+            </div>
+          </div>
         </DialogBody>
 
         <DialogFooter className="border-t border-gray-200">

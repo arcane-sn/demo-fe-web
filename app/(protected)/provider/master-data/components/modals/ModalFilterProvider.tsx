@@ -11,9 +11,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
-import { FilterSectionGeneric } from "@/app/(protected)/transactions/components/FilterSectionGeneric";
-import { DateFilterSection } from "@/app/(protected)/transactions/components/DateFilterSection";
-import { CheckboxOption } from "@/app/(protected)/transactions/components/CheckboxList";
+import { FilterSectionGeneric } from "../FilterSectionGeneric";
+import { DateFilterSection } from "../DateFilterSection";
+import { CheckboxOption } from "@/components/reusable/CheckboxList";
 import { Separator } from "@/components/ui/separator";
 
 interface ModalFilterProviderProps {

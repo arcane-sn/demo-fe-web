@@ -6,6 +6,7 @@ import {
   PayOutDetailTransaction,
   IsModalPayout,
 } from "./_models";
+import type { CheckboxOption } from "@/components/reusable/CheckboxList";
 
 export const PAY_OUT_STATS: PayOutStatItem[] = [
   {
@@ -44,15 +45,18 @@ export const PAY_OUT_TRANSACTION_ACTIONS: PayOutTransactionAction[] = [
   },
 ];
 
-// Mock data for pay-out transactions
-export const MOCK_PAY_OUT_TRANSACTIONS: PayOutTransaction[] = [
-  {
-    id: "1",
+// Helper function to create pay-out transaction
+function createPayOutTransaction(
+  id: string,
+  status: PayOutTransaction["status"],
+): PayOutTransaction {
+  return {
+    id,
     transactionDate: "Thu, Dec 16, 2025",
     transactionTime: "23:12:32 (GMT +7)",
     merchantName: "DigiStore",
     clientId: "UP2025091900001",
-    status: "Success",
+    status,
     referenceNumber: "RN123123123123-1222",
     partnerReferenceNumber: "PRN99923232991111",
     transactionType: "Disbursement",
@@ -61,100 +65,66 @@ export const MOCK_PAY_OUT_TRANSACTIONS: PayOutTransaction[] = [
     totalTransferAmount: 10005000,
     beneficiaryAccountNumber: "1234 5678 9012 3456",
     bankName: "BANK ACB",
+    beneficiaryAccountName: "JOHN DOE",
+    virtualAccount: true,
+    providerRefNumber: "PIYE-1212912912",
+    providerName: "IFP",
+    providerRate: {
+      value: 5000,
+      breakdown: null,
+    },
+    merchantReferralRate: {
+      value: 1000,
+      breakdown: "(0.1% + IDR 0)",
+    },
+    flypayRate: {
+      value: 500,
+      breakdown: "(0.1% + IDR 0)",
+    },
+    merchantReferralFee: {
+      value: 500,
+      breakdown: "(0.1% + IDR 0)",
+    },
+    salesReferralFee: {
+      value: 500,
+      breakdown: "(0.1% + IDR 0)",
+    },
     remark: "Payroll",
     servedDate: "Thu, Dec 16, 2025",
     servedTime: "23:12:32 (GMT +7)",
-  },
-  {
-    id: "2",
-    transactionDate: "Thu, Dec 16, 2025",
-    transactionTime: "23:12:32 (GMT +7)",
-    merchantName: "DigiStore",
-    clientId: "UP2025091900001",
-    status: "Init",
-    referenceNumber: "RN123123123123-1223",
-    partnerReferenceNumber: "PRN99923232991112",
-    transactionType: "Disbursement",
-    transferAmount: 10000000,
-    adminFee: 5000,
-    totalTransferAmount: 10005000,
-    beneficiaryAccountNumber: "1234 5678 9012 3456",
-    bankName: "BANK ACB",
-    remark: "Payroll",
-    servedDate: "Thu, Dec 16, 2025",
-    servedTime: "23:12:32 (GMT +7)",
-  },
-  // Add more mock data...
-  {
-    id: "3",
-    transactionDate: "Thu, Dec 16, 2025",
-    transactionTime: "23:12:32 (GMT +7)",
-    merchantName: "DigiStore",
-    clientId: "UP2025091900001",
-    status: "Success",
-    referenceNumber: "RN123123123123-1224",
-    partnerReferenceNumber: "PRN99923232991113",
-    transactionType: "Disbursement",
-    transferAmount: 10000000,
-    adminFee: 5000,
-    totalTransferAmount: 10005000,
-    beneficiaryAccountNumber: "1234 5678 9012 3456",
-    bankName: "BANK ACB",
-    remark: "Payroll",
-    servedDate: "Thu, Dec 16, 2025",
-    servedTime: "23:12:32 (GMT +7)",
-  },
+  };
+}
+
+// Mock data for pay-out transactions (9 transactions as shown in the image)
+export const MOCK_PAY_OUT_TRANSACTIONS: PayOutTransaction[] = [
+  createPayOutTransaction("1", "Success"),
+  createPayOutTransaction("2", "Pending"), // Second row shows Pending
+  createPayOutTransaction("3", "Success"),
+  createPayOutTransaction("4", "Success"),
+  createPayOutTransaction("5", "Success"),
+  createPayOutTransaction("6", "Success"),
+  createPayOutTransaction("7", "Success"),
+  createPayOutTransaction("8", "Success"),
+  createPayOutTransaction("9", "Success"),
 ];
 
-// Filter options for pay-out transactions
-export const PAY_OUT_STATUS_OPTIONS = [
+// Filter options for pay-out transactions (CheckboxOption format)
+// Status filter - only showing: Success, Pending, Failed, Scheduled (as per image)
+export const PAY_OUT_STATUS_OPTIONS: CheckboxOption[] = [
   { id: "success", label: "Success", checked: false },
-  { id: "init", label: "Init", checked: false },
-  { id: "canceled", label: "Canceled", checked: false },
+  { id: "pending", label: "Pending", checked: false },
+  { id: "failed", label: "Failed", checked: false },
   { id: "scheduled", label: "Scheduled", checked: false },
 ];
 
-export const PAY_OUT_TRANSACTION_TYPE_OPTIONS = [
+export const PAY_OUT_TRANSACTION_TYPE_OPTIONS: CheckboxOption[] = [
   { id: "disbursement", label: "Disbursement", checked: false },
   { id: "account-inquiry", label: "Account Inquiry", checked: false },
 ];
 
-export const PAY_OUT_DATE_FILTER_OPTIONS = [
-  { label: "Transaction Date", value: "transaction" },
-  { label: "Served Date", value: "served" },
-];
-
-export const PAY_OUT_FILTER_OPTIONS = [
-  {
-    id: "status",
-    label: "Status",
-    type: "multiselect" as const,
-    options: [
-      { label: "Success", value: "Success", count: 2 },
-      { label: "Init", value: "Init", count: 1 },
-      { label: "Canceled", value: "Canceled", count: 0 },
-      { label: "Scheduled", value: "Scheduled", count: 0 },
-    ],
-  },
-  {
-    id: "transactionType",
-    label: "Transaction Type",
-    type: "multiselect" as const,
-    options: [
-      { label: "Disbursement", value: "Disbursement", count: 2 },
-      { label: "Account Inquiry", value: "Account Inquiry", count: 1 },
-    ],
-  },
-];
-
-// Search fields for pay-out transactions
-export const PAY_OUT_SEARCH_FIELDS: (keyof PayOutTransaction)[] = [
-  "referenceNumber",
-  "partnerReferenceNumber",
-  "merchantName",
-  "clientId",
-  "beneficiaryAccountNumber",
-  "bankName",
+// Provider Name filter options
+export const PAY_OUT_PROVIDER_NAME_OPTIONS: CheckboxOption[] = [
+  { id: "ifortepay", label: "iFortepay", checked: false },
 ];
 
 // Table configuration constants

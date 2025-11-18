@@ -1,5 +1,5 @@
 import PayOutOverview from "./PayOutOverview";
-import TablePayoutHistory from "./TablePayoutHistory";
+import { TablePayoutHistory } from "./table/TablePayoutHistory";
 
 export function PayOutContent() {
   return (

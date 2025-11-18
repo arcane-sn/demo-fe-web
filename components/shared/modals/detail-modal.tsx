@@ -13,11 +13,15 @@ import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info, X } from "lucide-react";
 import { ReactNode } from "react";
+import { KeenIcon } from "@/components/keenicons";
+import type { KeeniconsStyle } from "@/components/keenicons/types";
 
 export interface DetailItem {
   label: string;
   value: string | number;
   IconComponent?: React.ComponentType<{ className?: string }>;
+  iconName?: string;
+  iconStyle?: KeeniconsStyle;
   iconColor?: string;
   description?: string;
   onInfoClick?: () => void;
@@ -108,13 +112,21 @@ export const DetailModal = ({
             {items.map((item, index) => (
               <Card key={index} className="p-4">
                 <div className="flex items-start gap-4">
-                  {item.IconComponent && (
+                  {item.iconName ? (
+                    <div className="flex items-center justify-center flex-shrink-0 pt-2">
+                      <KeenIcon
+                        icon={item.iconName}
+                        style={item.iconStyle || "outline"}
+                        className={`text-2xl ${item.iconColor || "text-gray-500"}`}
+                      />
+                    </div>
+                  ) : item.IconComponent ? (
                     <div className="flex items-center justify-center flex-shrink-0 pt-2">
                       <item.IconComponent
                         className={`w-6 h-6 ${item.iconColor || "text-gray-500"}`}
                       />
                     </div>
-                  )}
+                  ) : null}
                   <div className="flex flex-col gap-1 flex-1 min-w-0">
                     <div className="text-2xl font-semibold text-gray-900 leading-tight">
                       {formatValue(item, item.value)}
@@ -127,7 +139,7 @@ export const DetailModal = ({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div
-                              className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                              className="flex items-center justify-center w-4 h-4 rounded-full cursor-pointer"
                               onClick={item.onInfoClick}
                             >
                               <Info className="w-3 h-3 text-gray-500" />

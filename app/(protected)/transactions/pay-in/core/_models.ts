@@ -1,24 +1,53 @@
 import { BaseTableData } from "@/components/table";
 
+export type PaymentStatus = "Pending" | "Success" | "Failed" | "Expired" | "Request";
+
+export interface AmountDetail {
+  value: number | null;
+  breakdown?: string | null;
+}
+
 // Pay-in transaction data interface
 export interface PayInTransaction extends BaseTableData {
   transactionDate: string;
   transactionTime: string;
   merchantName: string;
   clientId: string;
-  transactionId: string;
-  paymentStatus: "Success" | "Request" | "Failed" | "Pending";
+  referenceNumber: string;
+  partnerReferenceNumber: string;
+  providerRefNumber: string;
+  paymentStatus: PaymentStatus;
   activity: string;
   activityId: string;
   paymentMethod: string;
   paymentChannel: string;
+  providerName: string;
   amount: number;
+  mdr: AmountDetail;
+  providerRate: AmountDetail;
+  merchantRate: AmountDetail;
+  flypayRate: AmountDetail;
+  resellerRate: AmountDetail;
+  merchantReferralFee: AmountDetail;
+  salesReferralFee: AmountDetail;
   customerEmail: string;
   customerPhone: string;
+  // VA specific fields
+  vaNumber?: string;
+  vaId?: string;
+  vaType?: string;
+  vaStatus?: string;
+  bankName?: string;
+  // QRIS specific fields
+  channel?: string;
+  issuingBank?: string;
+  acquirerBank?: string;
+  acquirerRefNumber?: string;
+  // Common date fields
+  createdDate?: string;
+  expiryDate?: string;
+  lastUpdatedDate?: string;
 }
-
-// Payment status type
-export type PaymentStatus = PayInTransaction["paymentStatus"];
 
 // Payment method type
 export type PaymentMethod =
@@ -67,15 +96,9 @@ export type ExportFormat = "csv" | "xlsx" | "pdf";
 export interface ModalRefundRequestProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSubmit?: () => void;
 }
 
-export interface ModalSubmittedProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title?: string;
-  message?: string;
-  description?: string;
-}
 
 // Modal Void Transaction Props
 export interface ModalVoidTransactionProps {
@@ -92,18 +115,14 @@ export interface ModalCancelTransactionProps {
   onCancel?: (notes: string) => void;
 }
 
-// Checkbox option interface
-export interface CheckboxOption {
-  id: string;
-  label: string;
-  checked: boolean;
-  children?: CheckboxOption[];
-}
-
 // Modal state interface for pay-in
 export interface IsModalPayIn {
   filter: boolean;
   export: boolean;
   resendCallback: boolean;
   forceUpdateStatus: boolean;
+  refundRequest: boolean;
+  chargebackRequest: boolean;
+  voidTransaction: boolean;
+  cancelTransaction: boolean;
 }

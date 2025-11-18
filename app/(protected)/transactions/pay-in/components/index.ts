@@ -1,7 +1,6 @@
 export * from "./pay-in-content";
-export * from "./TablePayInHistory";
-export { default as ModalRefundRequest } from "./ModalRefundRequest";
-export { default as ModalSubmitted } from "./ModalSubmitted";
-export { default as ModalVoidTransaction } from "./ModalVoidTransaction";
-export { default as ModalChargebackRequest } from "./ModalChargebackRequest";
-export { default as ModalCancelTransaction } from "./ModalCancelTransaction";
+export * from "./table/TablePayInHistory";
+export { default as ModalRefundRequest } from "./modals/ModalRefundRequest";
+export { default as ModalVoidTransaction } from "./modals/ModalVoidTransaction";
+export { default as ModalChargebackRequest } from "./modals/ModalChargebackRequest";
+export { default as ModalCancelTransaction } from "./modals/ModalCancelTransaction";
