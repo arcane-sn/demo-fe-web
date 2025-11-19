@@ -9,5 +9,6 @@ export default function SettlementHistoryPage() {
         <SettlementHistoryContent />
       </Container>
     </Fragment>
+    
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronFirst } from "lucide-react";
-import { toAbsoluteUrl } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/providers/settings-provider";
 import { Button } from "@/components/ui/button";
@@ -18,32 +18,26 @@ export function SidebarHeader() {
   };
 
   return (
-    <div className="sidebar-header hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0">
+    <div className=" hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0">
       <Link href="/">
-        <div className="dark:hidden">
-          <img
-            src={toAbsoluteUrl("/media/app/default-logo.svg")}
-            className="default-logo h-[22px] max-w-none"
-            alt="Default Logo"
-          />
-          <img
-            src={toAbsoluteUrl("/media/app/mini-logo.svg")}
-            className="small-logo h-[22px] max-w-none"
-            alt="Mini Logo"
-          />
-        </div>
-        <div className="hidden dark:block">
-          <img
-            src={toAbsoluteUrl("/media/app/default-logo-dark.svg")}
-            className="default-logo h-[22px] max-w-none"
-            alt="Default Dark Logo"
-          />
-          <img
-            src={toAbsoluteUrl("/media/app/mini-logo.svg")}
-            className="small-logo h-[22px] max-w-none"
-            alt="Mini Logo"
-          />
-        </div>
+        <Image
+          src="/assets/image/g4.png"
+          width={120}
+          height={22}
+          className="w-20 pt-5"
+          alt="Logo"
+          priority
+          unoptimized
+        />
+        <Image
+          src="/assets/image/g4.png"
+          width={120}
+          height={22}
+          className="small-logo h-[22px] max-w-none object-contain"
+          alt="Logo"
+          priority
+          unoptimized
+        />
       </Link>
       <Button
         onClick={handleToggleClick}

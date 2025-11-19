@@ -1,5 +1,6 @@
-import BalanceStatementOverview from "@/app/(protected)/balance/balance-statement/components/balance-statement-overview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import OverviewStatCard from "./overview-stat-card";
+import { SETTLEMENT_OVERVIEW_STATS } from "../core/constants";
 
 const SettlementOverview = () => {
   return (
@@ -10,31 +11,10 @@ const SettlementOverview = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full flex items-center justify-start gap-8">
-          <div className="w-full">
-            <BalanceStatementOverview value="1000" title="Total Transaction" />
-          </div>
-          <div className="h-12 w-1 border-l border-gray-200 "></div>
-          <div className="w-full">
-            <BalanceStatementOverview
-              value="IDR 155.000.000"
-              title="Total Net Settlement Amount"
-            />
-          </div>
-          <div className="h-12 w-1 border-l border-gray-200 "></div>
-          <div className="w-full">
-            <BalanceStatementOverview
-              value="IDR 9.000.000"
-              title="Total MDR Flypay"
-            />
-          </div>
-          <div className="h-12 w-1 border-l border-gray-200 "></div>
-          <div className="w-full">
-            <BalanceStatementOverview
-              value="IDR 369.000.000"
-              title="Total Paid Amount"
-            />
-          </div>
+        <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-6">
+          {SETTLEMENT_OVERVIEW_STATS.map((stat) => (
+            <OverviewStatCard key={stat.title} value={stat.value} title={stat.title} />
+          ))}
         </div>
       </CardContent>
     </Card>

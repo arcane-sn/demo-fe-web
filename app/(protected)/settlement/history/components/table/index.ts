@@ -1,1 +1,1 @@
-export { default as SettlementHistoryTable } from "./settlement-history-table";
+export { SettlementHistoryTable } from "./settlement-history-table";

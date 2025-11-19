@@ -17,6 +17,7 @@ import {
   AccordionMenuSubTrigger,
 } from "@/components/ui/accordion-menu";
 import { Badge } from "@/components/ui/badge";
+import { KeenIcon } from "@/components/keenicons";
 
 export function SidebarMenu() {
   const pathname = usePathname();
@@ -55,7 +56,7 @@ export function SidebarMenu() {
     item: "h-8 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium",
     sub: "",
     subTrigger:
-      "h-8 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium",
+      "h-8 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium [&_[data-slot=accordion-menu-sub-indicator]]:hidden",
     subContent: "py-0",
     indicator: "",
   };
@@ -72,19 +73,50 @@ export function SidebarMenu() {
     });
   };
 
+  const renderIcon = (icon: MenuItem["icon"]) => {
+    if (!icon) return null;
+    if (typeof icon === "string") {
+      return (
+        <KeenIcon
+          icon={icon}
+          style="outline"
+
+          className="text-lg pr-2 text-gray-600"
+          data-slot="accordion-menu-icon"
+        />
+      );
+    }
+    const IconComponent = icon;
+    return <IconComponent data-slot="accordion-menu-icon" className="w-5 h-5" />;
+  };
+
   const buildMenuItemRoot = (item: MenuItem, index: number): JSX.Element => {
     if (item.children) {
+      const menuValue = item.path || `root-${index}`;
       return (
-        <AccordionMenuSub key={index} value={item.path || `root-${index}`}>
-          <AccordionMenuSubTrigger className="text-sm font-medium">
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
-            <span data-slot="accordion-menu-title">{item.title}</span>
+        <AccordionMenuSub key={index} value={menuValue}>
+          <AccordionMenuSubTrigger className="text-sm font-medium group ">
+            {renderIcon(item.icon)}
+            <span data-slot="accordion-menu-title" className="flex-1">{item.title}</span>
+            <div className="ms-auto size-4 shrink-0 relative flex items-center justify-center">
+              <KeenIcon
+                icon="plus"
+                style="outline"
+                className="absolute size-4 text-muted-foreground transition-opacity duration-200 group-data-[state=open]:opacity-0 group-data-[state=open]:pointer-events-none"
+                data-slot="accordion-menu-indicator-plus"
+              />
+              <KeenIcon
+                icon="minus"
+                style="outline"
+                className="absolute size-4 text-muted-foreground transition-opacity duration-200 opacity-0 pointer-events-none group-data-[state=open]:opacity-100 group-data-[state=open]:pointer-events-auto"
+                data-slot="accordion-menu-indicator-minus"
+              />
+            </div>
           </AccordionMenuSubTrigger>
           <AccordionMenuSubContent
-            type="single"
-            collapsible
-            parentValue={item.path || `root-${index}`}
-            className="ps-6"
+            type="multiple"
+            parentValue={menuValue}
+            className="ml-4 border-l-1 border-gray-300"
           >
             <AccordionMenuGroup>
               {buildMenuItemChildren(item.children, 1)}
@@ -103,7 +135,7 @@ export function SidebarMenu() {
             href={item.path || "#"}
             className="flex items-center justify-between grow gap-2"
           >
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+            {renderIcon(item.icon)}
             <span data-slot="accordion-menu-title">{item.title}</span>
           </Link>
         </AccordionMenuItem>
@@ -121,7 +153,7 @@ export function SidebarMenu() {
         value={`disabled-${index}`}
         className="text-sm font-medium"
       >
-        {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+        {renderIcon(item.icon)}
         <span data-slot="accordion-menu-title">{item.title}</span>
         {item.disabled && (
           <Badge variant="secondary" size="sm" className="ms-auto me-[-10px]">
@@ -151,12 +183,13 @@ export function SidebarMenu() {
     level: number = 0
   ): JSX.Element => {
     if (item.children) {
+      const childValue = item.path || `child-${level}-${index}`;
       return (
         <AccordionMenuSub
           key={index}
-          value={item.path || `child-${level}-${index}`}
+          value={childValue}
         >
-          <AccordionMenuSubTrigger className="text-[13px]">
+          <AccordionMenuSubTrigger className="text-[13px] group">
             {item.collapse ? (
               <span className="text-muted-foreground">
                 <span className="hidden [[data-state=open]>span>&]:inline">
@@ -167,13 +200,26 @@ export function SidebarMenu() {
                 </span>
               </span>
             ) : (
-              item.title
+              <span className="flex-1">{item.title}</span>
             )}
+            <div className="ms-auto size-4 shrink-0 relative flex items-center justify-center">
+              <KeenIcon
+                icon="plus"
+                style="outline"
+                className="absolute size-4 text-muted-foreground transition-opacity duration-200 group-data-[state=open]:opacity-0 group-data-[state=open]:pointer-events-none"
+                data-slot="accordion-menu-indicator-plus"
+              />
+              <KeenIcon
+                icon="minus"
+                style="outline"
+                className="absolute size-4 text-muted-foreground transition-opacity duration-200 opacity-0 pointer-events-none group-data-[state=open]:opacity-100 group-data-[state=open]:pointer-events-auto"
+                data-slot="accordion-menu-indicator-minus"
+              />
+            </div>
           </AccordionMenuSubTrigger>
           <AccordionMenuSubContent
-            type="single"
-            collapsible
-            parentValue={item.path || `child-${level}-${index}`}
+            type="multiple"
+            parentValue={childValue}
             className={cn(
               "ps-4",
               !item.collapse && "relative",
@@ -237,8 +283,7 @@ export function SidebarMenu() {
       <AccordionMenu
         selectedValue={currentUrl}
         matchPath={matchPath}
-        type="single"
-        collapsible
+        type="multiple"
         classNames={classNames}
       >
         {buildMenu(MENU_SIDEBAR)}

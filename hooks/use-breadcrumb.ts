@@ -102,46 +102,51 @@ export const useBreadcrumb = (): UseBreadcrumbReturn => {
 
   const breadcrumbItems: BreadcrumbItem[] = [];
 
-  // Always start with Home for non-root paths
-  if (pathname !== "/") {
+  // Special handling for root path "/"
+  if (pathname === "/") {
     breadcrumbItems.push({
       title: "Home",
       path: "/",
       isActive: false,
     });
+    breadcrumbItems.push({
+      title: "Dashboard",
+      path: "/",
+      isActive: true,
+    });
+  } else {
+    const segments = pathname.split("/").filter(shouldIncludeSegment);
+
+    let currentPath = "";
+
+    segments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      const isLast = index === segments.length - 1;
+
+      // Check if this is the profile segment and we have type=security parameter
+      if (
+        segment === "profile" &&
+        isLast &&
+        searchParams.get("type") === "security"
+      ) {
+        breadcrumbItems.push({
+          title: "Security",
+          path: currentPath + "?type=security",
+          isActive: true,
+        });
+      } else {
+        breadcrumbItems.push({
+          title: pathSegmentToTitle(segment),
+          path: currentPath,
+          isActive: isLast,
+        });
+      }
+    });
   }
-
-  const segments = pathname.split("/").filter(shouldIncludeSegment);
-
-  let currentPath = "";
-
-  segments.forEach((segment, index) => {
-    currentPath += `/${segment}`;
-    const isLast = index === segments.length - 1;
-
-    // Check if this is the profile segment and we have type=security parameter
-    if (
-      segment === "profile" &&
-      isLast &&
-      searchParams.get("type") === "security"
-    ) {
-      breadcrumbItems.push({
-        title: "Security",
-        path: currentPath + "?type=security",
-        isActive: true,
-      });
-    } else {
-      breadcrumbItems.push({
-        title: pathSegmentToTitle(segment),
-        path: currentPath,
-        isActive: isLast,
-      });
-    }
-  });
 
   const getCurrentPageTitle = (): string => {
     if (pathname === "/") {
-      return "Home";
+      return "Dashboard";
     }
 
     // Check if we're on profile page with security tab
@@ -152,6 +157,7 @@ export const useBreadcrumb = (): UseBreadcrumbReturn => {
       return "Security";
     }
 
+    const segments = pathname.split("/").filter(shouldIncludeSegment);
     const lastSegment = segments[segments.length - 1];
     return lastSegment ? pathSegmentToTitle(lastSegment) : "Page";
   };

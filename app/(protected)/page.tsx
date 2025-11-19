@@ -1,12 +1,14 @@
 "use client";
 
-import { useSettings } from "@/providers/settings-provider";
-import { Demo1LightSidebarPage } from "./components/demo1";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const { settings } = useSettings();
+  const router = useRouter();
 
-  if (settings?.layout === "demo1") {
-    return <Demo1LightSidebarPage />;
-  }
+  useEffect(() => {
+    router.replace("/dashboards");
+  }, [router]);
+
+  return null;
 }

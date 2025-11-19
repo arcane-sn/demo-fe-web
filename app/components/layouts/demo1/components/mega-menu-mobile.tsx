@@ -1,11 +1,10 @@
 'use client';
-'use client';
 
 import { JSX, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LucideIcon } from 'lucide-react';
 import { MENU_MEGA_MOBILE } from '@/config/menu.config';
+import { MenuConfig, MenuItem } from '@/config/types';
 import { cn } from '@/lib/utils';
 import {
   AccordionMenu,
@@ -18,24 +17,7 @@ import {
   AccordionMenuSubTrigger,
 } from '@/components/ui/accordion-menu';
 import { Badge } from '@/components/ui/badge';
-
-export interface MenuItem {
-  title?: string;
-  icon?: LucideIcon;
-  path?: string;
-  rootPath?: string;
-  childrenIndex?: number;
-  heading?: string;
-  children?: MenuItem[];
-  disabled?: boolean;
-  collapse?: boolean;
-  collapseTitle?: string;
-  expandTitle?: string;
-  badge?: string;
-  separator?: boolean;
-}
-
-export type MenuConfig = MenuItem[];
+import { KeenIcon } from '@/components/keenicons';
 
 export function MegaMenuMobile() {
   const pathname = usePathname();
@@ -62,6 +44,22 @@ export function MegaMenuMobile() {
     indicator: '',
   };
 
+  const renderIcon = (icon: MenuItem["icon"]) => {
+    if (!icon) return null;
+    if (typeof icon === "string") {
+      return (
+        <KeenIcon
+          icon={icon}
+          style="outline"
+          className=""
+          data-slot="accordion-menu-icon"
+        />
+      );
+    }
+    const IconComponent = icon;
+    return <IconComponent data-slot="accordion-menu-icon" className="w-5 h-5" />;
+  };
+
   const buildMenu = (items: MenuConfig): JSX.Element[] => {
     return items.map((item: MenuItem, index: number) => {
       if (item.heading) {
@@ -79,7 +77,7 @@ export function MegaMenuMobile() {
       return (
         <AccordionMenuSub key={index} value={item.path || `root-${index}`}>
           <AccordionMenuSubTrigger className="text-sm font-medium">
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+            {renderIcon(item.icon)}
             <div className="flex items-center justify-between grow gap-2">
               <span data-slot="accordion-menu-title">{item.title}</span>
               {item.badge && (
@@ -109,7 +107,7 @@ export function MegaMenuMobile() {
           className="text-sm font-medium"
         >
           <Link href={item.path || '#'} className="">
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+            {renderIcon(item.icon)}
             <div className="flex items-center justify-between grow gap-2">
               <span data-slot="accordion-menu-title">{item.title}</span>
               {item.badge && (
@@ -149,7 +147,7 @@ export function MegaMenuMobile() {
           value={item.path || `child-${level}-${index}`}
         >
           <AccordionMenuSubTrigger className="text-[13px]">
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+            {renderIcon(item.icon)}
             {item.collapse ? (
               <span className="text-muted-foreground">
                 <span className="hidden [[data-state=open]>span>&]:inline">
@@ -191,7 +189,7 @@ export function MegaMenuMobile() {
           className="text-[13px]"
         >
           <Link href={item.path || '#'}>
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+            {renderIcon(item.icon)}
             <div className="flex items-center justify-between grow gap-2">
               <span>{item.title}</span>
               {item.badge && (

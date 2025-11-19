@@ -1,4 +1,4 @@
-import BalanceOverview from "@/app/(protected)/balance/merchants-balance/components/balance-overview";
+import SummaryBalanceCard from "./summary-balance-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,9 +8,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Boxes, BoxesIcon, RefreshCcw, Rocket, Watch } from "lucide-react";
+import { Boxes, BoxesIcon, RefreshCcw } from "lucide-react";
+import DetailModal from "@/components/shared/modals/detail-modal";
+import { KeenIcon } from "@/components/keenicons";
+import {
+  PROVIDER_BALANCE_DETAIL_ITEMS,
+  PROVIDER_BALANCE_SUMMARY,
+  PROVIDER_OPTIONS,
+} from "../core/constants";
+import { useSettlementHistoryStore } from "../core/store/useSettlementHistoryStore";
 
 const ProviderBalance = () => {
+  const {
+    isBalanceDetailOpen,
+    openBalanceDetail,
+    closeBalanceDetail,
+    selectedProvider,
+    setSelectedProvider,
+  } = useSettlementHistoryStore();
+
   return (
     <Card>
       <CardHeader>
@@ -31,77 +47,73 @@ const ProviderBalance = () => {
               <RefreshCcw />
               Refresh Balance
             </Button>
-            <Button variant="outline">Balance Detail</Button>
-            <Select>
+            <Button variant="outline" onClick={openBalanceDetail}>
+              Balance Detail
+            </Button>
+            <Select value={selectedProvider} onValueChange={setSelectedProvider}>
               <SelectTrigger>
                 <SelectValue
-                  placeholder={
+                  placeholder="[Provider Name]"
+                  className="flex items-center gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
+                      <BoxesIcon className="size-4" />
+                    </div>
+                    <span className="text-grey-900">
+                      {
+                        PROVIDER_OPTIONS.find((option) => option.value === selectedProvider)
+                          ?.label
+                      }
+                    </span>
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {PROVIDER_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
                     <div className="flex items-center gap-2">
                       <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
                         <BoxesIcon className="size-4" />
                       </div>
-                      <span className="text-grey-900">[Provider Name]</span>
+                      <span className="text-grey-900">{option.label}</span>
                     </div>
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Alto Premium">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
-                      <BoxesIcon className="size-4" />
-                    </div>
-                    <span className="text-grey-900">[Alto Premium]</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="Alto Standar">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
-                      <BoxesIcon className="size-4" />
-                    </div>
-                    <span className="text-grey-900">[Alto Standar]</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="Alto Basic">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
-                      <BoxesIcon className="size-4" />
-                    </div>
-                    <span className="text-grey-900">[Alto Basic]</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="Flip ">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-full p-1 bg-primary-light border-primary-clarity-20 text-primary">
-                      <BoxesIcon className="size-4" />
-                    </div>
-                    <span className="text-grey-900">[Flip]</span>
-                  </div>
-                </SelectItem>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full flex items-center justify-start gap-8">
-          <div className="w-full">
-            <BalanceOverview
-              icon={<Rocket className="h-7 w-7 text-success -mt-3" />}
-              value="IDR 1.195.000.000"
-              title="Total Active Balance"
-            />
-          </div>
-          <div className="h-12 w-1 border-l border-gray-200 "></div>
-          <div className="w-full">
-            <BalanceOverview
-              icon={<Watch className="h-7 w-7 text-orange -mt-3" />}
-              value="IDR 155.000.000"
-              title="Total Pending Balance"
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SummaryBalanceCard
+            icon={
+              <span className="h-7 w-7 inline-flex items-center justify-center text-success">
+                <KeenIcon icon="rocket" style="outline" className="text-4xl" />
+              </span>
+            }
+            value={PROVIDER_BALANCE_SUMMARY.active}
+            title="Active Balance"
+          />
+          <SummaryBalanceCard
+            icon={
+              <span className="h-7 w-7 inline-flex items-center justify-center text-orange-500">
+                <KeenIcon icon="watch" style="outline" className="text-4xl" />
+              </span>
+            }
+            value={PROVIDER_BALANCE_SUMMARY.pending}
+            title="Pending Balance"
+          />
         </div>
       </CardContent>
+      <DetailModal
+        open={isBalanceDetailOpen}
+        onClose={closeBalanceDetail}
+        title="Provider Balance Detail"
+        items={PROVIDER_BALANCE_DETAIL_ITEMS}
+        showInfoIcon={false}
+      />
     </Card>
   );
 };

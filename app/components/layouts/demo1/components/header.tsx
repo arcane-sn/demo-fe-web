@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { SearchDialog } from "@/partials/dialogs/search/search-dialog";
 import { AppsDropdownMenu } from "@/partials/topbar/apps-dropdown-menu";
@@ -9,13 +10,10 @@ import { ChatSheet } from "@/partials/topbar/chat-sheet";
 import { NotificationsSheet } from "@/partials/topbar/notifications-sheet";
 import { UserDropdownMenu } from "@/partials/topbar/user-dropdown-menu";
 import {
-  Bell,
-  LayoutGrid,
   Menu,
-  MessageCircleMore,
-  Search,
   SquareChevronRight,
 } from "lucide-react";
+import { KeenIcon } from "@/components/keenicons";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -60,10 +58,14 @@ export function Header() {
         {/* HeaderLogo */}
         <div className="flex lg:hidden items-center gap-2.5">
           <Link href="/" className="shrink-0">
-            <img
-              src={toAbsoluteUrl("/media/app/mini-logo.svg")}
-              className="h-[25px] w-full"
-              alt="mini-logo"
+            <Image
+              src="/assets/image/g4.png"
+              width={120}
+              height={25}
+              className="h-[25px] w-auto object-contain"
+              alt="Logo"
+              priority
+              unoptimized
             />
           </Link>
           <div className="flex items-center">
@@ -117,15 +119,43 @@ export function Header() {
         <Breadcrumb />
 
         {/* HeaderTopbar */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-5">
           {pathname.startsWith("/store-client") ? (
             <></>
           ) : (
             <>
+              <SearchDialog
+                trigger={
+                  <Button variant="ghost" mode="icon" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <KeenIcon icon="magnifier" style="outline" className="text-lg" />
+                  </Button>
+                }
+              />
+              <NotificationsSheet
+                trigger={
+                  <Button variant="ghost" mode="icon" size="sm" className="text-muted-foreground hover:text-foreground relative">
+                    <KeenIcon icon="notification" style="outline" className="text-lg" />
+                  </Button>
+                }
+              />
+              <ChatSheet
+                trigger={
+                  <Button variant="ghost" mode="icon" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <KeenIcon icon="messages" style="outline" className="text-lg" />
+                  </Button>
+                }
+              />
+              <AppsDropdownMenu
+                trigger={
+                  <Button variant="ghost" mode="icon" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <KeenIcon icon="element-11" style="outline" className="text-lg" />
+                  </Button>
+                }
+              />
               <UserDropdownMenu
                 trigger={
                   <img
-                    className="size-9 rounded-full border-2 border-green-500 shrink-0 cursor-pointer"
+                    className="size-9 rounded-full border-2 border-green-500 shrink-0 cursor-pointer ml-2"
                     src={toAbsoluteUrl("/media/avatars/300-2.png")}
                     alt="User Avatar"
                   />

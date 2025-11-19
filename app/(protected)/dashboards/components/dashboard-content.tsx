@@ -1,126 +1,48 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LayoutDashboard, TrendingUp, Users, DollarSign } from "lucide-react";
+"use client";
+
+import { Card, CardContent } from "@/components/ui/card";
+import BalanceOverview from "./balance-overview";
+import TopMerchant from "./top-merchant";
+import { TransactionHighlight } from "./transaction-highlight";
+import TopChannel from "./top-channel";
+import { QuickAccess } from "./quick-access";
+import { MOCK_BALANCE_OVERVIEW } from "../core/data/mock-data";
 
 export function DashboardContent() {
+  const balanceOverviewData = MOCK_BALANCE_OVERVIEW;
+
   return (
     <div className="grid gap-5 lg:gap-7.5">
-      <div className="grid lg:grid-cols-4 gap-5 lg:gap-7.5">
+      <div className="w-full">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Transactions</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+2,350</div>
-            <p className="text-xs text-muted-foreground">
-              +180.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
-            <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
+            <div className="w-full flex items-center justify-center gap-8 p-5">
+              {balanceOverviewData.map((item, index) => (
+                <BalanceOverview
+                  key={index}
+                  value={item.value}
+                  title={item.title}
+                />
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
-
-      <div className="grid lg:grid-cols-2 gap-5 lg:gap-7.5">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Latest transactions and system updates
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium">Payment processed successfully</p>
-                  <p className="text-xs text-muted-foreground">2 minutes ago</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium">New merchant registered</p>
-                  <p className="text-xs text-muted-foreground">5 minutes ago</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium">Settlement request pending</p>
-                  <p className="text-xs text-muted-foreground">10 minutes ago</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
-            <CardDescription>
-              System performance overview
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">System Uptime</span>
-                <span className="font-bold text-green-600">99.9%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Active Sessions</span>
-                <span className="font-bold">156</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Pending Tasks</span>
-                <span className="font-bold text-yellow-600">8</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Error Rate</span>
-                <span className="font-bold text-green-600">0.1%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="w-full">
+        <div className="w-full">
+          <TransactionHighlight />
+        </div>
+      </div>
+      <div className="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">
+        <div className="lg:col-span-2">
+          <TopMerchant />
+        </div>
+        <div className="lg:col-span-1">
+          <TopChannel />
+        </div>
+      </div>
+      <div className="w-full">
+        <QuickAccess />
       </div>
     </div>
   );

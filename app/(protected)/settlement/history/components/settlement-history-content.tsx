@@ -9,16 +9,11 @@ import {
 import ProviderBalance from "./provider-balance";
 import SettlementOverview from "./settlement-overview";
 import { SettlementHistoryTable } from "./table";
-import { mockSettlementHistoryData } from "./table/config/data/mock-settlement-history";
+import { mockSettlementHistoryData } from "../core/data/mock-settlement-history";
 import { useSettlementHistoryList } from "./table/config/hooks/use-settlement-history-list";
-import { useState } from "react";
-import ModalBalanceFilter from "./modal/modal.balance.filter";
-import ModalBalanceExport from "./modal/modal.balance.export";
 
 export function SettlementHistoryContent() {
-  const { loading, error, handleSelectionChange } = useSettlementHistoryList();
-  const [openFilters, setOpenFilters] = useState(false);
-  const [openExport, setOpenExport] = useState(false);
+  const { loading, error } = useSettlementHistoryList();
 
   return (
     <div className="w-full">
@@ -50,22 +45,10 @@ export function SettlementHistoryContent() {
       <div className="mt-6">
         <SettlementHistoryTable
           data={mockSettlementHistoryData}
-          onSelectionChange={handleSelectionChange}
           loading={loading}
           error={error || undefined}
-          onOpenFilters={() => setOpenFilters(true)}
-          onOpenExport={() => setOpenExport(true)}
         />
       </div>
-
-      <ModalBalanceFilter
-        open={openFilters}
-        onClose={() => setOpenFilters(false)}
-      />
-      <ModalBalanceExport
-        open={openExport}
-        onClose={() => setOpenExport(false)}
-      />
     </div>
   );
 }

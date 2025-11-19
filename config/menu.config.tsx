@@ -1,45 +1,17 @@
-import {
-  AlertCircle,
-  Badge,
-  Bitcoin,
-  Book,
-  Building,
-  Captions,
-  Coffee,
-  File,
-  FileQuestion,
-  Ghost,
-  HelpCircle,
-  MessageSquare,
-  Monitor,
-  Share2,
-  Shield,
-  SquareMousePointer,
-  Star,
-  UserCircle,
-  Users,
-  LayoutDashboard,
-  Receipt,
-  Wallet,
-  BarChart3,
-  Rocket,
-  Store,
-  UserCog,
-  Compass,
-  MemoryStick,
-} from "lucide-react";
 import { type MenuConfig } from "./types";
 
 export const MENU_SIDEBAR: MenuConfig = [
   // Top Section - Main Navigation
   {
     title: "Home",
-    icon: LayoutDashboard,
-    children: [{ title: "Dashboards", path: "/" }],
+    icon: "element-11",
+    children: [
+      { title: "Dashboards", path: "/dashboards" },
+    ],
   },
   {
     title: "Transactions History",
-    icon: Receipt,
+    icon: "cheque",
     children: [
       { title: "Pay-In", path: "/transactions/pay-in" },
       { title: "Pay-Out", path: "/transactions/pay-out" },
@@ -47,7 +19,7 @@ export const MENU_SIDEBAR: MenuConfig = [
   },
   {
     title: "Balance",
-    icon: Wallet,
+    icon: "wallet",
     children: [
       { title: "Merchants Balance", path: "/balance/merchants-balance" },
       { title: "Balance Statement", path: "/balance/balance-statement" },
@@ -56,12 +28,12 @@ export const MENU_SIDEBAR: MenuConfig = [
   },
   {
     title: "Settlement",
-    icon: BarChart3,
+    icon: "menu",
     children: [{ title: "Settlement History", path: "/settlement/history" }],
   },
   {
     title: "Send Funds",
-    icon: Rocket,
+    icon: "rocket",
     children: [
       { title: "Disbursement", path: "/send-funds/disbursement" },
       {
@@ -75,7 +47,7 @@ export const MENU_SIDEBAR: MenuConfig = [
   { heading: "MANAGEMENT SYSTEM" },
   {
     title: "Merchant Management",
-    icon: Store,
+    icon: "shop",
     children: [
       { title: "Merchant List", path: "/merchant/list" },
       { title: "Merchant Request", path: "/merchant/review" },
@@ -85,7 +57,7 @@ export const MENU_SIDEBAR: MenuConfig = [
   },
   {
     title: "Account Service",
-    icon: UserCog,
+    icon: "user-square",
     children: [
       { title: "Account List", path: "/account/list" },
       { title: "Permissions Management", path: "/account/permissions" },
@@ -95,7 +67,7 @@ export const MENU_SIDEBAR: MenuConfig = [
 
   {
     title: "Provider Management",
-    icon: MemoryStick,
+    icon: "technology-4",
     children: [
       { title: "Provider Master Data", path: "/provider/master-data" },
     ],
@@ -105,7 +77,7 @@ export const MENU_SIDEBAR: MenuConfig = [
   { heading: "Account" },
   {
     title: "My Account",
-    icon: Shield,
+    icon: "security-user",
     children: [
       { title: "Profile", path: "/my-account/profile" },
       { title: "Security", path: "/my-account/profile?type=security" },
@@ -113,12 +85,12 @@ export const MENU_SIDEBAR: MenuConfig = [
   },
   {
     title: "Team Member",
-    icon: Users,
+    icon: "people",
     children: [{ title: "User Management", path: "/team/user-management" }],
   },
   {
     title: "Logs",
-    icon: Compass,
+    icon: "compass",
     children: [{ title: "Audit Logs", path: "/logs/audit-logs" }],
   },
 ];
@@ -126,12 +98,12 @@ export const MENU_SIDEBAR: MenuConfig = [
 export const MENU_SIDEBAR_CUSTOM: MenuConfig = [
   {
     title: "User Management",
-    icon: Users,
+    icon: "people",
     path: "/user-management",
   },
   {
     title: "Public Profile",
-    icon: UserCircle,
+    icon: "user",
     children: [
       {
         title: "Profiles",
@@ -163,12 +135,12 @@ export const MENU_SIDEBAR_CUSTOM: MenuConfig = [
 export const MENU_SIDEBAR_COMPACT: MenuConfig = [
   {
     title: "User Management",
-    icon: Users,
+    icon: "people",
     path: "/user-management",
   },
   {
     title: "Public Profile",
-    icon: UserCircle,
+    icon: "user",
     children: [
       {
         title: "Profiles",
@@ -200,7 +172,7 @@ export const MENU_SIDEBAR_COMPACT: MenuConfig = [
 export const MENU_MEGA: MenuConfig = [
   {
     title: "User Management",
-    icon: Users,
+    icon: "people",
     path: "/user-management",
   },
   {
@@ -213,37 +185,37 @@ export const MENU_MEGA: MenuConfig = [
             children: [
               {
                 title: "Default",
-                icon: Badge,
+                icon: "badge",
                 path: "/public-profile/profiles/default",
               },
               {
                 title: "Creator",
-                icon: Coffee,
+                icon: "coffee",
                 path: "/public-profile/profiles/creator",
               },
               {
                 title: "Company",
-                icon: Building,
+                icon: "building",
                 path: "/public-profile/profiles/company",
               },
               {
                 title: "NFT",
-                icon: Bitcoin,
+                icon: "bitcoin",
                 path: "/public-profile/profiles/nft",
               },
               {
                 title: "Blogger",
-                icon: MessageSquare,
+                icon: "message",
                 path: "/public-profile/profiles/blogger",
               },
               {
                 title: "CRM",
-                icon: Monitor,
+                icon: "monitor",
                 path: "/public-profile/profiles/crm",
               },
               {
                 title: "Gamer",
-                icon: Ghost,
+                icon: "ghost",
                 path: "/public-profile/profiles/gamer",
               },
             ],
@@ -252,17 +224,17 @@ export const MENU_MEGA: MenuConfig = [
             children: [
               {
                 title: "Feeds",
-                icon: Book,
+                icon: "book",
                 path: "/public-profile/profiles/feeds",
               },
               {
                 title: "Plain",
-                icon: File,
+                icon: "file",
                 path: "/public-profile/profiles/plain",
               },
               {
                 title: "Modal",
-                icon: SquareMousePointer,
+                icon: "cursor",
                 path: "/public-profile/profiles/modal",
               },
             ],
@@ -276,7 +248,7 @@ export const MENU_MEGA: MenuConfig = [
 export const MENU_MEGA_MOBILE: MenuConfig = [
   {
     title: "User Management",
-    icon: Users,
+    icon: "people",
     path: "/user-management",
   },
   {
@@ -287,44 +259,44 @@ export const MENU_MEGA_MOBILE: MenuConfig = [
         children: [
           {
             title: "Default",
-            icon: Badge,
+            icon: "badge",
             path: "/public-profile/profiles/default",
           },
           {
             title: "Creator",
-            icon: Coffee,
+            icon: "coffee",
             path: "/public-profile/profiles/creator",
           },
           {
             title: "Company",
-            icon: Building,
+            icon: "building",
             path: "/public-profile/profiles/company",
           },
-          { title: "NFT", icon: Bitcoin, path: "/public-profile/profiles/nft" },
+          { title: "NFT", icon: "bitcoin", path: "/public-profile/profiles/nft" },
           {
             title: "Blogger",
-            icon: MessageSquare,
+            icon: "message",
             path: "/public-profile/profiles/blogger",
           },
-          { title: "CRM", icon: Monitor, path: "/public-profile/profiles/crm" },
+          { title: "CRM", icon: "monitor", path: "/public-profile/profiles/crm" },
           {
             title: "Gamer",
-            icon: Ghost,
+            icon: "ghost",
             path: "/public-profile/profiles/gamer",
           },
           {
             title: "Feeds",
-            icon: Book,
+            icon: "book",
             path: "/public-profile/profiles/feeds",
           },
           {
             title: "Plain",
-            icon: File,
+            icon: "file",
             path: "/public-profile/profiles/plain",
           },
           {
             title: "Modal",
-            icon: SquareMousePointer,
+            icon: "cursor",
             path: "/public-profile/profiles/modal",
           },
         ],
@@ -336,55 +308,55 @@ export const MENU_MEGA_MOBILE: MenuConfig = [
 export const MENU_HELP: MenuConfig = [
   {
     title: "Getting Started",
-    icon: Coffee,
+    icon: "coffee",
     path: "https://keenthemes.com/metronic/tailwind/docs/getting-started/installation",
   },
   {
     title: "Support Forum",
-    icon: AlertCircle,
+    icon: "information",
     children: [
       {
         title: "All Questions",
-        icon: FileQuestion,
+        icon: "file-question",
         path: "https://devs.keenthemes.com",
       },
       {
         title: "Popular Questions",
-        icon: Star,
+        icon: "star",
         path: "https://devs.keenthemes.com/popular",
       },
       {
         title: "Ask Question",
-        icon: HelpCircle,
+        icon: "help",
         path: "https://devs.keenthemes.com/question/create",
       },
     ],
   },
   {
     title: "Licenses & FAQ",
-    icon: Captions,
+    icon: "document",
     path: "https://keenthemes.com/metronic/tailwind/docs/getting-started/license",
   },
   {
     title: "Documentation",
-    icon: FileQuestion,
+    icon: "file-question",
     path: "https://keenthemes.com/metronic/tailwind/docs",
   },
   { separator: true },
-  { title: "Contact Us", icon: Share2, path: "https://keenthemes.com/contact" },
+  { title: "Contact Us", icon: "share", path: "https://keenthemes.com/contact" },
 ];
 
 export const MENU_ROOT: MenuConfig = [
   {
     title: "User Management",
-    icon: Users,
+    icon: "people",
     rootPath: "/user-management/",
     path: "/user-management",
     childrenIndex: 0,
   },
   {
     title: "Public Profile",
-    icon: UserCircle,
+    icon: "user",
     rootPath: "/public-profile/",
     path: "/public-profile/profiles/default",
     childrenIndex: 1,

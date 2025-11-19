@@ -323,7 +323,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Skip middleware for static files
-  if (pathname.startsWith("/_next/") || pathname.startsWith("/favicon.ico")) {
+  if (
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.startsWith("/assets/")
+  ) {
     return NextResponse.next();
   }
 
@@ -332,6 +336,11 @@ export async function middleware(request: NextRequest) {
   if (!authToken) {
     // No auth token, redirect to login
     return NextResponse.redirect(new URL("/signin", request.url));
+  }
+
+  // Redirect root path to dashboards
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboards", request.url));
   }
 
   // Get user permissions only if authenticated
@@ -368,7 +377,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - assets (static assets like images)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|assets).*)",
   ],
 };

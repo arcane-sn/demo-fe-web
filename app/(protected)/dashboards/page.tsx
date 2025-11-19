@@ -1,11 +1,12 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarHeading,
-} from '@/layouts/demo1/components/toolbar';
-import { Container } from '@/components/common/container';
-import { DashboardContent } from './components';
+} from "@/layouts/demo1/components/toolbar";
+import { Button } from "@/components/ui/button";
+import { Container } from "@/components/common/container";
+import { DashboardContent } from "./components";
 
 export default function DashboardsPage() {
   return (
@@ -13,11 +14,11 @@ export default function DashboardsPage() {
       <Container>
         <Toolbar>
           <ToolbarHeading
-            title="Dashboards"
-            description="Overview of your system performance and key metrics"
+            title="Hi, [Username]"
+            description="Welcome to [Merchant Name] Internal Dashboard"
           />
           <ToolbarActions>
-            {/* Add any toolbar actions here if needed */}
+            <Button variant="outline">View Profile</Button>
           </ToolbarActions>
         </Toolbar>
       </Container>

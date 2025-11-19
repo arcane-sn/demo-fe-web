@@ -2,7 +2,7 @@ import { type LucideIcon } from 'lucide-react';
 
 export interface MenuItem {
   title?: string;
-  icon?: LucideIcon;
+  icon?: LucideIcon | string;
   path?: string;
   rootPath?: string;
   childrenIndex?: number;
