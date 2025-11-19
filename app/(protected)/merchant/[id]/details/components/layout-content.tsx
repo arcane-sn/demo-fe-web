@@ -61,22 +61,22 @@ export function MerchantDetailsLayoutContent({
     );
   }
 
-  if (!currentMerchant) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-destructive">Merchant Not Found</h1>
-          <p className="text-muted-foreground mt-2">The merchant you're looking for doesn't exist.</p>
-          <button
-            onClick={() => router.push('/merchant/list')}
-            className="mt-4 text-primary hover:underline"
-          >
-            Back to Merchant List
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (!currentMerchant) {
+  //   return (
+  //     <div className="min-h-screen bg-background flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold text-destructive">Merchant Not Found</h1>
+  //         <p className="text-muted-foreground mt-2">The merchant you're looking for doesn't exist.</p>
+  //         <button
+  //           onClick={() => router.push('/merchant/list')}
+  //           className="mt-4 text-primary hover:underline"
+  //         >
+  //           Back to Merchant List
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const merchantImage = (
     <div className="rounded-full border-3 border-primary size-[100px] shrink-0 bg-primary/10 flex items-center justify-center">
