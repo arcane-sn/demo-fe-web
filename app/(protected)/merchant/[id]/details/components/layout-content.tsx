@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import React, { Fragment } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { MerchantData } from '../../../types/merchant';
-import { UserHero } from '@/app/components/partials/common/user-hero';
-import { Navbar, NavbarActions } from '@/app/components/partials/navbar/navbar';
-import { DropdownMenu9 } from '@/app/components/partials/dropdown-menu/dropdown-menu-9';
-import { 
-  Building2, 
+import React, { Fragment } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { MerchantData } from "../../../types/merchant";
+import { UserHero } from "@/app/components/partials/common/user-hero";
+import { Navbar, NavbarActions } from "@/app/components/partials/navbar/navbar";
+import { DropdownMenu9 } from "@/app/components/partials/dropdown-menu/dropdown-menu-9";
+import {
+  Building2,
   Edit,
   ArrowLeft,
   EllipsisVertical,
   CreditCard,
-  Globe
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Container } from '@/components/common/container';
-import { UnifiedTabMenu } from './shared/unified-tab-menu';
-import { useMerchantDetails } from '../core/hooks/use-merchant-details';
+  Globe,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Container } from "@/components/common/container";
+import { UnifiedTabMenu } from "./shared/unified-tab-menu";
+import { useMerchantDetails } from "../core/hooks/use-merchant-details";
 
 interface MerchantDetailsLayoutContentProps {
   children: React.ReactNode;
   initialMerchant?: MerchantData | null;
 }
 
-export function MerchantDetailsLayoutContent({ 
+export function MerchantDetailsLayoutContent({
   children,
-  initialMerchant 
+  initialMerchant,
 }: MerchantDetailsLayoutContentProps) {
   const router = useRouter();
   const params = useParams();
   const merchantId = params.id as string;
   const { merchant, loading, deleteMerchant } = useMerchantDetails();
-  
+
   // Use merchant from context, fallback to initialMerchant
   const currentMerchant = merchant || initialMerchant;
 
@@ -42,11 +42,11 @@ export function MerchantDetailsLayoutContent({
 
   const handleDelete = async () => {
     await deleteMerchant(merchantId);
-    router.push('/merchant/list');
+    router.push("/merchant/list");
   };
 
   const handleBack = () => {
-    router.push('/merchant/list');
+    router.push("/merchant/list");
   };
 
   // Show loading only if we don't have any merchant data
@@ -87,12 +87,15 @@ export function MerchantDetailsLayoutContent({
   return (
     <Fragment>
       <UserHero
-        name={currentMerchant.companyName}
+        name={currentMerchant?.companyName}
         image={merchantImage}
         info={[
-          { label: currentMerchant.brandName, icon: Globe },
-          { label: currentMerchant.clientId, icon: CreditCard },
-          { label: `Level ${currentMerchant.merchantLevel.level}`, icon: Building2 },
+          { label: currentMerchant?.brandName, icon: Globe },
+          { label: currentMerchant?.clientId, icon: CreditCard },
+          {
+            label: `Level ${currentMerchant?.merchantLevel.level}`,
+            icon: Building2,
+          },
         ]}
       />
       <Container>
@@ -118,17 +121,14 @@ export function MerchantDetailsLayoutContent({
           </NavbarActions>
         </Navbar>
       </Container>
-      
+
       {/* Tab Navigation */}
       <UnifiedTabMenu merchantId={merchantId} />
-      
+
       {/* Tab Content */}
       <Container>
-        <div className="py-6">
-          {children}
-        </div>
+        <div className="py-6">{children}</div>
       </Container>
     </Fragment>
   );
 }
-

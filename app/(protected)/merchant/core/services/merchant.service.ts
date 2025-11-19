@@ -15,9 +15,11 @@ import { httpService } from "@/services";
 
 // Check if we should use mock data
 // Default to mock data in development unless explicitly set to use real API
+// Also use mock data in production if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'true'
 const USE_MOCK_DATA =
-  process.env.NODE_ENV === "development" &&
-  process.env.NEXT_PUBLIC_USE_MOCK_DATA !== "false";
+  process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" ||
+  (process.env.NODE_ENV === "development" &&
+    process.env.NEXT_PUBLIC_USE_MOCK_DATA !== "false");
 
 // Check if we're in server-side context
 const IS_SERVER = typeof window === "undefined";
@@ -54,7 +56,7 @@ export class MerchantService {
 
   static async fetchMerchant(merchantId: string): Promise<MerchantData> {
     try {
-      // Use mock data in development by default
+      // Use mock data if configured
       if (USE_MOCK_DATA) {
         const merchant = await MockDataService.getMerchantById(merchantId);
         if (!merchant) {
@@ -70,35 +72,64 @@ export class MerchantService {
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
         const url = `${baseURL}/merchants/${merchantId}`;
 
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Include cookies for auth
-          cache: "no-store", // Ensure fresh data in server components
-        });
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Include cookies for auth
+            cache: "no-store", // Ensure fresh data in server components
+          });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch merchant: ${response.statusText}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch merchant: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          // Handle ApiResponse format: { data: MerchantData, ... } or direct MerchantData
+          return data.data || data;
+        } catch (fetchError) {
+          // Fallback to mock data if API call fails (network error, CORS, etc.)
+          console.warn(
+            `API fetch failed for merchant ${merchantId}, falling back to mock data:`,
+            fetchError
+          );
+          const merchant = await MockDataService.getMerchantById(merchantId);
+          if (merchant) {
+            return merchant;
+          }
+          throw fetchError;
         }
-
-        const data = await response.json();
-        // Handle ApiResponse format: { data: MerchantData, ... } or direct MerchantData
-        return data.data || data;
       }
 
       // In client components, use httpService
-      const response = await httpService.get<MerchantData>(
-        `/merchants/${merchantId}`
-      );
-      return response.data;
+      try {
+        const response = await httpService.get<MerchantData>(
+          `/merchants/${merchantId}`
+        );
+        return response.data;
+      } catch (httpError) {
+        // Fallback to mock data if API call fails
+        console.warn(
+          `API call failed for merchant ${merchantId}, falling back to mock data:`,
+          httpError
+        );
+        const merchant = await MockDataService.getMerchantById(merchantId);
+        if (merchant) {
+          return merchant;
+        }
+        throw httpError;
+      }
     } catch (error) {
-      // Fallback to mock data in development if API call fails
-      if (process.env.NODE_ENV === "development" && !USE_MOCK_DATA) {
+      // Final fallback: try mock data one more time if we haven't already
+      if (!USE_MOCK_DATA) {
         try {
           const merchant = await MockDataService.getMerchantById(merchantId);
           if (merchant) {
+            console.warn(
+              `Using mock data as fallback for merchant ${merchantId}`
+            );
             return merchant;
           }
         } catch (mockError) {
