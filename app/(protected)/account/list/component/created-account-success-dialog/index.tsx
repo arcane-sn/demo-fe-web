@@ -3,6 +3,7 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import DialogContent, {
   Dialog,
   DialogBody,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,32 +18,23 @@ const DialogAccountSuccess: React.FC<DialogAccountSuccessProps> = ({
 }) => {
   return (
     <Dialog open={visible}>
-      <DialogContent close={false}>
-        <DialogHeader>
+      <DialogContent close className="p-0">
+        <DialogHeader className="border-b border-border p-5">
           <DialogTitle>
             <div className="flex w-full justify-between ">
               <div className="">
                 <div className="">
-                  <p className="text-b-20-20-500 flex items-center gap-2">
+                  <p className="text-sm text-gray-800 font-semibold flex items-center gap-2">
                     Account Created
                   </p>
                 </div>
-              </div>
-              <div className="self-center items-center justify-center">
-                <Button
-                  mode={"icon"}
-                  onClick={close}
-                  className="bg-transparent hover:bg-bg-transparent"
-                >
-                  <div className="text-[var(--color-gray-600)]">X</div>
-                </Button>
               </div>
             </div>
           </DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <div className="">
-            <div className="flex justify-center pt-4 pb-4">
+          <div className="p-5">
+            <div className="flex justify-center  pb-4">
               <Illustration.accountCreateSuccess />
             </div>
             <div>
@@ -50,24 +42,24 @@ const DialogAccountSuccess: React.FC<DialogAccountSuccessProps> = ({
                 Account Created Successfully!
               </p>
             </div>
-            <div>
-              <p className="text-center text-b-13-20-400 text-[var(--color-gray-900)]">
+            <div className="mt-2">
+              <p className=" text-center text-b-13-20-400 text-[var(--color-gray-900)]">
                 An activation link has been sent to the entered email. Please
                 activate the account via the link
               </p>
             </div>
-            <div className="pt-10">
-              <Button
-                onClick={() => {
-                  close();
-                }}
-                className="w-full"
-              >
-                Okay!
-              </Button>
-            </div>
           </div>
         </DialogBody>
+        <DialogFooter className="border-t border-border p-5">
+          <Button
+            onClick={() => {
+              close();
+            }}
+            className="w-full"
+          >
+            Okay!
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

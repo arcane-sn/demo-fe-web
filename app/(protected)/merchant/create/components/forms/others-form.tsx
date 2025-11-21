@@ -453,25 +453,71 @@ export function OthersForm() {
                 <FormField
                   control={form.control}
                   name="salesReferralFee"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <FormLabel className="text-sm font-normal">Sales Team Referral Fee <br></br> (fixed price)</FormLabel>
+                  render={({ field }) => {
+                    const formatIDR = (value: string) => {
+                      if (!value) return '';
+                      // Remove IDR prefix and spaces, keep only numbers and comma
+                      const numericOnly = value.replace(/[^\d,]/g, '');
+                      if (!numericOnly) return '';
+                      
+                      // Split by comma for decimal handling
+                      const parts = numericOnly.split(',');
+                      const integerPart = parts[0].replace(/\D/g, '');
+                      const decimalPart = parts[1] ? parts[1].replace(/\D/g, '') : '';
+                      
+                      // Format integer part with thousand separator (dot)
+                      const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                      
+                      // Combine with decimal if exists
+                      if (decimalPart) {
+                        return `IDR ${formattedInteger},${decimalPart}`;
+                      }
+                      return `IDR ${formattedInteger}`;
+                    };
+
+                    const parseIDR = (value: string) => {
+                      // Remove IDR prefix and format, keep only numbers and comma
+                      const numericOnly = value.replace(/[^\d,]/g, '');
+                      if (!numericOnly) return '';
+                      
+                      // Replace comma with dot for internal storage
+                      return numericOnly.replace(/,/g, '.');
+                    };
+
+                    return (
+                      <FormItem>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <FormLabel className="text-sm font-normal">Sales Team Referral Fee <br></br> (fixed price)</FormLabel>
+                          </div>
+                          <div className="w-130">
+                            <FormControl>
+                              <Input
+                                placeholder="IDR 0"
+                                className="text-sm"
+                                value={formatIDR(field.value || '')}
+                                onChange={(e) => {
+                                  const rawValue = e.target.value;
+                                  const parsed = parseIDR(rawValue);
+                                  field.onChange(parsed);
+                                }}
+                                onBlur={() => {
+                                  // Ensure proper formatting on blur
+                                  if (field.value) {
+                                    const formatted = formatIDR(field.value);
+                                    // Update field with formatted value (parsed)
+                                    const parsed = parseIDR(formatted);
+                                    field.onChange(parsed);
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </div>
                         </div>
-                        <div className="w-130">
-                          <FormControl>
-                            <Input
-                              placeholder="IDR 0"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </div>
-                      </div>
-                    </FormItem>
-                  )}
+                      </FormItem>
+                    );
+                  }}
                 />
               </div>
             </div>
@@ -508,25 +554,67 @@ export function OthersForm() {
                 <FormField
                   control={form.control}
                   name="merchantReferralFee"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <FormLabel className="text-sm font-normal">Merchant Referral Fee <br></br>(percentage price)</FormLabel>
+                  render={({ field }) => {
+                    const formatPercentage = (value: string) => {
+                      if (!value) return '';
+                      // Remove % symbol, keep only numbers, dot, and comma
+                      const numericOnly = value.replace(/[^\d.,]/g, '');
+                      if (!numericOnly) return '';
+                      
+                      // Replace comma with dot for internal calculation, then format back with comma
+                      const normalized = numericOnly.replace(/,/g, '.');
+                      const numValue = parseFloat(normalized);
+                      if (isNaN(numValue)) return numericOnly + '%';
+                      
+                      // Format with comma as decimal separator and add % symbol
+                      const parts = numValue.toString().split('.');
+                      const integerPart = parts[0];
+                      const decimalPart = parts[1] ? `,${parts[1]}` : '';
+                      return `${integerPart}${decimalPart}%`;
+                    };
+
+                    const parsePercentage = (value: string) => {
+                      // Remove % symbol, keep only numbers, dot, and comma
+                      const numericOnly = value.replace(/[^\d.,]/g, '');
+                      if (!numericOnly) return '';
+                      
+                      // Replace comma with dot for internal storage
+                      return numericOnly.replace(/,/g, '.');
+                    };
+
+                    return (
+                      <FormItem>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <FormLabel className="text-sm font-normal">Merchant Referral Fee <br></br>(percentage price)</FormLabel>
+                          </div>
+                          <div className="w-130">
+                            <FormControl>
+                              <Input
+                                placeholder="0%"
+                                className="text-sm"
+                                value={formatPercentage(field.value || '')}
+                                onChange={(e) => {
+                                  const rawValue = e.target.value;
+                                  const parsed = parsePercentage(rawValue);
+                                  field.onChange(parsed);
+                                }}
+                                onBlur={() => {
+                                  // Ensure proper formatting on blur
+                                  if (field.value) {
+                                    const formatted = formatPercentage(field.value);
+                                    const parsed = parsePercentage(formatted);
+                                    field.onChange(parsed);
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </div>
                         </div>
-                        <div className="w-130">
-                          <FormControl>
-                            <Input
-                              placeholder="0%"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </div>
-                      </div>
-                    </FormItem>
-                  )}
+                      </FormItem>
+                    );
+                  }}
                 />
               </div>
             </div>

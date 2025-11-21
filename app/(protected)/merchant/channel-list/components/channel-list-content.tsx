@@ -1,19 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import ChannelFilterModal from './filter/channel-filter-modal';
 import { ChannelTable } from './table/channel-table';
 import { ChannelData } from '../../types/channel';
 import { useChannelData } from './hooks/useChannelData';
-import { ChannelFilterState } from './filter/types';
 
 
 export function ChannelListContent() {
-  const [openFilter, setOpenFilter] = useState(false);
-  const [filterValues, setFilterValues] = useState<ChannelFilterState | null>(null);
-  
-  // Use the hook to get filtered data
-  const { channels, loading, error, refreshData, updateChannel } = useChannelData(filterValues);
+  const { channels, loading, error } = useChannelData();
 
   const handleView = (channel: ChannelData) => {
     console.log('View channel:', channel);
@@ -114,18 +107,6 @@ export function ChannelListContent() {
     console.log('Selection changed:', selectedChannels);
   };
 
-  const handleFilterApply = (values: ChannelFilterState) => {
-    console.log('Filter applied:', values);
-    setFilterValues(values);
-    setOpenFilter(false);
-  };
-
-  const handleFilterReset = () => {
-    console.log('Filter reset');
-    setFilterValues(null);
-    setOpenFilter(false);
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -148,15 +129,8 @@ export function ChannelListContent() {
         onExport={handleExport}
         onRowClick={handleRowClick}
         onSelectionChange={handleSelectionChange}
-        onFilterPressed={() => setOpenFilter(true)}
         loading={loading}
-      />
-
-      <ChannelFilterModal
-        open={openFilter}
-        onOpenChange={setOpenFilter}
-        onApply={handleFilterApply}
-        onReset={handleFilterReset}
+        error={error ?? undefined}
       />
     </div>
   );

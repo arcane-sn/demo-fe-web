@@ -33,7 +33,7 @@ export const FormNavigation = ({
   className = '',
 }: FormNavigationProps) => {
   return (
-    <div className={`flex items-center justify-between pt-8 border-t mt-8 ${className}`}>
+    <div className={`flex items-center justify-between pt-8 mt-8 ${className}`}>
       {/* Previous Button */}
       <Button
         type="button"

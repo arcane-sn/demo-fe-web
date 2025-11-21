@@ -1,4 +1,4 @@
-import { BaseTableData } from '@/components/table/types';
+import { BaseTableData } from "@/components/reusable/table";
 
 // Channel data interface
 export interface ChannelData extends BaseTableData {
@@ -7,7 +7,13 @@ export interface ChannelData extends BaseTableData {
   merchantName: string;
   clientId: string;
   paymentMethod: {
-    type: 'e_wallet' | 'bank_transfer' | 'credit_card' | 'debit_card' | 'virtual_account';
+    type:
+      | "e_wallet"
+      | "bank_transfer"
+      | "credit_card"
+      | "debit_card"
+      | "virtual_account"
+      | "qr_code";
     label: string;
   };
   channel: {

@@ -4,12 +4,11 @@ import { Button } from "@/components/ui/button";
 import { RiUserAddFill } from "@remixicon/react";
 import CreateAccountDialog from "./modal/create-account-dialog";
 import { useState } from "react";
-import UserListTable from "./user-list-table";
-import { userListMock } from "../core/hooks";
+import { UserListTable } from "./user-list-table/user-table";
+import { userListMock } from "../core/data/mock-data";
 
 const UserManagementContent = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showExportModal, setShowExportModal] = useState(false);
 
   return (
     <div className="w-full">
@@ -43,10 +42,7 @@ const UserManagementContent = () => {
 
       {/* Table */}
       <div className="pt-6">
-        <UserListTable
-          data={userListMock}
-          onOpenExport={() => setShowExportModal(true)}
-        />
+        <UserListTable data={userListMock} />
       </div>
     </div>
   );

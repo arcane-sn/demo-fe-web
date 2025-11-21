@@ -1,64 +1,94 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { InputGroup } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+
+interface CredentialField {
+  id: string;
+  field: string;
+  value: string;
+}
 
 const CardProviderCredentials = () => {
+  const [fields, setFields] = useState<CredentialField[]>([
+    { id: "1", field: "Client ID", value: "CL-12123012301294123" },
+    { id: "2", field: "Secret Key", value: "kIA9d0-xyz7-opQm-IK9s-bnM2" },
+    { id: "3", field: "MID / NMID", value: "NIMID-789456123" },
+    { id: "4", field: "API Key", value: "abc123xyz456sample789key000" },
+    { id: "5", field: "Username", value: "username01" },
+    { id: "6", field: "Password", value: "passowrd01#" },
+  ]);
+
+  const addField = () => {
+    const newId = String(fields.length + 1);
+    setFields([...fields, { id: newId, field: "", value: "" }]);
+  };
+
+  const removeField = (id: string) => {
+    setFields(fields.filter((field) => field.id !== id));
+  };
+
+  const updateField = (id: string, type: "field" | "value", newValue: string) => {
+    setFields(
+      fields.map((field) =>
+        field.id === id ? { ...field, [type]: newValue } : field
+      )
+    );
+  };
+
   return (
-    <Card className="mb-7" id="Provider Credentials-1">
+    <Card id="Provider Credentials-1" className="min-w-0 max-w-full">
       <CardHeader>
-        <CardTitle className="text-b-16-16-600 text-gray-900">
-          Provider Credential
-        </CardTitle>
+        <CardTitle>Provider Credential</CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 text-xs mb-4">
+      <CardContent className="min-w-0 max-w-full">
+        <p className="text-sm text-muted-foreground mb-5">
           Add the same fields and values as in the shared API provider
           credentials
         </p>
 
-        <div className="not-[]:flex flex-col justify-center items-start gap-2 mb-5">
-          {/* Label */}
-          <Label className="text-gray-800 text-b-13-14-400 mb-2">Data01</Label>
-
-          {/* Input Fields Row */}
-          <InputGroup className="gap-3">
-            {/* Field Input */}
-            <Input
-              type="text"
-              // placeholder={fieldPlaceholder}
-              // value={fieldValue}
-              // onChange={(e) => onFieldChange?.(e.target.value)}
-              className="w-48 px-3 py-3 bg-neutral-50 border-zinc-200 text-slate-500 text-xs "
-            />
-
-            {/* Value Input */}
-            <Input
-              type="text"
-              // placeholder={valuePlaceholder}
-              // value={valueValue}
-              // onChange={(e) => onValueChange?.(e.target.value)}
-              className="flex-1 px-3 py-3 bg-neutral-50 border-zinc-200 text-slate-500 text-xs "
-            />
-
-            {/* Action Button */}
-            <Button
-              variant="outline"
-              size="sm"
-              // onClick={onButtonClick}
-              // disabled={buttonDisabled}
-              className="p-2 bg-white border-gray-100 h-auto"
-            >
-              <Trash2 />
-            </Button>
-          </InputGroup>
+        <div className="flex flex-col gap-5">
+          {fields.map((item, index) => (
+            <div key={item.id} className="flex flex-col gap-2">
+              <Label>Data{String(index + 1).padStart(2, "0")}</Label>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <Input
+                    type="text"
+                    value={item.field}
+                    onChange={(e) => updateField(item.id, "field", e.target.value)}
+                    placeholder={`Field${String(index + 1).padStart(2, "0")}`}
+                  />
+                </div>
+                <div className="flex-1">
+                  <Input
+                    type="text"
+                    value={item.value}
+                    onChange={(e) => updateField(item.id, "value", e.target.value)}
+                    placeholder={`Value${String(index + 1).padStart(2, "0")}`}
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removeField(item.id)}
+                  disabled={index === 0 || fields.length === 1}
+                  className="p-2 h-auto shrink-0 self-end"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
-        <Button variant="primary-light" className="float-right">
-          Add More Field
-        </Button>
+
+        <div className="flex justify-end mt-5">
+          <Button variant="primary-light" onClick={addField}>
+            Add More Field
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

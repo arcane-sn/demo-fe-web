@@ -2,14 +2,30 @@
 
 import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Copy } from "lucide-react";
+import { Copy, Search, CircleCheck, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { Button } from "@/components/ui/button";
 import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { BalanceRequestData } from "../../core/_model";
 
-export function useBalanceRequestTableColumns(): ColumnDef<BalanceRequestData>[] {
+interface UseBalanceRequestTableColumnsProps {
+  seeDetail: (row: BalanceRequestData) => void;
+  approveRequest: (row: BalanceRequestData) => void;
+  rejectRequest: (row: BalanceRequestData) => void;
+}
+
+export function useBalanceRequestTableColumns({
+  seeDetail,
+  approveRequest,
+  rejectRequest,
+}: UseBalanceRequestTableColumnsProps): ColumnDef<BalanceRequestData>[] {
   const { copyToClipboard } = useCopyToClipboard();
 
   return useMemo<ColumnDef<BalanceRequestData>[]>(
@@ -147,8 +163,22 @@ export function useBalanceRequestTableColumns(): ColumnDef<BalanceRequestData>[]
         enableSorting: true,
         size: 250,
       },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <ActionsCell
+            row={row.original}
+            seeDetail={seeDetail}
+            approveRequest={approveRequest}
+            rejectRequest={rejectRequest}
+          />
+        ),
+        enableSorting: false,
+        size: 100,
+      },
     ],
-    [copyToClipboard]
+    [copyToClipboard, seeDetail, approveRequest, rejectRequest]
   );
 }
 
@@ -286,5 +316,56 @@ function UserCell({ user }: UserCellProps) {
         <span className="text-xs text-muted-foreground">{user.email}</span>
       </div>
     </div>
+  );
+}
+
+interface ActionsCellProps {
+  row: BalanceRequestData;
+  seeDetail: (row: BalanceRequestData) => void;
+  approveRequest: (row: BalanceRequestData) => void;
+  rejectRequest: (row: BalanceRequestData) => void;
+}
+
+function ActionsCell({
+  row,
+  seeDetail,
+  approveRequest,
+  rejectRequest,
+}: ActionsCellProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+            />
+          </svg>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => seeDetail(row)}>
+          <Search className="mr-2 h-4 w-4" />
+          See Detail
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => approveRequest(row)}>
+          <CircleCheck className="mr-2 h-4 w-4 text-success" />
+          Approve Request
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => rejectRequest(row)}>
+          <XCircle className="mr-2 h-4 w-4 text-danger" />
+          Reject Request
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

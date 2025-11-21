@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input, InputGroup } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -8,40 +8,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import React from "react";
 
 const CardProviderInformation = () => {
   return (
-    <Card className="mb-7" id="Provider Information-0">
+    <Card id="Provider Information-0" className="min-w-0 max-w-full">
       <CardHeader>
-        <CardTitle className="text-b-16-16-600 text-gray-900">
-          Provider Information
-        </CardTitle>
+        <CardTitle>Provider Information</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        <InputGroup>
-          <Label className="text-b-13-14-400 text-gray-800">
-            Provider Name
-          </Label>
-          <Input
-            type="text"
-            placeholder="Enter provider name"
-            className="w-full"
-          />
-        </InputGroup>
-        <InputGroup>
-          <Label className="text-b-13-14-400 text-gray-800">
-            Provider Type
-          </Label>
-          <Select value={""} onValueChange={() => {}}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose provider type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="transaction_id">Transaction ID</SelectItem>
-            </SelectContent>
-          </Select>
-        </InputGroup>
+      <CardContent className="min-w-0 max-w-full">
+        <Table>
+          <TableBody>
+            <TableRow className="border-0 hover:!bg-transparent">
+              <TableCell className="w-1/4">
+                <Label>Provider Name</Label>
+              </TableCell>
+              <TableCell>
+                <Input
+                  type="text"
+                  placeholder="Enter provider name"
+                />
+              </TableCell>
+            </TableRow>
+            <TableRow className="border-0 hover:!bg-transparent">
+              <TableCell className="w-1/4">
+                <Label>Provider Type</Label>
+              </TableCell>
+              <TableCell>
+                <Select value={""} onValueChange={() => {}}>
+                  <SelectTrigger className="max-w-full">
+                    <SelectValue placeholder="Choose provider type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="transaction_id">Transaction ID</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

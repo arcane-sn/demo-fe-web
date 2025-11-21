@@ -96,7 +96,7 @@ export function useTableColumns<TData extends BaseTableData = BaseTableData>(
 
         // Show actions as buttons if not using dropdown
         return (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-1">
             {visibleActions
               .slice(0, actionConfig.maxVisibleActions || 3)
               .map((action, index) => (

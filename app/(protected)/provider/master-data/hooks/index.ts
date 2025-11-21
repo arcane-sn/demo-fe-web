@@ -1,1 +1,0 @@
-export { useProviderMasterDataColumns } from "./useProviderMasterDataColumns";

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { FormNavigation } from '@/components/shared/form-navigation';
 import { Container } from '@/components/common/container';
+import { SectionNavigation } from '@/app/(protected)/merchant/components/section-navigation';
 import type { StepConfig } from '../config/steps.config';
 import { getScrollSpyMenuForStep } from './scrollspy/create-scrollspy-menus';
 
@@ -36,7 +36,7 @@ export function MerchantCreationSteps({
   const ScrollSpyMenu = getScrollSpyMenuForStep(currentStepConfig.id);
 
   return (
-    <Container>
+    <Container className="pt-10 border-t border-gray-200">
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-5 lg:gap-7.5">
         {ScrollSpyMenu && (
           <div className="col-span-1">
@@ -48,17 +48,16 @@ export function MerchantCreationSteps({
         <div className={ScrollSpyMenu ? "col-span-4" : "col-span-full"}>
           <div className="space-y-6">
             <CurrentStepComponent />
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <FormNavigation
-                onNext={onNext}
+            <div className=" border-gray-200 pt-6">
+              <SectionNavigation
                 onPrevious={onPrevious}
-                isFirst={!canGoPrevious}
-                isLast={isLastStep}
-                currentStep={currentStep + 1}
-                totalSteps={totalSteps}
-                isValid={isValid}
-                isLoading={isLoading}
-                submitLabel="Create Merchant"
+                onNext={onNext}
+                previousDisabled={!canGoPrevious || isLoading}
+                nextDisabled={!isValid || isLoading}
+                previousLabel="Previous Section"
+                nextLabel={isLastStep ? 'Create Merchant' : 'Next Section'}
+                className="max-w-2xl mx-auto"
+                showSaveButton={false}
               />
             </div>
           </div>

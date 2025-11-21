@@ -49,11 +49,13 @@ export function ConfirmationModal({
 
         <DialogBody className="text-center py-5">
           {/* Illustration */}
-          <img
-            src="/media/illustrations/29.svg"
-            alt="Confirmation illustration"
-            className="w-full h-full object-contain mb-5"
-          />
+          <div className="flex justify-center mb-5">
+            <img
+              src="/media/illustrations/29.svg"
+              alt="Confirmation illustration"
+              className="w-48 h-48 object-contain"
+            />
+          </div>
 
           {/* Title */}
           <p className="text-b-16-16-500  text-gray-900 mb-1">{bodyTitle}</p>

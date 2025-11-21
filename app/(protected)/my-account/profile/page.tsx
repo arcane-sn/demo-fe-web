@@ -32,7 +32,7 @@ export default function MyAccountProfilePage() {
   };
 
   return (
-    <div className="container mx-auto pb-6 pl-6 pr-6 pt-4">
+    <div className="container mx-auto pb-6 pl-6 pr-6">
       <div className="">
         <ProfileHeader
           name="John Doe"

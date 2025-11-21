@@ -23,55 +23,55 @@ export const PAY_IN_STAT_DATA: PayInStatData[] = [
     label: "Total Trans. Amount",
     number: "IDR 369.000.000",
     value: "IDR 369.000.000",
-    icon: "check-circle",
+    icon: "bill",
   },
   {
     label: "Total MDR",
     number: "IDR 60.700.000",
     value: "IDR 60.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Flypay Rate",
     number: "IDR 60.700.000",
     value: "IDR 60.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Transaction",
     number: "10.000",
     value: "10.000",
-    icon: "file-sheet",
+    icon: "cheque",
   },
   {
     label: "Total Merchant Rate",
     number: "IDR 60.700.000",
     value: "IDR 60.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Provider Rate",
     number: "IDR 15.700.000",
     value: "IDR 15.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Reseller Rate",
     number: "IDR 15.700.000",
     value: "IDR 15.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Merch. Ref Fee",
     number: "IDR 10.000.000",
     value: "IDR 10.000.000",
-    icon: "setting-2",
+    icon: "discount",
   },
   {
     label: "Total Sales Ref. Fee",
     number: "IDR 15.700.000",
     value: "IDR 15.700.000",
-    icon: "setting-2",
+    icon: "discount",
   },
 ];
 
@@ -122,35 +122,35 @@ export const PAYMENT_METHODS = [
 ];
 
 export const TRANSACTION_ACTIONS = [
-  { 
-    label: "Resend Callback", 
-    value: "resend_callback", 
-    icon: "message-programming" 
+  {
+    label: "Resend Callback",
+    value: "resend_callback",
+    icon: "message-programming",
   },
-  { 
-    label: "Force Update Status", 
-    value: "force_update_status", 
-    icon: "switch" 
+  {
+    label: "Force Update Status",
+    value: "force_update_status",
+    icon: "switch",
   },
-  { 
-    label: "Refund", 
-    value: "refund", 
-    icon: "arrow-right-left" 
+  {
+    label: "Refund",
+    value: "refund",
+    icon: "arrow-right-left",
   },
-  { 
-    label: "Chargeback", 
-    value: "chargeback", 
-    icon: "shield-cross" 
+  {
+    label: "Chargeback",
+    value: "chargeback",
+    icon: "shield-cross",
   },
-  { 
-    label: "Void", 
-    value: "void", 
-    icon: "cross-circle" 
+  {
+    label: "Void",
+    value: "void",
+    icon: "cross-circle",
   },
-  { 
-    label: "Cancel", 
-    value: "cancel", 
-    icon: "trash" 
+  {
+    label: "Cancel",
+    value: "cancel",
+    icon: "trash",
   },
 ] as const;
 
@@ -349,9 +349,7 @@ export const PAY_IN_PAYMENT_METHOD_OPTIONS: CheckboxOption[] = [
         id: "qr-payment-channel",
         label: "Payment Channel",
         checked: false,
-        children: [
-          { id: "qris", label: "QRIS", checked: false },
-        ],
+        children: [{ id: "qris", label: "QRIS", checked: false }],
       },
     ],
   },

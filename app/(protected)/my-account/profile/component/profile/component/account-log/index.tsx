@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { Separator } from "@/components/ui/separator";
 
 Dayjs.extend(utc);
 
@@ -49,7 +50,7 @@ const AccountLog: React.FC<AccountLogProps> = ({ formik, setValue }) => {
         </div>
 
         {/* Failed Login Attempts */}
-        <div className="px-8 py-4">
+        <div className="px-8 pb-4">
           <div className="flex items-center gap-4">
             <Label className="w-44 text-sm text-gray-600">
               Failed Login Attempts
@@ -59,6 +60,8 @@ const AccountLog: React.FC<AccountLogProps> = ({ formik, setValue }) => {
             </span>
           </div>
         </div>
+
+        <Separator />
 
         {/* Last Update */}
         <div className="px-8 py-4">
@@ -72,7 +75,7 @@ const AccountLog: React.FC<AccountLogProps> = ({ formik, setValue }) => {
         </div>
 
         {/* Updated by */}
-        <div className="px-8 py-4">
+        <div className="px-8 pb-4">
           <div className="flex items-center gap-4">
             <Label className="w-44 text-sm text-gray-600">Updated by</Label>
             <span className="text-sm text-gray-800">
@@ -80,6 +83,8 @@ const AccountLog: React.FC<AccountLogProps> = ({ formik, setValue }) => {
             </span>
           </div>
         </div>
+
+        <Separator />
 
         {/* Created Date */}
         <div className="px-8 py-4">
@@ -93,7 +98,7 @@ const AccountLog: React.FC<AccountLogProps> = ({ formik, setValue }) => {
         </div>
 
         {/* Created by */}
-        <div className="px-8 py-4 pb-8">
+        <div className="px-8 py-4 pb-4">
           <div className="flex items-center gap-4">
             <Label className="w-44 text-sm text-gray-600">Created by</Label>
             <span className="text-sm text-gray-800">

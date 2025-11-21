@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export interface ModalSubmitProps {
   open: boolean;
@@ -24,6 +25,7 @@ export interface ModalSubmitProps {
   message: string;
   description: string;
   buttonText?: string;
+  buttonClassName?: string; // Custom className for button styling
   onButtonClick?: () => void;
 }
 
@@ -38,6 +40,7 @@ export function ModalSubmit({
   message,
   description,
   buttonText = "Okay!",
+  buttonClassName,
   onButtonClick,
 }: ModalSubmitProps) {
   const handleClose = () => {
@@ -94,7 +97,10 @@ export function ModalSubmit({
             variant="primary"
             size="md"
             onClick={handleButtonClick}
-            className="w-full text-white text-[13px] font-medium"
+            className={cn(
+              "w-full text-white text-[13px] font-medium",
+              buttonClassName
+            )}
           >
             {buttonText}
           </Button>

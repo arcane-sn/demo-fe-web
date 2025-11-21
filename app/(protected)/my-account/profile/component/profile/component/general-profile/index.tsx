@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Badge, BadgeDot } from "@/components/ui/badge";
 import { Copy, Camera, X } from "lucide-react";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { toast } from "sonner";
+import InputPhoneNumber from "@/components/ui/input-phone-number";
 
 interface GeneralProfileProps {
   formik: FormikProps<any>;
@@ -38,24 +39,29 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
       <CardContent className="p-0">
         {/* Status */}
         <div className="flex items-center gap-4 px-8 py-5">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Status
           </Label>
           <Badge
             variant={
               formik.values.status === "active" ? "success" : "destructive"
             }
-            size="sm"
+            size="md"
             appearance="light"
             shape="circle"
           >
-            {formik.values.status || "active"}
+            <BadgeDot
+              className={
+                formik.values.status === "active" ? "success" : "destructive"
+              }
+            />
+            {formik.values.status === "active" ? "Active" : "Inactive"}
           </Badge>
         </div>
 
         {/* User ID */}
         <div className="flex items-center gap-4 px-8 py-5 border-gray-200">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             User ID
           </Label>
           <div className="flex items-center gap-2">
@@ -75,7 +81,7 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
 
         {/* Client ID */}
         <div className="flex items-center gap-4 px-8 py-5">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Client ID
           </Label>
           <div className="flex items-center gap-2">
@@ -95,7 +101,7 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
 
         {/* Username */}
         <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Username
           </Label>
           <Input
@@ -108,7 +114,7 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
 
         {/* Full Name */}
         <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Full Name
           </Label>
           <Input
@@ -121,28 +127,24 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
 
         {/* Phone Number */}
         <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Phone Number
           </Label>
           <div className="flex gap-2 flex-1">
-            <Input
-              value={formik.values.dialCode || "+62"}
-              onChange={(e) => setValue("dialCode", e.target.value)}
-              className="w-20 bg-gray-50 border-gray-300"
-              placeholder="+62"
-            />
-            <Input
-              value={formik.values.phoneNumber}
-              onChange={(e) => setValue("phoneNumber", e.target.value)}
-              className="flex-1 bg-gray-50 border-gray-300"
+            <InputPhoneNumber
+              dialCode={formik.values.dialCode || "+62"}
+              phoneNumber={formik.values.phoneNumber}
+              onDialCodeChange={(val) => setValue("dialCode", val)}
+              onPhoneNumberChange={(val) => setValue("phoneNumber", val)}
               placeholder="Enter phone number"
+              phoneNumberClassName="flex-1 bg-gray-50 border-gray-300"
             />
           </div>
         </div>
 
         {/* Email */}
         <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Email
           </Label>
           <Input
@@ -154,19 +156,22 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Photo */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        {/* Photo */}
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Photo
           </Label>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between flex-1">
             <div className="relative">
               <div className="w-16 h-16 rounded-full border-2 border-green-500 bg-gray-100 flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-600">
-                  {formik.values.fullName?.charAt(0) || "U"}
+                  {formik.values.photo?.charAt(0) || "U"}
                 </span>
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-800 rounded-full flex items-center justify-center">
-                <Camera className="h-3 w-3 text-white" />
+                <div className="absolute overflow-hidden w-16 h-16 rounded-full top-0 flex items-end justify-end">
+                  <div className="w-full bg-dark-clarity-20 opacity-40 p-1 flex items-center justify-center">
+                    <Camera className="h-4 w-4 -mt-[2px] text-white" />
+                  </div>
+                </div>
               </div>
               <Button
                 size="sm"

@@ -6,6 +6,7 @@ import { MerchantService } from '../../core/services/merchant.service';
 import { MerchantData } from '../../types/merchant';
 import { Button } from '@/components/ui/button';
 import { useMerchantList } from '../core/hooks/use-merchant-list';
+import { KeenIcon } from '@/components/keenicons';
 
 interface MerchantListContentProps {
   initialMerchants?: MerchantData[];
@@ -25,7 +26,6 @@ export function MerchantListContent({ initialMerchants = [] }: MerchantListConte
     handleCreate,
     handleRowClick,
     handleSelectionChange,
-    clearError,
   } = useMerchantList();
 
   // Only fetch if no initial data provided
@@ -64,27 +64,11 @@ export function MerchantListContent({ initialMerchants = [] }: MerchantListConte
             </span>
           )}
           <Button onClick={handleCreate} disabled={loading}>
-            Add Merchant
+            <KeenIcon icon="plus" style="outline" className="" />
+            Create New Merchant
           </Button>
         </div>
       </div>
-
-      {/* Error Display */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-red-800">{error}</p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearError}
-              className="text-red-600 hover:text-red-800"
-            >
-              Dismiss
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Table */}
       <MerchantTable

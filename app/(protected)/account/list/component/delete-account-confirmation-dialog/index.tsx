@@ -49,11 +49,11 @@ const DeleteAccountConfirmationDialog: React.FC<
     <Dialog open={isDeleteConfirmationOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
-        close={false}
+        close
         className="max-w-lg p-0 h-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                    [&_[data-slot=dialog-close]]:top-5.5 [&_[data-slot=dialog-close]]:end-5.5 flex flex-col"
       >
-        <DialogHeader className="px-4 py-1 mb-1 border-b flex-shrink-0">
+        <DialogHeader className=" mb-1 border-b flex-shrink-0">
           <DialogTitle>
             <div className="flex w-full justify-between">
               <div className="p-8">
@@ -62,15 +62,6 @@ const DeleteAccountConfirmationDialog: React.FC<
                     Delete Account Confirmation
                   </p>
                 </div>
-              </div>
-              <div className="self-center items-center justify-center">
-                <Button
-                  mode={"icon"}
-                  onClick={closeDeleteConfirmation}
-                  className="bg-transparent hover:bg-bg-transparent"
-                >
-                  <div className="text-[var(--color-gray-600)]">X</div>
-                </Button>
               </div>
             </div>
           </DialogTitle>

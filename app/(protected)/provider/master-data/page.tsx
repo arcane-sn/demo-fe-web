@@ -10,11 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import React from "react";
-import { TableMasterData } from "./components";
+import { ProviderMasterDataTable } from "./components/table/provider-master-data-table";
 import ModalCreateProvider from "./components/modals/modal-create-provider";
-import { ConfirmationModal } from "@/components/common/ModalConfirmation";
 import ModalEditProvider from "./components/modals/modal-edit-provider";
+import { ModalSubmit } from "@/components/shared/modals/modal-submit";
 import { useMasterDataStore } from "./hooks/useMasterDataStore";
+import { MOCK_PROVIDER_MASTER_DATA } from "./core/_consts";
 
 const MasterData = () => {
   // const [isModal, setIsModal] = useState(IsModalMasterData);
@@ -37,7 +38,7 @@ const MasterData = () => {
         </Toolbar>
       </Container>
       <Container>
-        <TableMasterData />
+        <ProviderMasterDataTable data={MOCK_PROVIDER_MASTER_DATA} />
       </Container>
       <ModalCreateProvider
         open={isModal.create}
@@ -46,30 +47,32 @@ const MasterData = () => {
           setIsModal({ ...isModal, create: false, confirmationCreate: true });
         }}
       />
-      <ConfirmationModal
+      <ModalSubmit
         open={isModal.confirmationCreate}
         onOpenChange={(value) => setModal("confirmationCreate", value)}
-        onSubmit={() =>
+        title="Add Confirmation"
+        imageSrc="/media/illustrations/29.svg"
+        imageAlt="Confirmation illustration"
+        message="Do You Want to Create This Provider?"
+        description="Please ensure all the provider data are valid"
+        buttonText="Create Provider"
+        onButtonClick={() =>
           setIsModal({
             ...isModal,
             confirmationCreate: false,
             hasCreated: true,
           })
         }
-        onCancel={() => {}}
-        isLoading={false}
-        headerTitle="Add Confirmation"
-        bodyTitle="Do You Want to Create This Provider?"
-        description="Please ensure all the provider data are valid"
-        submitButtonText="Create Provider"
       />
-      <ConfirmationModal
-        type="created"
+      <ModalSubmit
         open={isModal.hasCreated}
         onOpenChange={(value) => setModal("hasCreated", value)}
-        headerTitle="Provider Created"
-        bodyTitle="Provider Created Successfully!"
+        title="Provider Created"
+        imageSrc="/media/illustrations/28.svg"
+        imageAlt="Success illustration"
+        message="Provider Created Successfully!"
         description="The provider has been successfully created and is now available for merchant channel routing"
+        buttonText="Okay!"
       />
       <ModalEditProvider
         open={isModal.edit}
@@ -78,27 +81,31 @@ const MasterData = () => {
           setIsModal({ ...isModal, edit: false, confirmationEdit: true });
         }}
       />
-      <ConfirmationModal
+      <ModalSubmit
         open={isModal.confirmationEdit}
         onOpenChange={(value) => setModal("confirmationEdit", value)}
-        onSubmit={() => {
+        title="Update Confirmation"
+        imageSrc="/media/illustrations/29.svg"
+        imageAlt="Confirmation illustration"
+        message="Do You Want to Save This Provider Changes?"
+        description="Please ensure all provider details are valid. Once saved, the changes will affect all merchants using this provider (credentials changes only, default pricing and limit will not affect existing configuration)"
+        buttonText="Confirm and Save Changes"
+        onButtonClick={() => {
           setIsModal({ ...isModal, confirmationEdit: false, hasEdited: true });
         }}
-        headerTitle="Update Confirmation"
-        bodyTitle="Do You Want to Save This Provider Changes?"
-        description="Please ensure all provider details are valid. Once saved, the changes will affect all merchants using this provider (credentials changes only, default pricing and limit will not affect existing configuration)"
-        submitButtonText="Confirm and Save Changes"
       />
-      <ConfirmationModal
-        type="created"
+      <ModalSubmit
         open={isModal.hasEdited}
         onOpenChange={(value) => setModal("hasEdited", value)}
-        onSubmit={() => {
+        title="Provider Updated"
+        imageSrc="/media/illustrations/28.svg"
+        imageAlt="Success illustration"
+        message="Provider Has Been Updated"
+        description="The provider has been successfully updated"
+        buttonText="Okay!"
+        onButtonClick={() => {
           setIsModal({ ...isModal, hasEdited: false, confirmationEdit: false });
         }}
-        headerTitle="Provider Updated"
-        bodyTitle="Provider Has Been Updated"
-        description="The provider has been successfully updated"
       />
     </>
   );

@@ -1,9 +1,17 @@
 import { CreateMerchantContent } from './components/create-merchant-content';
+import { Fragment } from 'react';
+import { Toolbar, ToolbarHeading } from '@/layouts/demo1/components/toolbar';
+import { Container } from '@/components/common/container';
 
-/**
- * Server Component Page
- * Wrapper for Create Merchant page - all interactive logic is in Client Component
- */
 export default function CreateMerchantPage() {
-  return <CreateMerchantContent />;
+  return (
+  <Fragment>
+    <Container>
+      <Toolbar>
+        <ToolbarHeading title="Create Merchant" />
+      </Toolbar>
+    </Container>
+    <CreateMerchantContent />
+  </Fragment>
+  );
 }

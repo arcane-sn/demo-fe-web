@@ -55,7 +55,7 @@ export const getAccountColumns = ({
     id: "userID",
     accessorKey: "userID",
     header: ({ column }) => (
-      <DataGridColumnHeader title="user ID" column={column} />
+      <DataGridColumnHeader title="User ID" column={column} />
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export const getAccountColumns = ({
             row.original.accountStatus === "active" ? "success" : "destructive"
           }
         />
-        {row.original.accountStatus}
+        {row.original.accountStatus === "active" ? "Active" : "Inactive"}
       </Badge>
     ),
     enableSorting: true,
@@ -239,12 +239,12 @@ export const getAccountColumns = ({
       <DataGridColumnHeader title="Failed Login Attempt" column={column} />
     ),
     cell: ({ row }) => (
-      <p className="text-B-14-14-400 text-[var(--color-gray-800)]">
+      <p className=" text-B-14-14-400 text-[var(--color-gray-800)]">
         {row.original.failedLoginAttempt}
       </p>
     ),
     enableSorting: true,
-    size: 140,
+    size: 180,
   },
   {
     id: "lastLoginDate",

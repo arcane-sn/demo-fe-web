@@ -19,6 +19,7 @@ export interface FilterCheckboxOption {
 export interface FilterDateConfig {
   label?: string;
   placeholder?: string;
+  presetDisplayValue?: string;
   value?: string;
   dateType?: string;
   dateTypeOptions?: Array<{ label: string; value: string }>;

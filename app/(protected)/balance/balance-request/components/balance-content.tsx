@@ -26,12 +26,18 @@ const BalanceRequestContent = () => {
   const [showBalanceNotifModal, setShowBalanceNotifModal] = useState(false);
   const [showBalanceRejectModal, setShowBalanceRejectModal] = useState(false);
   const [balanceNotifStatus, setBalanceNotifStatus] = useState("approved");
-  const [pendingRequest, setPendingRequest] = useState<BalanceRequestData | null>(null);
-  const [notifActivityType, setNotifActivityType] = useState<string | undefined>(undefined);
+  const [pendingRequest, setPendingRequest] =
+    useState<BalanceRequestData | null>(null);
+  const [notifActivityType, setNotifActivityType] = useState<
+    string | undefined
+  >(undefined);
   const [notifIsMultiple, setNotifIsMultiple] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [pendingAction, setPendingAction] = useState<"approve" | "reject" | null>(null);
-  const [detailModalRequest, setDetailModalRequest] = useState<BalanceRequestData | null>(null);
+  const [pendingAction, setPendingAction] = useState<
+    "approve" | "reject" | null
+  >(null);
+  const [detailModalRequest, setDetailModalRequest] =
+    useState<BalanceRequestData | null>(null);
   const {
     selectedRequests,
     loading,
@@ -130,7 +136,6 @@ const BalanceRequestContent = () => {
       <div className="space-y-6">
         <BalanceRequestTable
           data={mockBalanceRequestData}
-          onSelectionChange={stableHandleSelectionChange}
           loading={loading}
           error={error || undefined}
           onOpenExport={() => setShowExportModal(true)}
@@ -178,17 +183,13 @@ const BalanceRequestContent = () => {
             setPendingAction("approve");
             setShowOtpModal(true);
           }}
-          isMultiple={
-            pendingRequest
-              ? false
-              : selectedRequests.length > 1
-          }
+          isMultiple={pendingRequest ? false : selectedRequests.length > 1}
           activityType={
             pendingRequest
               ? pendingRequest.activityType?.label
               : selectedRequests.length === 1
-              ? selectedRequests[0]?.activityType?.label
-              : undefined
+                ? selectedRequests[0]?.activityType?.label
+                : undefined
           }
         />
         <ModalOtp
@@ -200,16 +201,16 @@ const BalanceRequestContent = () => {
           onVerify={(otp) => {
             // After OTP verified, proceed with approve/reject action
             setShowOtpModal(false);
-            
+
             const isMultiple = pendingRequest
               ? false
               : selectedRequests.length > 1;
             const activityType = pendingRequest
               ? pendingRequest.activityType?.label
               : selectedRequests.length === 1
-              ? selectedRequests[0]?.activityType?.label
-              : undefined;
-            
+                ? selectedRequests[0]?.activityType?.label
+                : undefined;
+
             if (pendingAction === "approve") {
               setBalanceNotifStatus("approved");
               setNotifIsMultiple(isMultiple);
@@ -223,7 +224,7 @@ const BalanceRequestContent = () => {
               setShowBalanceNotifModal(true);
               setPendingRequest(null);
             }
-            
+
             setPendingAction(null);
           }}
           email="admin@flypay.com"
@@ -251,17 +252,13 @@ const BalanceRequestContent = () => {
             setPendingAction("reject");
             setShowOtpModal(true);
           }}
-          isMultiple={
-            pendingRequest
-              ? false
-              : selectedRequests.length > 1
-          }
+          isMultiple={pendingRequest ? false : selectedRequests.length > 1}
           activityType={
             pendingRequest
               ? pendingRequest.activityType?.label
               : selectedRequests.length === 1
-              ? selectedRequests[0]?.activityType?.label
-              : undefined
+                ? selectedRequests[0]?.activityType?.label
+                : undefined
           }
         />
 

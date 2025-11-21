@@ -33,7 +33,7 @@ export function TransactionDetailsCard({
           {items.map((item, index) => (
             <div key={index}>
               <div className="flex items-center gap-2.5 min-h-4">
-                <div className="w-44 flex items-center gap-2.5">
+                <div className="min-w-56 flex items-center gap-2.5">
                   <div className="text-sm font-normal text-slate-500 leading-none">
                     {item.label}
                   </div>

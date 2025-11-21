@@ -1,35 +1,40 @@
 'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Badge } from '@/components/ui/badge';
-import { MerchantData, StatusIndicatorProps } from '../../types/merchant-data';
+import { ColumnDef } from "@tanstack/react-table";
+import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
+import { Badge, BadgeDot } from "@/components/ui/badge";
+import { InitialsAvatar } from "@/components/reusable/InitialsAvatar";
+import { MerchantData, StatusIndicatorProps } from "../../types/merchant-data";
+import { KeenIcon } from "@/components/keenicons";
+import { Button } from "@/components/ui/button";
 
 // Status indicator component
 const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, label }) => {
+  const isActive = status === 'active';
+
   return (
-    <Badge 
-      variant="outline" 
-      className={`${
-        status === 'active' 
-          ? 'border-green-500 text-green-700 bg-green-50' 
+    <Badge
+      variant="outline"
+      className={`gap-2 rounded-full ${
+        isActive
+          ? 'border-green-500 text-green-700 bg-green-50'
           : 'border-gray-400 text-gray-600 bg-gray-50'
       }`}
     >
+      <BadgeDot
+        className={isActive ? 'bg-green-500' : 'bg-gray-400'}
+        aria-hidden="true"
+      />
       {label}
     </Badge>
   );
 };
 
 // User info component
-const UserInfo: React.FC<{ user: MerchantData['updatedBy'] }> = ({ user }) => {
+const UserInfo: React.FC<{ user: MerchantData["updatedBy"] }> = ({ user }) => {
   return (
     <div className="flex items-center gap-2">
-      <img 
-        src={user.avatar} 
-        alt={user.name}
-        className="w-6 h-6 rounded-full"
-      />
+      <InitialsAvatar name={user.name} size="sm" className="bg-blue-50 border-blue-100" />
       <div className="flex flex-col">
         <span className="text-sm font-medium">{user.name}</span>
         <span className="text-xs text-muted-foreground">{user.email}</span>
@@ -38,7 +43,7 @@ const UserInfo: React.FC<{ user: MerchantData['updatedBy'] }> = ({ user }) => {
   );
 };
 
-export function useMerchantTableColumns(): ColumnDef<MerchantData>[] {
+export function useMerchantTableColumns(onEdit?: (merchant: MerchantData) => void): ColumnDef<MerchantData>[] {
   return [
     {
       accessorKey: 'merchantName',
@@ -178,5 +183,25 @@ export function useMerchantTableColumns(): ColumnDef<MerchantData>[] {
       minSize: 200,
       maxSize: 300,
     },
+    {
+      id: "actions",
+      header: "",
+      size: 80,
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-10 h-10 rounded-xl border border-gray-300 text-gray-600 flex items-center justify-center"
+          onClick={(event) => {
+            event.stopPropagation();
+            onEdit?.(row.original);
+          }}
+        >
+          <KeenIcon icon="notepad-edit" style="outline" className="text-lg" />
+        </Button>
+      ),
+      enableSorting: false,
+    },
+
   ];
 }

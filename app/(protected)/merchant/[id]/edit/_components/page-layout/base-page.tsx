@@ -4,7 +4,7 @@ import React from 'react';
 import { useEditContext } from '../edit-provider';
 import { LoadingState, ErrorState } from './loading-state';
 import { EditPageLayout } from './page-layout';
-import { SectionNavigation } from './section-navigation';
+import { SectionNavigation } from '@/app/(protected)/merchant/components/section-navigation';
 import { useSectionNavigation } from '../../core/hooks';
 
 export interface BasePageProps {

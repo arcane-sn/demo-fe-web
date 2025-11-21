@@ -91,7 +91,12 @@ export const MENU_SIDEBAR: MenuConfig = [
   {
     title: "Logs",
     icon: "compass",
-    children: [{ title: "Audit Logs", path: "/logs/audit-logs" }],
+    children: [
+      { title: "Audit Logs", path: "/logs/audit-logs" },
+      { title: "Application Logs", path: "/logs/application-logs" },
+      { title: "Merchant Callback Logs", path: "/logs/merchant-callback-logs" },
+      { title: "Fraud Detection Logs", path: "/logs/fraud-detection-logs" },
+    ],
   },
 ];
 

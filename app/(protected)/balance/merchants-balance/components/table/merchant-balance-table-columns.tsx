@@ -2,14 +2,38 @@
 
 import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Copy } from "lucide-react";
+import {
+  Copy,
+  Upload,
+  FolderSync,
+  FileSymlink,
+  ShieldClose,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { Button } from "@/components/ui/button";
 import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MerchantBalanceData } from "../../core/_model";
 
-export function useMerchantBalanceTableColumns(): ColumnDef<MerchantBalanceData>[] {
+interface UseMerchantBalanceTableColumnsProps {
+  topUpBalance?: (merchant: MerchantBalanceData) => void;
+  balanceAdjustment?: (merchant: MerchantBalanceData) => void;
+  releaseBalance?: (merchant: MerchantBalanceData) => void;
+  holdBalance?: (merchant: MerchantBalanceData) => void;
+}
+
+export function useMerchantBalanceTableColumns({
+  topUpBalance,
+  balanceAdjustment,
+  releaseBalance,
+  holdBalance,
+}: UseMerchantBalanceTableColumnsProps): ColumnDef<MerchantBalanceData>[] {
   const { copyToClipboard } = useCopyToClipboard();
 
   return useMemo<ColumnDef<MerchantBalanceData>[]>(
@@ -100,8 +124,29 @@ export function useMerchantBalanceTableColumns(): ColumnDef<MerchantBalanceData>
         enableSorting: true,
         size: 200,
       },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <ActionsCell
+            row={row.original}
+            topUpBalance={topUpBalance}
+            balanceAdjustment={balanceAdjustment}
+            releaseBalance={releaseBalance}
+            holdBalance={holdBalance}
+          />
+        ),
+        enableSorting: false,
+        size: 100,
+      },
     ],
-    [copyToClipboard]
+    [
+      copyToClipboard,
+      topUpBalance,
+      balanceAdjustment,
+      releaseBalance,
+      holdBalance,
+    ]
   );
 }
 
@@ -154,5 +199,73 @@ function DateCell({ dateInfo }: DateCellProps) {
         {dateInfo.time} ({dateInfo.timezone})
       </div>
     </div>
+  );
+}
+
+interface ActionsCellProps {
+  row: MerchantBalanceData;
+  topUpBalance?: (merchant: MerchantBalanceData) => void;
+  balanceAdjustment?: (merchant: MerchantBalanceData) => void;
+  releaseBalance?: (merchant: MerchantBalanceData) => void;
+  holdBalance?: (merchant: MerchantBalanceData) => void;
+}
+
+function ActionsCell({
+  row,
+  topUpBalance,
+  balanceAdjustment,
+  releaseBalance,
+  holdBalance,
+}: ActionsCellProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+            />
+          </svg>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {topUpBalance && (
+          <DropdownMenuItem onClick={() => topUpBalance(row)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Top-Up Balance
+          </DropdownMenuItem>
+        )}
+        {balanceAdjustment && (
+          <DropdownMenuItem onClick={() => balanceAdjustment(row)}>
+            <FolderSync className="mr-2 h-4 w-4" />
+            Balance Adjustment
+          </DropdownMenuItem>
+        )}
+        {releaseBalance && (
+          <DropdownMenuItem onClick={() => releaseBalance(row)}>
+            <FileSymlink className="mr-2 h-4 w-4" />
+            Release Balance
+          </DropdownMenuItem>
+        )}
+        {holdBalance && (
+          <DropdownMenuItem
+            onClick={() => holdBalance(row)}
+            className="text-destructive"
+          >
+            <ShieldClose className="mr-2 h-4 w-4" />
+            Hold Balance
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

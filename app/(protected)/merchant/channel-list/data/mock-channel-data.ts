@@ -1,127 +1,452 @@
 import { ChannelData } from '../../types/channel';
 
 // Mock channel data - replace with actual API call
-export const mockChannelData: ChannelData[] = [
+const baseRegisteredDate = {
+  date: "Thu, Dec 16, 2025",
+  time: "23:12:32",
+  timezone: "GMT +7",
+};
+
+type BaseChannelConfig = {
+  merchantName: string;
+  paymentMethodType: ChannelData["paymentMethod"]["type"];
+  paymentMethodLabel: string;
+  channelName: ChannelData["channel"]["type"] | string;
+  provider: string;
+  mdr: string;
+  providerRate: string;
+  merchantRate: string;
+  flypayRate: string;
+  resellerRate: string;
+  salesReferralFee: string;
+  merchantReferralFee: string;
+  settlementDay: number;
+  sameDaySettlement: boolean;
+  status: ChannelData["status"];
+  registeredBy: { name: string; email: string; avatarSeed: string };
+  updatedBy: { name: string; email: string; avatarSeed: string };
+};
+
+const BASE_CHANNEL_CONFIGS: BaseChannelConfig[] = [
   {
-    id: '1',
-    parentId: 'FP-P2025091900001',
-    merchantName: 'DigiStore',
-    clientId: 'UP2025091900001',
+    merchantName: "Foodio",
+    paymentMethodType: "qr_code",
+    paymentMethodLabel: "QR Code",
+    channelName: "QRIS",
+    provider: "PIRO",
+    mdr: "1.1% + IDR 0",
+    providerRate: "0.6% + IDR 0",
+    merchantRate: "0.25% + IDR 0",
+    flypayRate: "(0.05% + IDR 0)",
+    resellerRate: "0.35% + IDR 0",
+    salesReferralFee: "(0% + IDR 300)",
+    merchantReferralFee: "(1.0% + IDR 0)",
+    settlementDay: 1,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Alya Kusuma",
+      email: "alya@foodio.com",
+      avatarSeed: "AlyaKusuma",
+    },
+    updatedBy: {
+      name: "Reno Hartono",
+      email: "reno@foodio.com",
+      avatarSeed: "RenoHartono",
+    },
+  },
+  {
+    merchantName: "Velvet Travel",
+    paymentMethodType: "virtual_account",
+    paymentMethodLabel: "Virtual Account",
+    channelName: "BCA VA",
+    provider: "PIYE",
+    mdr: "1.8% + IDR 0",
+    providerRate: "0.9% + IDR 0",
+    merchantRate: "0.4% + IDR 0",
+    flypayRate: "(0.2% + IDR 0)",
+    resellerRate: "0.6% + IDR 0",
+    salesReferralFee: "(0% + IDR 250)",
+    merchantReferralFee: "(1.4% + IDR 0)",
+    settlementDay: 2,
+    sameDaySettlement: false,
+    status: { status: "maintenance", label: "Maintenance" },
+    registeredBy: {
+      name: "Raisa Putri",
+      email: "raisa@velvettravel.com",
+      avatarSeed: "RaisaPutri",
+    },
+    updatedBy: {
+      name: "Ilham Nata",
+      email: "ilham@velvettravel.com",
+      avatarSeed: "IlhamNata",
+    },
+  },
+  {
+    merchantName: "KopiKita",
+    paymentMethodType: "e_wallet",
+    paymentMethodLabel: "E-Wallet",
+    channelName: "OVO",
+    provider: "PIRO",
+    mdr: "1.3% + IDR 0",
+    providerRate: "0.5% + IDR 0",
+    merchantRate: "0.2% + IDR 0",
+    flypayRate: "(0.1% + IDR 0)",
+    resellerRate: "0.3% + IDR 0",
+    salesReferralFee: "(0% + IDR 400)",
+    merchantReferralFee: "(0.9% + IDR 0)",
+    settlementDay: 3,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Riko Aditya",
+      email: "riko@kopikita.com",
+      avatarSeed: "RikoAditya",
+    },
+    updatedBy: {
+      name: "Sheila Win",
+      email: "sheila@kopikita.com",
+      avatarSeed: "SheilaWin",
+    },
+  },
+  {
+    merchantName: "UrbanMart",
+    paymentMethodType: "e_wallet",
+    paymentMethodLabel: "E-Wallet",
+    channelName: "GoPay",
+    provider: "PIYE",
+    mdr: "1.6% + IDR 0",
+    providerRate: "0.8% + IDR 0",
+    merchantRate: "0.35% + IDR 0",
+    flypayRate: "(0.2% + IDR 0)",
+    resellerRate: "0.45% + IDR 0",
+    salesReferralFee: "(0% + IDR 600)",
+    merchantReferralFee: "(1.2% + IDR 0)",
+    settlementDay: 4,
+    sameDaySettlement: false,
+    status: { status: "inactive", label: "Inactive" },
+    registeredBy: {
+      name: "Ryan Lim",
+      email: "ryan@urbanmart.com",
+      avatarSeed: "RyanLim",
+    },
+    updatedBy: {
+      name: "Eva Munir",
+      email: "eva@urbanmart.com",
+      avatarSeed: "EvaMunir",
+    },
+  },
+  {
+    merchantName: "Metaverse Shop",
+    paymentMethodType: "debit_card",
+    paymentMethodLabel: "Debit/Credit Card",
+    channelName: "Cash",
+    provider: "PIRO",
+    mdr: "2.2% + IDR 0",
+    providerRate: "1.0% + IDR 0",
+    merchantRate: "0.5% + IDR 0",
+    flypayRate: "(0.3% + IDR 0)",
+    resellerRate: "0.4% + IDR 0",
+    salesReferralFee: "(0% + IDR 800)",
+    merchantReferralFee: "(1.7% + IDR 0)",
+    settlementDay: 5,
+    sameDaySettlement: false,
+    status: { status: "suspended", label: "Suspended" },
+    registeredBy: {
+      name: "Dewi Maya",
+      email: "dewi@metashop.com",
+      avatarSeed: "DewiMaya",
+    },
+    updatedBy: {
+      name: "Tomy Wijaya",
+      email: "tomy@metashop.com",
+      avatarSeed: "TomyWijaya",
+    },
+  },
+  {
+    merchantName: "PayFlex",
+    paymentMethodType: "bank_transfer",
+    paymentMethodLabel: "Bank Transfer",
+    channelName: "Alipay",
+    provider: "PIRO",
+    mdr: "1.4% + IDR 0",
+    providerRate: "0.65% + IDR 0",
+    merchantRate: "0.25% + IDR 0",
+    flypayRate: "(0.15% + IDR 0)",
+    resellerRate: "0.45% + IDR 0",
+    salesReferralFee: "(0% + IDR 420)",
+    merchantReferralFee: "(1.1% + IDR 0)",
+    settlementDay: 2,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Lala Sihotang",
+      email: "lala@payflex.com",
+      avatarSeed: "LalaSihotang",
+    },
+    updatedBy: {
+      name: "Yusuf Bayu",
+      email: "yusuf@payflex.com",
+      avatarSeed: "YusufBayu",
+    },
+  },
+  {
+    merchantName: "Fresh Basket",
+    paymentMethodType: "virtual_account",
+    paymentMethodLabel: "Virtual Account",
+    channelName: "MANDIRI VA",
+    provider: "PIYE",
+    mdr: "1.9% + IDR 0",
+    providerRate: "0.95% + IDR 0",
+    merchantRate: "0.45% + IDR 0",
+    flypayRate: "(0.25% + IDR 0)",
+    resellerRate: "0.55% + IDR 0",
+    salesReferralFee: "(0% + IDR 350)",
+    merchantReferralFee: "(1.6% + IDR 0)",
+    settlementDay: 3,
+    sameDaySettlement: false,
+    status: { status: "maintenance", label: "Maintenance" },
+    registeredBy: {
+      name: "Putri Rahayu",
+      email: "putri@freshbasket.com",
+      avatarSeed: "PutriRahayu",
+    },
+    updatedBy: {
+      name: "Galang Surya",
+      email: "galang@freshbasket.com",
+      avatarSeed: "GalangSurya",
+    },
+  },
+  {
+    merchantName: "Nusa Ride",
+    paymentMethodType: "e_wallet",
+    paymentMethodLabel: "E-Wallet",
+    channelName: "PayPal",
+    provider: "PIRO",
+    mdr: "1.2% + IDR 0",
+    providerRate: "0.55% + IDR 0",
+    merchantRate: "0.2% + IDR 0",
+    flypayRate: "(0.08% + IDR 0)",
+    resellerRate: "0.3% + IDR 0",
+    salesReferralFee: "(0% + IDR 480)",
+    merchantReferralFee: "(1.0% + IDR 0)",
+    settlementDay: 2,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Kevin Hart",
+      email: "kevin@nusaride.com",
+      avatarSeed: "KevinHart",
+    },
+    updatedBy: {
+      name: "Tasya April",
+      email: "tasya@nusaride.com",
+      avatarSeed: "TasyaApril",
+    },
+  },
+  {
+    merchantName: "KlikHealth",
+    paymentMethodType: "qr_code",
+    paymentMethodLabel: "QR Code",
+    channelName: "QRIS",
+    provider: "PIYE",
+    mdr: "1.0% + IDR 0",
+    providerRate: "0.45% + IDR 0",
+    merchantRate: "0.2% + IDR 0",
+    flypayRate: "(0.05% + IDR 0)",
+    resellerRate: "0.25% + IDR 0",
+    salesReferralFee: "(0% + IDR 500)",
+    merchantReferralFee: "(0.9% + IDR 0)",
+    settlementDay: 1,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Natasha Ina",
+      email: "natasha@klikhealth.com",
+      avatarSeed: "NatashaIna",
+    },
+    updatedBy: {
+      name: "Andre Kurnia",
+      email: "andre@klikhealth.com",
+      avatarSeed: "AndreKurnia",
+    },
+  },
+  {
+    merchantName: "HappyKids",
+    paymentMethodType: "e_wallet",
+    paymentMethodLabel: "E-Wallet",
+    channelName: "LinkAja",
+    provider: "PIRO",
+    mdr: "1.7% + IDR 0",
+    providerRate: "0.75% + IDR 0",
+    merchantRate: "0.35% + IDR 0",
+    flypayRate: "(0.15% + IDR 0)",
+    resellerRate: "0.45% + IDR 0",
+    salesReferralFee: "(0% + IDR 520)",
+    merchantReferralFee: "(1.3% + IDR 0)",
+    settlementDay: 4,
+    sameDaySettlement: false,
+    status: { status: "inactive", label: "Inactive" },
+    registeredBy: {
+      name: "Intan Dewi",
+      email: "intan@happykids.com",
+      avatarSeed: "IntanDewi",
+    },
+    updatedBy: {
+      name: "Budi Setia",
+      email: "budi@happykids.com",
+      avatarSeed: "BudiSetia",
+    },
+  },
+  {
+    merchantName: "Techify",
+    paymentMethodType: "virtual_account",
+    paymentMethodLabel: "Virtual Account",
+    channelName: "BNI VA",
+    provider: "PIRO",
+    mdr: "1.6% + IDR 0",
+    providerRate: "0.8% + IDR 0",
+    merchantRate: "0.3% + IDR 0",
+    flypayRate: "(0.15% + IDR 0)",
+    resellerRate: "0.35% + IDR 0",
+    salesReferralFee: "(0% + IDR 380)",
+    merchantReferralFee: "(1.2% + IDR 0)",
+    settlementDay: 2,
+    sameDaySettlement: true,
+    status: { status: "active", label: "Active" },
+    registeredBy: {
+      name: "Zaki Malik",
+      email: "zaki@techify.com",
+      avatarSeed: "ZakiMalik",
+    },
+    updatedBy: {
+      name: "Gina Hartati",
+      email: "gina@techify.com",
+      avatarSeed: "GinaHartati",
+    },
+  },
+  {
+    merchantName: "BaliStay",
+    paymentMethodType: "debit_card",
+    paymentMethodLabel: "Debit/Credit Card",
+    channelName: "Jenius",
+    provider: "PIYE",
+    mdr: "2.0% + IDR 0",
+    providerRate: "0.95% + IDR 0",
+    merchantRate: "0.4% + IDR 0",
+    flypayRate: "(0.25% + IDR 0)",
+    resellerRate: "0.5% + IDR 0",
+    salesReferralFee: "(0% + IDR 620)",
+    merchantReferralFee: "(1.4% + IDR 0)",
+    settlementDay: 5,
+    sameDaySettlement: false,
+    status: { status: "maintenance", label: "Maintenance" },
+    registeredBy: {
+      name: "Lukas Andre",
+      email: "lukas@balistay.com",
+      avatarSeed: "LukasAndre",
+    },
+    updatedBy: {
+      name: "Sari Wulan",
+      email: "sari@balistay.com",
+      avatarSeed: "SariWulan",
+    },
+  },
+];
+
+const createChannelEntry = (id: number, config: BaseChannelConfig): ChannelData => {
+  const clientSuffix = String(id).padStart(4, "0");
+  return {
+    id: `${id}`,
+    parentId: `FP-P2025091${clientSuffix}`,
+    merchantName: config.merchantName,
+    clientId: `UP2025091${clientSuffix}`,
     paymentMethod: {
-      type: 'e_wallet',
-      label: 'e-Wallet'
+      type: config.paymentMethodType,
+      label: config.paymentMethodLabel,
     },
     channel: {
-      name: 'DANA',
-      type: 'DANA'
+      name: config.channelName,
+      type: config.channelName as ChannelData["channel"]["type"],
     },
-    provider: 'PIRO',
-    nmid: 'UP2025091900001',
-    mdr: '1.5% + IDR 0',
-    providerRate: '0.7% + IDR 0',
-    merchantRate: '0.3% + IDR 0',
-    flypayRate: '(0.1% + IDR 0)',
-    resellerRate: '0.5% + IDR 0',
-    salesReferralId: 'SR110101029292',
-    salesReferralFee: '(0% + IDR 500)',
-    merchantReferralId: 'MR122221111132',
-    merchantReferralFee: '(1.5% + IDR 0)',
+    provider: config.provider,
+    nmid: `UP2025091${clientSuffix}`,
+    mdr: config.mdr,
+    providerRate: config.providerRate,
+    merchantRate: config.merchantRate,
+    flypayRate: config.flypayRate,
+    resellerRate: config.resellerRate,
+    salesReferralId: `SR11010${1000 + id}`,
+    salesReferralFee: config.salesReferralFee,
+    merchantReferralId: `MR12222${1000 + id}`,
+    merchantReferralFee: config.merchantReferralFee,
+    settlementDay: config.settlementDay,
+    sameDaySettlement: config.sameDaySettlement,
+    status: config.status,
+    registeredDate: baseRegisteredDate,
+    registeredBy: {
+      name: config.registeredBy.name,
+      email: config.registeredBy.email,
+      avatar: `https://api.dicebear.com/7.x/lorelei/svg?seed=${config.registeredBy.avatarSeed}`,
+    },
+    updatedAt: baseRegisteredDate,
+    updatedBy: {
+      name: config.updatedBy.name,
+      email: config.updatedBy.email,
+      avatar: `https://api.dicebear.com/7.x/lorelei/svg?seed=${config.updatedBy.avatarSeed}`,
+    },
+  };
+};
+
+const generatedChannels = Array.from({ length: 51 }, (_, index) => {
+  const config = BASE_CHANNEL_CONFIGS[index % BASE_CHANNEL_CONFIGS.length];
+  const id = index + 2;
+  return createChannelEntry(id, config);
+});
+
+export const mockChannelData: ChannelData[] = [
+  {
+    id: "1",
+    parentId: "FP-P2025091900001",
+    merchantName: "DigiStore",
+    clientId: "UP2025091900001",
+    paymentMethod: {
+      type: "e_wallet",
+      label: "e-Wallet",
+    },
+    channel: {
+      name: "DANA",
+      type: "DANA",
+    },
+    provider: "PIRO",
+    nmid: "UP2025091900001",
+    mdr: "1.5% + IDR 0",
+    providerRate: "0.7% + IDR 0",
+    merchantRate: "0.3% + IDR 0",
+    flypayRate: "(0.1% + IDR 0)",
+    resellerRate: "0.5% + IDR 0",
+    salesReferralId: "SR110101029292",
+    salesReferralFee: "(0% + IDR 500)",
+    merchantReferralId: "MR122221111132",
+    merchantReferralFee: "(1.5% + IDR 0)",
     settlementDay: 2,
     sameDaySettlement: true,
     status: {
-      status: 'active',
-      label: 'Active'
+      status: "active",
+      label: "Active",
     },
-    registeredDate: {
-      date: 'Thu, Dec 16, 2025',
-      time: '23:12:32',
-      timezone: 'GMT +7'
-    },
+    registeredDate: baseRegisteredDate,
     registeredBy: {
-      name: 'Wakwaw Waw',
-      email: 'wakwaw@gmail.com',
-      avatar: 'https://api.dicebear.com/7.x/lorelei/svg?seed=Wakwaw'
+      name: "Wakwaw Waw",
+      email: "wakwaw@gmail.com",
+      avatar: "https://api.dicebear.com/7.x/lorelei/svg?seed=Wakwaw",
     },
-    updatedAt: {
-      date: 'Thu, Dec 16, 2025',
-      time: '23:12:32',
-      timezone: 'GMT +7'
-    },
+    updatedAt: baseRegisteredDate,
     updatedBy: {
-      name: 'Bicaktiguling',
-      email: 'bicaktiguling@gmail.com',
-      avatar: 'https://api.dicebear.com/7.x/lorelei/svg?seed=Bicaktiguling'
-    }
+      name: "Bicaktiguling",
+      email: "bicaktiguling@gmail.com",
+      avatar: "https://api.dicebear.com/7.x/lorelei/svg?seed=Bicaktiguling",
+    },
   },
-  // Additional records to reach 52 total
-  ...Array.from({ length: 51 }, (_, index) => {
-    const baseIndex = index % 10;
-    const baseData = [
-      { channel: 'DANA', salesFee: 'IDR 500', merchantFee: '1.5%', settlementDay: 2 },
-      { channel: 'OVO', salesFee: 'IDR 750', merchantFee: '2.0%', settlementDay: 1 },
-      { channel: 'LinkAja', salesFee: 'IDR 600', merchantFee: '1.0%', settlementDay: 3 },
-      { channel: 'GoPay', salesFee: 'IDR 550', merchantFee: '2.5%', settlementDay: 4 },
-      { channel: 'PayPal', salesFee: 'IDR 450', merchantFee: '1.8%', settlementDay: 1 },
-      { channel: 'Trash', salesFee: 'IDR 700', merchantFee: '3.0%', settlementDay: 5 },
-      { channel: 'Jenius', salesFee: 'IDR 400', merchantFee: '2.2%', settlementDay: 2 },
-      { channel: 'Cash', salesFee: 'IDR 300', merchantFee: '0.5%', settlementDay: 3 },
-      { channel: 'Alipay', salesFee: 'IDR 1.000', merchantFee: '4.0%', settlementDay: 4 },
-      { channel: 'Zelle', salesFee: 'IDR 850', merchantFee: '2.8%', settlementDay: 1 }
-    ];
-    
-    const base = baseData[baseIndex];
-    const id = 2 + index;
-    
-    return {
-      id: `${id}`,
-      parentId: `FP-P20250919000${String(id).padStart(2, '0')}`,
-      merchantName: 'DigiStore',
-      clientId: `UP20250919000${String(id).padStart(2, '0')}`,
-      paymentMethod: {
-        type: 'e_wallet' as const,
-        label: 'e-Wallet'
-      },
-      channel: {
-        name: base.channel,
-        type: base.channel as any
-      },
-      provider: 'PIRO',
-      nmid: `UP20250919000${String(id).padStart(2, '0')}`,
-      mdr: '1.5% + IDR 0',
-      providerRate: '0.7% + IDR 0',
-      merchantRate: '0.3% + IDR 0',
-      flypayRate: '(0.1% + IDR 0)',
-      resellerRate: '0.5% + IDR 0',
-      salesReferralId: `SR110101029${292 + id}`,
-      salesReferralFee: base.salesFee,
-      merchantReferralId: `MR122221111${1132 + id}`,
-      merchantReferralFee: base.merchantFee,
-      settlementDay: base.settlementDay,
-      sameDaySettlement: true,
-      status: {
-        status: 'active' as const,
-        label: 'Active'
-      },
-      registeredDate: {
-        date: 'Thu, Dec 16, 2025',
-        time: '23:12:32',
-        timezone: 'GMT +7'
-      },
-      registeredBy: {
-        name: `User ${id}`,
-        email: `user${id}@gmail.com`,
-        avatar: `https://api.dicebear.com/7.x/lorelei/svg?seed=User${id}`
-      },
-      updatedAt: {
-        date: 'Thu, Dec 16, 2025',
-        time: '23:12:32',
-        timezone: 'GMT +7'
-      },
-      updatedBy: {
-        name: `Admin ${id}`,
-        email: `admin${id}@gmail.com`,
-        avatar: `https://api.dicebear.com/7.x/lorelei/svg?seed=Admin${id}`
-      }
-    };
-  })
+  ...generatedChannels,
 ];

@@ -15,6 +15,7 @@ import { PROVIDER_CREATE_PROVIDER_STEPS } from "../../../core";
 
 import CardProviderCredentials from "./CardProviderCredentials";
 import CardProviderInformation from "./CardProviderInformation";
+import CardCredentialStatus from "./CardCredentialStatus";
 import CardDefaultPricing from "./CardDefaultPricing";
 import CardTransactionLimit from "./CardTransactionLimit";
 
@@ -35,21 +36,24 @@ const ModalEditProvider = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[1000px]">
         <DialogHeader>
-          <DialogTitle className="text-b-20-20-600 text-gray-900">
-            Edit Provider
-          </DialogTitle>
-          <DialogDescription className="text-b-14-14-400 text-gray-700">
+          <DialogTitle>Edit Provider</DialogTitle>
+          <DialogDescription>
             Change data for this provider
           </DialogDescription>
         </DialogHeader>
-        <DialogBody className="flex justify-between gap-6 grow">
+        <DialogBody className="flex gap-10 grow px-5 mt-4 min-w-0">
           <IndexingSection lists={PROVIDER_CREATE_PROVIDER_STEPS} ref={ref} />
-          <ScrollArea className="h-[500px] pe-6" viewportRef={ref}>
-            <CardProviderInformation />
-            <CardProviderCredentials />
-            <CardDefaultPricing />
-            <CardTransactionLimit />
-          </ScrollArea>
+          <div className="flex-1 min-w-0">
+            <ScrollArea className="h-[600px]" viewportRef={ref}>
+              <div className="space-y-7 min-w-0">
+                <CardProviderInformation />
+                <CardProviderCredentials />
+                <CardCredentialStatus />
+                <CardDefaultPricing />
+                <CardTransactionLimit />
+              </div>
+            </ScrollArea>
+          </div>
         </DialogBody>
         <DialogFooter className="flex justify-between">
           <Button

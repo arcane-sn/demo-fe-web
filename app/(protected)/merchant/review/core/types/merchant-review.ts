@@ -1,4 +1,4 @@
-import { BaseTableData } from '@/components/table/types';
+import { BaseTableData } from "@/components/reusable/table";
 
 export type ReviewStatus = 'draft' | 'pending-review' | 'approved' | 'rejected';
 

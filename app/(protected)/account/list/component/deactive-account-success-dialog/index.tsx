@@ -35,34 +35,12 @@ const DeactivateAccountSuccessDialog: React.FC<
   return (
     <Dialog open={isDeactivateSuccessOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent close={false}>
-        <DialogHeader>
-          <DialogTitle>
-            <div className="flex w-full justify-between">
-              <div className="">
-                <div className="">
-                  <p className="text-b-20-20-500 flex items-center gap-2">
-                    Account Deactivated
-                  </p>
-                </div>
-              </div>
-              <div className="self-center items-center justify-center">
-                <Button
-                  mode={"icon"}
-                  onClick={handleClose}
-                  className="bg-transparent hover:bg-bg-transparent"
-                >
-                  <div className="text-[var(--color-gray-600)]">X</div>
-                </Button>
-              </div>
-            </div>
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent close>
         <DialogBody>
           <div className="">
             {/* Illustration */}
             <div className="flex justify-center pt-4 pb-4">
-              <Illustration.accountDeleteConfirmation />
+              <Illustration.accountDeleteSuccess />
             </div>
 
             {/* Title */}
@@ -83,11 +61,8 @@ const DeactivateAccountSuccessDialog: React.FC<
 
             {/* Action Button */}
             <div className="flex justify-center pt-10">
-              <Button
-                onClick={handleClose}
-                // className="w-full max-w-[140px] mx-auto bg-[var(--lightmodeprimaryprimary)] hover:bg-[var(--lightmodeprimaryprimary-active)] text-white text-b-13-14-500 rounded-md"
-              >
-                Okay
+              <Button onClick={handleClose} className="w-36 h-10">
+                Okay!
               </Button>
             </div>
           </div>

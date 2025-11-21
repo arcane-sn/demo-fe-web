@@ -1,20 +1,25 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Search, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogBody, 
-  DialogFooter 
-} from '@/components/ui/dialog';
+import { useState } from "react";
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
-export type ChannelType = 'ewallet' | 'qr' | 'virtual-account' | 'direct-debit' | 'credit-card';
+export type ChannelType =
+  | "ewallet"
+  | "qr"
+  | "virtual-account"
+  | "direct-debit"
+  | "credit-card";
 
 export interface Channel {
   id: string;
@@ -38,25 +43,25 @@ export function AddChannelModal({
   onClose,
   onAddChannels,
   channelType,
-  availableChannels
+  availableChannels,
 }: AddChannelModalProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
 
   const getModalTitle = (type: ChannelType) => {
     switch (type) {
-      case 'ewallet':
-        return 'Add e-Wallet Channel';
-      case 'qr':
-        return 'Add QR Code Channel';
-      case 'virtual-account':
-        return 'Add Virtual Account Channel';
-      case 'direct-debit':
-        return 'Add Direct Debit Channel';
-      case 'credit-card':
-        return 'Add Payment Type';
+      case "ewallet":
+        return "Add e-Wallet Channel";
+      case "qr":
+        return "Add QR Code Channel";
+      case "virtual-account":
+        return "Add Virtual Account Channel";
+      case "direct-debit":
+        return "Add Direct Debit Channel";
+      case "credit-card":
+        return "Add Payment Type";
       default:
-        return 'Add Channel';
+        return "Add Channel";
     }
   };
 
@@ -65,9 +70,9 @@ export function AddChannelModal({
   );
 
   const handleChannelSelection = (channelId: string) => {
-    setSelectedChannels(prev => 
-      prev.includes(channelId) 
-        ? prev.filter(id => id !== channelId)
+    setSelectedChannels((prev) =>
+      prev.includes(channelId)
+        ? prev.filter((id) => id !== channelId)
         : [...prev, channelId]
     );
   };
@@ -75,13 +80,13 @@ export function AddChannelModal({
   const handleAddChannels = () => {
     onAddChannels(selectedChannels);
     setSelectedChannels([]);
-    setSearchQuery('');
+    setSearchQuery("");
     onClose();
   };
 
   const handleClose = () => {
     setSelectedChannels([]);
-    setSearchQuery('');
+    setSearchQuery("");
     onClose();
   };
 
@@ -91,17 +96,9 @@ export function AddChannelModal({
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             {getModalTitle(channelType)}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              className="h-6 w-6 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </DialogTitle>
         </DialogHeader>
-        
+
         <DialogBody>
           {/* Search Input */}
           <div className="relative mb-4">
@@ -117,40 +114,58 @@ export function AddChannelModal({
           {/* Channel List */}
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {filteredChannels.length > 0 ? (
-              filteredChannels.map((channel) => (
-                <div key={channel.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <Checkbox
-                    checked={selectedChannels.includes(channel.id)}
-                    onCheckedChange={() => handleChannelSelection(channel.id)}
-                  />
-                  {/* Channel Logo - only show if logo exists */}
-                  {channel.logo && (
-                    <div className="w-10 h-10 rounded flex items-center justify-center overflow-hidden bg-white border">
-                      {channel.logo.startsWith('/media/') ? (
-                        <img 
-                          src={channel.logo} 
-                          alt={channel.name}
-                          className="w-8 h-8 object-contain"
-                        />
-                      ) : (
-                        <div className={`w-full h-full ${channel.logoColor} rounded flex items-center justify-center text-white text-xs font-bold`}>
-                          {channel.logo}
-                        </div>
-                      )}
+              filteredChannels.map((channel) => {
+                const isSelected = selectedChannels.includes(channel.id);
+                return (
+                  <div
+                    key={channel.id}
+                    onClick={() => handleChannelSelection(channel.id)}
+                    className={`flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors ${
+                      isSelected ? "bg-blue-50 border-blue-300" : ""
+                    }`}
+                  >
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={() => handleChannelSelection(channel.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    {/* Channel Logo - only show if logo exists */}
+                    {channel.logo && (
+                      <div className="w-10 h-10 rounded flex items-center justify-center overflow-hidden bg-white border">
+                        {channel.logo.startsWith("/media/") ? (
+                          <img
+                            src={channel.logo}
+                            alt={channel.name}
+                            className="w-8 h-8 object-contain"
+                          />
+                        ) : (
+                          <div
+                            className={`w-full h-full ${channel.logoColor} rounded flex items-center justify-center text-white text-xs font-bold`}
+                          >
+                            {channel.logo}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{channel.name}</p>
+                      <p className="text-xs text-gray-500">
+                        Setup Fee Rate: {channel.setupFeeRate}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Provider: {channel.provider}
+                      </p>
                     </div>
-                  )}
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{channel.name}</p>
-                    <p className="text-xs text-gray-500">Setup Fee Rate: {channel.setupFeeRate}</p>
-                    <p className="text-xs text-gray-500">Provider: {channel.provider}</p>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-center py-8 text-gray-500">
                 <p className="text-sm">No channels available</p>
                 {searchQuery && (
-                  <p className="text-xs mt-1">Try adjusting your search terms</p>
+                  <p className="text-xs mt-1">
+                    Try adjusting your search terms
+                  </p>
                 )}
               </div>
             )}
@@ -158,13 +173,10 @@ export function AddChannelModal({
         </DialogBody>
 
         <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={handleClose}
-          >
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleAddChannels}
             disabled={selectedChannels.length === 0}
             className="bg-blue-600 hover:bg-blue-700"

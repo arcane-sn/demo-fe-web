@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +39,14 @@ export function BusinessInfoForm() {
         district: '',
         subDistrict: '',
         postalCode: '',
-        legalAddressSame: true
+        legalAddressSame: true,
+        legalAddress: '',
+        legalCountry: '',
+        legalProvince: '',
+        legalCity: '',
+        legalDistrict: '',
+        legalSubDistrict: '',
+        legalPostalCode: ''
       },
       characteristics: {
         businessModel: '',
@@ -61,6 +69,29 @@ export function BusinessInfoForm() {
   const onSubmit = (data: BusinessInfoSchemaType) => {
     // TODO: Implement form submission
   };
+
+  // Watch legalAddressSame and business address fields
+  const legalAddressSame = form.watch('address.legalAddressSame');
+  const businessAddress = form.watch('address.address');
+  const businessCountry = form.watch('address.country');
+  const businessProvince = form.watch('address.province');
+  const businessCity = form.watch('address.city');
+  const businessDistrict = form.watch('address.district');
+  const businessSubDistrict = form.watch('address.subDistrict');
+  const businessPostalCode = form.watch('address.postalCode');
+
+  // Sync legal address with business address when toggle is ON
+  useEffect(() => {
+    if (legalAddressSame) {
+      form.setValue('address.legalAddress', businessAddress);
+      form.setValue('address.legalCountry', businessCountry);
+      form.setValue('address.legalProvince', businessProvince);
+      form.setValue('address.legalCity', businessCity);
+      form.setValue('address.legalDistrict', businessDistrict);
+      form.setValue('address.legalSubDistrict', businessSubDistrict);
+      form.setValue('address.legalPostalCode', businessPostalCode);
+    }
+  }, [legalAddressSame, businessAddress, businessCountry, businessProvince, businessCity, businessDistrict, businessSubDistrict, businessPostalCode, form]);
 
   return (
     <Form {...form}>
@@ -156,7 +187,16 @@ export function BusinessInfoForm() {
                         </SelectContent>
                       </Select>
                       <FormControl>
-                        <Input placeholder="e.g. 81234567890" {...field} />
+                        <Input 
+                          placeholder="e.g. 81234567890" 
+                          type="tel"
+                          {...field}
+                          onChange={(e) => {
+                            // Only allow numbers
+                            const value = e.target.value.replace(/\D/g, '');
+                            field.onChange(value);
+                          }}
+                        />
                       </FormControl>
                     </div>
                     <FormMessage />
@@ -197,7 +237,7 @@ export function BusinessInfoForm() {
                       Business Type
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select business type" />
@@ -227,7 +267,7 @@ export function BusinessInfoForm() {
                       Business Industry
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select business industry" />
@@ -311,7 +351,7 @@ export function BusinessInfoForm() {
                       Country
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -362,7 +402,7 @@ export function BusinessInfoForm() {
                       Province
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select province" />
@@ -395,7 +435,7 @@ export function BusinessInfoForm() {
                       City
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select city" />
@@ -428,7 +468,7 @@ export function BusinessInfoForm() {
                       District
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select district" />
@@ -461,7 +501,7 @@ export function BusinessInfoForm() {
                       Sub-District
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select sub-district" />
@@ -514,7 +554,7 @@ export function BusinessInfoForm() {
                       Legal Address
                     </FormLabel>
                     <div className="flex items-center space-x-2 flex-1">
-                      <FormLabel className="text-sm">
+                      <FormLabel className="text-sm font-normal">
                         Legal Address Same as Business Address
                       </FormLabel>
                       <FormControl>
@@ -523,13 +563,241 @@ export function BusinessInfoForm() {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      
                     </div>
                     <FormMessage />
                   </div>
                 </FormItem>
               )}
             />
+
+            {/* Legal Address Fields - Only show when toggle is OFF */}
+            {!legalAddressSame && (
+              <div className="space-y-4 pt-8">
+              {/* Legal Address */}
+              <FormField
+                control={form.control}
+                name="address.legalAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        Legal Address
+                      </FormLabel>
+                      <div className="flex-1">
+                        <FormControl>
+                          <Input placeholder="Input business address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal Country */}
+              <FormField
+                control={form.control}
+                name="address.legalCountry"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        Country
+                      </FormLabel>
+                      <div className="flex-1">
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select country" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Indonesia">
+                              <div className="flex items-center gap-2">
+                                <PublicFlag countryCode="Indonesia" size={14} />
+                                <span>Indonesia</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="Singapore">
+                              <div className="flex items-center gap-2">
+                                <PublicFlag countryCode="Singapore" size={14} />
+                                <span>Singapore</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="Malaysia">
+                              <div className="flex items-center gap-2">
+                                <PublicFlag countryCode="Malaysia" size={14} />
+                                <span>Malaysia</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="Thailand">
+                              <div className="flex items-center gap-2">
+                                <PublicFlag countryCode="Thailand" size={14} />
+                                <span>Thailand</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal Province */}
+              <FormField
+                control={form.control}
+                name="address.legalProvince"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        Province
+                      </FormLabel>
+                      <div className="flex-1">
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select province" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="jakarta">DKI Jakarta</SelectItem>
+                            <SelectItem value="west-java">West Java</SelectItem>
+                            <SelectItem value="central-java">Central Java</SelectItem>
+                            <SelectItem value="east-java">East Java</SelectItem>
+                            <SelectItem value="bali">Bali</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal City */}
+              <FormField
+                control={form.control}
+                name="address.legalCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        City
+                      </FormLabel>
+                      <div className="flex-1">
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select city" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="jakarta-pusat">Jakarta Pusat</SelectItem>
+                            <SelectItem value="jakarta-selatan">Jakarta Selatan</SelectItem>
+                            <SelectItem value="jakarta-barat">Jakarta Barat</SelectItem>
+                            <SelectItem value="jakarta-utara">Jakarta Utara</SelectItem>
+                            <SelectItem value="jakarta-timur">Jakarta Timur</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal District */}
+              <FormField
+                control={form.control}
+                name="address.legalDistrict"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        District
+                      </FormLabel>
+                      <div className="flex-1">
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select district" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="menteng">Menteng</SelectItem>
+                            <SelectItem value="tanah-abang">Tanah Abang</SelectItem>
+                            <SelectItem value="cikini">Cikini</SelectItem>
+                            <SelectItem value="gambir">Gambir</SelectItem>
+                            <SelectItem value="kemayoran">Kemayoran</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal Sub-District */}
+              <FormField
+                control={form.control}
+                name="address.legalSubDistrict"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        Sub-District
+                      </FormLabel>
+                      <div className="flex-1">
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select sub-district" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="menteng">Menteng</SelectItem>
+                            <SelectItem value="pegangsaan">Pegangsaan</SelectItem>
+                            <SelectItem value="cikini">Cikini</SelectItem>
+                            <SelectItem value="gondangdia">Gondangdia</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Legal Postal Code */}
+              <FormField
+                control={form.control}
+                name="address.legalPostalCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-4">
+                      <FormLabel className="w-48 text-left text-sm font-normal">
+                        Postal Code
+                      </FormLabel>
+                      <div className="flex-1">
+                        <FormControl>
+                          <Input placeholder="Input postal code" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -553,7 +821,7 @@ export function BusinessInfoForm() {
                       Business Model
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select business model" />
@@ -584,7 +852,7 @@ export function BusinessInfoForm() {
                       Corporate Tax Type
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select tax type" />
@@ -618,7 +886,7 @@ export function BusinessInfoForm() {
                       Current Monthly Sales
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="IDR 0" />
@@ -649,7 +917,7 @@ export function BusinessInfoForm() {
                       Estimated Monthly Sales
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="IDR 0" />
@@ -680,7 +948,7 @@ export function BusinessInfoForm() {
                       Average Estimated Revenue
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="IDR 0" />
@@ -743,7 +1011,7 @@ export function BusinessInfoForm() {
                       Transfer Use Case
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select transfer use case" />
@@ -773,7 +1041,7 @@ export function BusinessInfoForm() {
                       Transfer Volume
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select transfer volume" />
@@ -814,7 +1082,7 @@ export function BusinessInfoForm() {
                       Bank Name / Code
                     </FormLabel>
                     <div className="flex-1">
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select or search bank name / code" />
@@ -849,7 +1117,16 @@ export function BusinessInfoForm() {
                     </FormLabel>
                     <div className="flex-1">
                       <FormControl>
-                        <Input placeholder="Input account number" {...field} />
+                        <Input 
+                          placeholder="Input account number" 
+                          type="tel"
+                          {...field}
+                          onChange={(e) => {
+                            // Only allow numbers
+                            const value = e.target.value.replace(/\D/g, '');
+                            field.onChange(value);
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </div>
@@ -870,7 +1147,15 @@ export function BusinessInfoForm() {
                     </FormLabel>
                     <div className="flex-1">
                       <FormControl>
-                        <Input placeholder="Input account name" {...field} />
+                        <Input 
+                          placeholder="Input account name" 
+                          {...field}
+                          onChange={(e) => {
+                            // Only allow alphanumeric, space, and dot
+                            const value = e.target.value.replace(/[^a-zA-Z0-9 .]/g, '');
+                            field.onChange(value);
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </div>

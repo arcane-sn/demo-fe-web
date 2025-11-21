@@ -5,54 +5,131 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useState,
+} from "react";
+import { AlertCircle } from "lucide-react";
 
-const CardTransactionLimit = () => {
-  return (
-    <Card className="mb-7" id="Default Transaction Limit-3">
-      <CardHeader className="justify-start gap-3">
-        <CardTitle className="text-b-16-16-600 text-gray-900">
-          Default Transaction Limit (Optional)
-        </CardTitle>
-        <CardDescription className="text-b-13-14-400 text-gray-600">
-          Set a default transaction limit for this provider
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Amount Limit Section */}
-        <div className="flex items-center mb-6">
-          <Label className="text-b-12-12-400 text-gray-800 w-1/4">
-            Amount Limit
-          </Label>
-          <div className="flex items-center gap-2.5 w-full max-w-xs">
-            <div className="flex-1 relative">
-              <Input value="IDR 15.000" className="bg-gray-100 text-gray-800" />
-              <Label className="absolute -top-2 left-2 bg-white px-1 text-b-11-12-400 text-gray-500">
-                Minimum Amount
-              </Label>
-            </div>
-            <span className="text-b-12-12-400 text-gray-800">-</span>
-            <div className="flex-1 relative">
-              <Input
-                value="IDR 100.000.000"
-                className="bg-gray-100 text-gray-800"
-              />
-              <Label className="absolute -top-2 left-2 bg-white px-1 text-b-11-12-400 text-gray-500">
-                Maximum Amount
-              </Label>
-            </div>
-          </div>
-        </div>
+export interface CardTransactionLimitHandle {
+  validate: () => boolean;
+}
 
-        {/* Helper Text */}
-        <p className="text-b-12-12-400 text-gray-500">
-          If empty, the validation limit will be on provider side
-        </p>
-      </CardContent>
-    </Card>
-  );
-};
+const CardTransactionLimit = forwardRef<CardTransactionLimitHandle>(
+  (_props, ref) => {
+    const [minimumAmount, setMinimumAmount] = useState("");
+    const [maximumAmount, setMaximumAmount] = useState("");
+    const [error, setError] = useState<string>("");
+
+    const parseAmount = (value: string): number => {
+      const cleaned = value.replace(/[^\d]/g, "");
+      return parseInt(cleaned || "0", 10);
+    };
+
+    const validate = useCallback(() => {
+      if (!minimumAmount.trim() || !maximumAmount.trim()) {
+        setError("This field is required");
+        return false;
+      }
+
+      const minValue = parseAmount(minimumAmount);
+      const maxValue = parseAmount(maximumAmount);
+
+      if (maxValue <= minValue) {
+        setError("Max amount must be greater than min amount");
+        return false;
+      }
+
+      setError("");
+      return true;
+    }, [maximumAmount, minimumAmount]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        validate,
+      }),
+      [validate]
+    );
+
+    const formatIDR = (value: string) => {
+      const numericValue = value.replace(/[^\d]/g, "");
+      if (!numericValue) return "";
+      const formatted = Number(numericValue).toLocaleString("id-ID");
+      return `IDR ${formatted}`;
+    };
+
+    const handleMinimumChange = (value: string) => {
+      const formattedValue = formatIDR(value);
+      setMinimumAmount(formattedValue);
+      setError("");
+    };
+
+    const handleMaximumChange = (value: string) => {
+      const formattedValue = formatIDR(value);
+      setMaximumAmount(formattedValue);
+      setError("");
+    };
+
+    return (
+      <Card id="Default Transaction Limit-3" className="min-w-0 max-w-full">
+        <CardHeader>
+          <CardTitle>Default Transaction Limit (Optional)</CardTitle>
+          <CardDescription>
+            Set a default transaction limit for this provider
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="min-w-0 max-w-full">
+          <Table>
+            <TableBody>
+              {/* Amount Limit Section */}
+              <TableRow className="border-0 hover:!bg-transparent">
+                <TableCell className="w-1/4">
+                  <Label>Amount Limit</Label>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2.5 max-w-full">
+                      <FloatingLabelInput
+                        label="Minimum Amount"
+                        value={minimumAmount}
+                        onChange={handleMinimumChange}
+                        placeholder="IDR 15.000"
+                        className="bg-white"
+                      />
+                      <span className="text-xs">-</span>
+                      <FloatingLabelInput
+                        label="Maximum Amount"
+                        value={maximumAmount}
+                        onChange={handleMaximumChange}
+                        placeholder="IDR 100.000.000"
+                        className="bg-white"
+                        error={!!error}
+                        errorMessage={error}
+                        errorIcon={<AlertCircle className="h-4 w-4 text-red-500" />}
+                      />
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          {/* Helper Text */}
+          <p className="text-xs text-muted-foreground mt-5">
+            If empty, the validation limit will be on provider side
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+);
+
+CardTransactionLimit.displayName = "CardTransactionLimit";
 
 export default CardTransactionLimit;

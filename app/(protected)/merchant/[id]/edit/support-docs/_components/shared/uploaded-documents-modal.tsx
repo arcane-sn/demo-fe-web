@@ -28,9 +28,9 @@ export function UploadedDocumentsModal({
     <div className="ml-52">
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="text-blue-600 hover:text-blue-700">
+          {/* <Button variant="outline" className="text-blue-600 hover:text-blue-700">
             View Uploaded Documents ({documents.length})
-          </Button>
+          </Button> */}
         </DialogTrigger>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>

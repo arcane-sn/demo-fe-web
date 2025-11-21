@@ -37,7 +37,7 @@ export function ServicesForm() {
         disbursementService: true,
         paymentGatewayIntegration: 'full-api',
         disbursementIntegration: 'direct-api',
-        accountInquiry: false
+        accountInquiry: true
       },
       paymentMethods: {
         eWallet: true,
@@ -208,8 +208,8 @@ export function ServicesForm() {
                       <FormItem>
                         <FormControl>
                           <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+                            checked={true}
+                            disabled={true}
                           />
                         </FormControl>
                         <FormMessage />

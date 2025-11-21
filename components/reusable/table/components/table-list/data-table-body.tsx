@@ -58,7 +58,7 @@ export function DataTableBody<TData extends BaseTableData = BaseTableData>({
     return (
       <CardTable>
         <div className="relative">
-          <div className="absolute inset-0 w-full h-full">
+          <div className="pointer-events-none absolute inset-0 h-full w-full">
             <Image
               src="/assets/image/bg.svg"
               alt="Background"
@@ -67,7 +67,7 @@ export function DataTableBody<TData extends BaseTableData = BaseTableData>({
               priority={false}
             />
           </div>
-          <div className="flex items-center justify-center">
+          <div className="relative flex items-center justify-center">
             {renderEmptyState({
               ...emptyState,
               illustration: customIllustration,

@@ -30,6 +30,7 @@ export interface FloatingLabelInputProps
   errorMessage?: string;
   labelClassName?: string;
   containerClassName?: string;
+  errorIcon?: React.ReactNode;
 }
 
 export interface FloatingLabelNumericProps
@@ -41,6 +42,7 @@ export interface FloatingLabelNumericProps
   errorMessage?: string;
   labelClassName?: string;
   containerClassName?: string;
+  errorIcon?: React.ReactNode;
 }
 
 export interface FloatingLabelTextareaProps
@@ -55,6 +57,7 @@ export interface FloatingLabelTextareaProps
   errorMessage?: string;
   labelClassName?: string;
   containerClassName?: string;
+  errorIcon?: React.ReactNode;
 }
 
 const FloatingLabelWrapper = ({
@@ -112,6 +115,7 @@ export const FloatingLabelInput = React.forwardRef<
       className,
       labelClassName,
       containerClassName,
+      errorIcon,
       ...props
     },
     ref
@@ -140,7 +144,7 @@ export const FloatingLabelInput = React.forwardRef<
           />
           {error && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
-              <HexagonErrorIcon />
+              {errorIcon ?? <HexagonErrorIcon />}
             </div>
           )}
         </div>
@@ -165,6 +169,7 @@ export const FloatingLabelNumeric = React.forwardRef<
       className,
       labelClassName,
       containerClassName,
+      errorIcon,
       ...props
     },
     ref
@@ -196,7 +201,7 @@ export const FloatingLabelNumeric = React.forwardRef<
           />
           {error && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
-              <HexagonErrorIcon />
+              {errorIcon ?? <HexagonErrorIcon />}
             </div>
           )}
         </div>
@@ -221,6 +226,7 @@ export const FloatingLabelTextarea = React.forwardRef<
       className,
       labelClassName,
       containerClassName,
+      errorIcon,
       ...props
     },
     ref
@@ -249,7 +255,7 @@ export const FloatingLabelTextarea = React.forwardRef<
           />
           {error && (
             <div className="absolute right-3 top-3 flex items-center justify-center">
-              <HexagonErrorIcon />
+              {errorIcon ?? <HexagonErrorIcon />}
             </div>
           )}
         </div>

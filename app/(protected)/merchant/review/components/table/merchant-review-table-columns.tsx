@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { InitialsAvatar } from "@/components/reusable/InitialsAvatar";
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { MerchantReviewData } from '../../core';
 import { StatusBadge } from '../status-badge';
@@ -179,12 +179,11 @@ interface CreatedByCellProps {
 function CreatedByCell({ createdBy }: CreatedByCellProps) {
   return (
     <div className="flex items-center gap-3">
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={createdBy.avatar} alt={createdBy.name} />
-        <AvatarFallback className="text-xs">
-          {createdBy.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
+      <InitialsAvatar
+        name={createdBy.name}
+        size="sm"
+        className="border-blue-100 bg-blue-50"
+      />
       <div className="flex flex-col">
         <span className="text-sm font-medium text-foreground">
           {createdBy.name}

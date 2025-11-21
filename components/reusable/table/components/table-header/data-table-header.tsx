@@ -2,7 +2,11 @@
 
 import { DataTableHeaderProps } from "../../types";
 
-export function DataTableHeader({ title, description, meta }: DataTableHeaderProps) {
+export function DataTableHeader({
+  title,
+  description,
+  meta,
+}: DataTableHeaderProps) {
   if (!title && !description && !meta) {
     return null;
   }
@@ -12,7 +16,7 @@ export function DataTableHeader({ title, description, meta }: DataTableHeaderPro
       <div className="flex flex-col gap-2.5 flex-1">
         {/* Title */}
         {title && (
-          <h2 className="text-gray-900 text-xl font-semibold">{title}</h2>
+          <h2 className="text-gray-900 text-sm font-semibold">{title}</h2>
         )}
 
         {/* Description */}
@@ -22,11 +26,7 @@ export function DataTableHeader({ title, description, meta }: DataTableHeaderPro
       </div>
 
       {/* Meta content (right side) */}
-      {meta && (
-        <div className="flex shrink-0 items-center gap-3">{meta}</div>
-      )}
+      {meta && <div className="flex shrink-0 items-center gap-3">{meta}</div>}
     </div>
   );
 }
-
-

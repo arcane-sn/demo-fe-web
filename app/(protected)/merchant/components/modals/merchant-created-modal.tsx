@@ -10,6 +10,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 
+import Image from 'next/image';
+
 interface MerchantCreatedModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -34,10 +36,12 @@ export function MerchantCreatedModal({
           {/* Illustration */}
           <div className="flex justify-center mb-6">
             <div className="relative w-24 h-24">
-              <img 
-                src="/media/illustxrations/28.svg" 
+              <Image 
+                src="/media/illustrations/28.svg" 
                 alt="Success illustration"
                 className="w-full h-full object-contain"
+                width={96}
+                height={96}
               />
             </div>
           </div>

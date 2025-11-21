@@ -1,5 +1,5 @@
 import { EditProvider } from './_components';
-import { EditLayoutContent } from './components/edit-layout-content';
+import { EditLayoutContent } from './_components/edit-layout-content';
 import { MerchantService } from '../../core/services/merchant.service';
 
 /**

@@ -32,7 +32,6 @@ const BalanceStatementContent = () => {
         <BalanceStatementTable
           data={mockBalanceStatementData}
           onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
           loading={loading}
           error={error || undefined}
           onOpenFilters={() => setOpen(true)}

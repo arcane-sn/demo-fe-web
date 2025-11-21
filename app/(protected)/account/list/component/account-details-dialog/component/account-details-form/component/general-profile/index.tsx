@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Badge, BadgeDot } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import InputPhoneNumber from "@/components/ui/input-phone-number";
 import { Copy, Camera, X } from "lucide-react";
@@ -41,23 +41,28 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
       </CardHeader>
       <CardContent className="p-0">
         {/* Status */}
-        <div className="flex items-center gap-4 px-8 py-5">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-5">
+          <Label className="w-48 text-sm font-medium text-gray-800">
             Status
           </Label>
           <Badge
             variant={groupValue.status === "active" ? "success" : "destructive"}
-            size="sm"
+            size="md"
             appearance="light"
             shape="circle"
           >
-            {groupValue.status}
+            <BadgeDot
+              className={
+                groupValue.status === "active" ? "success" : "destructive"
+              }
+            />
+            {groupValue.status === "active" ? "Active" : "Inactive"}
           </Badge>
         </div>
 
         {/* User ID */}
-        <div className="flex items-center gap-4 px-8 py-5 border-gray-200">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-5 border-gray-200">
+          <Label className="w-48 text-sm font-medium text-gray-800">
             User ID
           </Label>
           <div className="flex items-center gap-2">
@@ -74,8 +79,8 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Client ID */}
-        <div className="flex items-center gap-4 px-8 py-5">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-5">
+          <Label className="w-48 text-sm font-medium text-gray-800">
             Client ID
           </Label>
           <div className="flex items-center gap-2">
@@ -92,10 +97,11 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Username */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Username
           </Label>
+
           <Input
             value={groupValue.userName}
             onChange={(e) => setValue("userName", e.target.value)}
@@ -105,8 +111,8 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Full Name */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Full Name
           </Label>
           <Input
@@ -118,8 +124,8 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Phone Number */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Phone Number
           </Label>
           <InputPhoneNumber
@@ -138,8 +144,8 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Email */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Email
           </Label>
           <Input
@@ -151,19 +157,21 @@ const GeneralProfile: React.FC<GeneralProfileProps> = ({
         </div>
 
         {/* Photo */}
-        <div className="flex items-center gap-4 px-8 py-3">
-          <Label className="w-56 text-sm font-medium text-gray-800">
+        <div className="flex items-center  px-8 py-3">
+          <Label className="min-w-48 w-48 text-sm font-medium text-gray-800">
             Photo
           </Label>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between flex-1">
             <div className="relative">
               <div className="w-16 h-16 rounded-full border-2 border-green-500 bg-gray-100 flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-600">
                   {groupValue.fullName?.charAt(0) || "U"}
                 </span>
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-800 rounded-full flex items-center justify-center">
-                <Camera className="h-3 w-3 text-white" />
+                <div className="absolute overflow-hidden w-16 h-16 rounded-full top-0 flex items-end justify-end">
+                  <div className="w-full bg-dark-clarity-20 opacity-40 p-1 flex items-center justify-center">
+                    <Camera className="h-4 w-4 -mt-[2px] text-white" />
+                  </div>
+                </div>
               </div>
               <Button
                 size="sm"

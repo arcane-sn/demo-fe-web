@@ -5,155 +5,120 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch, SwitchWrapper } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import React from "react";
-import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { AlertCircle } from "lucide-react";
 
-const CardDefaultPricing = () => {
+export interface CardDefaultPricingHandle {
+  validate: () => boolean;
+}
+
+const CardDefaultPricing = forwardRef<CardDefaultPricingHandle>((_props, ref) => {
+  const [percentagePrice, setPercentagePrice] = useState("");
+  const [fixedPrice, setFixedPrice] = useState("");
+  const [errors, setErrors] = useState<{ percentage?: string; fixed?: string }>(
+    {}
+  );
+
+  const formatPercentage = (value: string) => {
+    const numericValue = value.replace(/[^\d]/g, "");
+    if (!numericValue) return "";
+    return `${numericValue}%`;
+  };
+
+  const formatIDR = (value: string) => {
+    const numericValue = value.replace(/[^\d]/g, "");
+    if (!numericValue) return "";
+    const formatted = Number(numericValue).toLocaleString("id-ID");
+    return `IDR ${formatted}`;
+  };
+
+  const validate = () => {
+    const newErrors: typeof errors = {};
+
+    if (!percentagePrice.trim()) {
+      newErrors.percentage = "This field is required";
+    }
+
+    if (!fixedPrice.trim()) {
+      newErrors.fixed = "This field is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate,
+    }),
+    [validate]
+  );
+
+  const handlePercentageChange = (value: string) => {
+    const formattedValue = formatPercentage(value);
+    setPercentagePrice(formattedValue);
+    setErrors((prev) => ({ ...prev, percentage: undefined }));
+  };
+
+  const handleFixedChange = (value: string) => {
+    const formattedValue = formatIDR(value);
+    setFixedPrice(formattedValue);
+    setErrors((prev) => ({ ...prev, fixed: undefined }));
+  };
+
   return (
-    <Card className="mb-7" id="Default Pricing (MDR)-2">
-      <CardHeader className="justify-start gap-5">
-        <CardTitle className="text-b-16-16-600 text-gray-900">
-          Default Pricing (MDR)
-        </CardTitle>
-        <CardDescription className="text-b-13-14-400 text-gray-600">
+    <Card id="Default Pricing (MDR)-2" className="min-w-0 max-w-full">
+      <CardHeader>
+        <CardTitle>Default Pricing (MDR)</CardTitle>
+        <CardDescription>
           Set a default pricing for this provider
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        {/* ON US Section */}
-        <div className="flex items-center mb-4">
-          <Label className="text-base font-semibold text-slate-900 w-1/4">
-            ON US
-          </Label>
-          <div className="flex items-center gap-2.5">
-            <SwitchWrapper>
-              <Switch defaultChecked />
-            </SwitchWrapper>
-            <span className="text-sm font-medium text-slate-800">Active</span>
-          </div>
-        </div>
-
-        {/* Pricing Type Section */}
-        <div className="flex items-center mb-5">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Pricing Type
-          </Label>
-          <Select defaultValue="medium">
-            <SelectTrigger className="w-full max-w-xs">
-              <SelectValue placeholder="Select pricing type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low - Inactive</SelectItem>
-              <SelectItem value="medium">Medium - Active</SelectItem>
-              <SelectItem value="high">High - Active</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Fee Rate Section */}
-        <div className="flex items-center">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Fee Rate
-          </Label>
-          <div className="flex items-center gap-2.5 w-full max-w-xs">
-            <div className="flex-1 relative">
-              <Input
-                value="0%"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Percentage Price
-              </Label>
-            </div>
-            <span className="text-xs font-normal text-slate-800">+</span>
-            <div className="flex-1 relative">
-              <Input
-                value="IDR 0"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Fixed Price
-              </Label>
-            </div>
-          </div>
-        </div>
-
-        <Separator className="my-4" />
-
-        {/* OFF US Section */}
-        <div className="flex items-center mb-4">
-          <Label className="text-base font-semibold text-slate-900 w-1/4">
-            OFF US
-          </Label>
-          <div className="flex items-center gap-2.5">
-            <SwitchWrapper>
-              <Switch defaultChecked />
-            </SwitchWrapper>
-            <span className="text-sm font-medium text-slate-800">Active</span>
-          </div>
-        </div>
-
-        {/* Pricing Type Section */}
-        <div className="flex items-center mb-5">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Pricing Type
-          </Label>
-          <Select defaultValue="medium">
-            <SelectTrigger className="w-full max-w-xs">
-              <SelectValue placeholder="Select pricing type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low - Inactive</SelectItem>
-              <SelectItem value="medium">Medium - Active</SelectItem>
-              <SelectItem value="high">High - Active</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Fee Rate Section */}
-        <div className="flex items-center">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Fee Rate
-          </Label>
-          <div className="flex items-center gap-2.5 w-full max-w-xs">
-            <div className="flex-1 relative">
-              <Input
-                value="0%"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Percentage Price
-              </Label>
-            </div>
-            <span className="text-xs font-normal text-slate-800">+</span>
-            <div className="flex-1 relative">
-              <Input
-                value="IDR 0"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Fixed Price
-              </Label>
-            </div>
-          </div>
-        </div>
+      <CardContent className="min-w-0 max-w-full">
+        <Table>
+          <TableBody>
+            {/* Provider Rate Section */}
+            <TableRow className="border-0 hover:!bg-transparent">
+              <TableCell className="w-1/4">
+                <Label>Provider Rate</Label>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2.5 max-w-full">
+                  <FloatingLabelInput
+                    label="Percentage Price"
+                    value={percentagePrice}
+                    onChange={handlePercentageChange}
+                    placeholder="0%"
+                    className="bg-white"
+                    error={!!errors.percentage}
+                    errorMessage={errors.percentage}
+                    errorIcon={<AlertCircle className="h-4 w-4 text-red-500" />}
+                  />
+                  <span className="text-xs">+</span>
+                  <FloatingLabelInput
+                    label="Fixed Price"
+                    value={fixedPrice}
+                    onChange={handleFixedChange}
+                    placeholder="IDR 0"
+                    className="bg-white"
+                    error={!!errors.fixed}
+                    errorMessage={errors.fixed}
+                    errorIcon={<AlertCircle className="h-4 w-4 text-red-500" />}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
-};
+});
+
+CardDefaultPricing.displayName = "CardDefaultPricing";
 
 export default CardDefaultPricing;

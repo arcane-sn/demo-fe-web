@@ -21,14 +21,14 @@ const BeneficiaryInformationCard = ({
       <CardContent className="pb-7 flex flex-col gap-10">
         {/* Beneficiary Bank Details Section */}
         <div className="flex flex-col gap-5">
-          <p className="text-base font-semibold text-slate-900 leading-none">
+          <p className=" text-base font-semibold text-slate-900 leading-none">
             Beneficiary Bank Details
           </p>
           <div className="flex flex-col gap-4">
             {getBeneficiaryBankDetailsData(transaction).map((item, index) => (
               <div key={index}>
                 <div className="flex items-center gap-2.5 min-h-4">
-                  <p className="text-sm font-normal text-slate-500 leading-none gap-2.5">
+                  <p className="min-w-56 text-sm font-normal text-slate-500 leading-none gap-2.5">
                     {item.label}
                   </p>
                   <div className="flex items-center gap-2.5">
@@ -65,7 +65,7 @@ const BeneficiaryInformationCard = ({
             {getBeneficiaryIdentityData(transaction).map((item, index) => (
               <div key={index}>
                 <div className="flex items-center gap-2.5 min-h-4">
-                  <p className="text-sm font-normal text-slate-500 leading-none">
+                  <p className="min-w-56 text-sm font-normal text-slate-500 leading-none">
                     {item.label}
                   </p>
 

@@ -8,10 +8,13 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Badge, BadgeDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { KeenIcon } from "@/components/keenicons";
+import { InitialsAvatar } from "@/components/reusable/InitialsAvatar";
 import { ChannelData } from '../../../types/channel';
 
-export function useChannelTableColumns(): ColumnDef<ChannelData>[] {
+export function useChannelTableColumns(
+  onEdit?: (channel: ChannelData) => void,
+): ColumnDef<ChannelData>[] {
   return useMemo<ColumnDef<ChannelData>[]>(
     () => [
       {
@@ -308,8 +311,26 @@ export function useChannelTableColumns(): ColumnDef<ChannelData>[] {
         enableSorting: true,
         size: 250,
       },
+      {
+        id: "actions",
+        header: () => null,
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 w-9 rounded-md border border-[#DBDFE9] text-[#98A2B3]"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(row.original);
+            }}
+          >
+            <KeenIcon icon="notepad-edit" style="outline" className="text-lg" />
+          </Button>
+        ),
+        size: 80,
+      },
     ],
-    []
+    [onEdit]
   );
 }
 
@@ -519,16 +540,11 @@ interface RegisteredByCellProps {
 
 function RegisteredByCell({ registeredBy }: RegisteredByCellProps) {
   return (
-    <div className="flex items-center gap-2">
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={registeredBy.avatar} alt={registeredBy.name} />
-        <AvatarFallback>{registeredBy.name.charAt(0)}</AvatarFallback>
-      </Avatar>
+    <div className="flex items-center gap-3">
+      <InitialsAvatar name={registeredBy.name} size="sm" className="border-blue-100 bg-blue-50" />
       <div className="flex flex-col">
         <span className="font-medium text-sm">{registeredBy.name}</span>
-        <span className="text-xs text-muted-foreground">
-          {registeredBy.email}
-        </span>
+        <span className="text-xs text-muted-foreground">{registeredBy.email}</span>
       </div>
     </div>
   );
@@ -557,16 +573,11 @@ interface UpdatedByCellProps {
 
 function UpdatedByCell({ updatedBy }: UpdatedByCellProps) {
   return (
-    <div className="flex items-center gap-2">
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={updatedBy.avatar} alt={updatedBy.name} />
-        <AvatarFallback>{updatedBy.name.charAt(0)}</AvatarFallback>
-      </Avatar>
+    <div className="flex items-center gap-3">
+      <InitialsAvatar name={updatedBy.name} size="sm" className="border-blue-100 bg-blue-50" />
       <div className="flex flex-col">
         <span className="font-medium text-sm">{updatedBy.name}</span>
-        <span className="text-xs text-muted-foreground">
-          {updatedBy.email}
-        </span>
+        <span className="text-xs text-muted-foreground">{updatedBy.email}</span>
       </div>
     </div>
   );

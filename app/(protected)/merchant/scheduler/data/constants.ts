@@ -12,9 +12,3 @@ export const SCHEDULER_FIELDS = [
   { key: 'balanceStatement', label: 'Balance Statement' },
   { key: 'disbursement', label: 'Disbursement' },
 ] as const;
-
-export const INTERVAL_OPTIONS = [
-  { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' },
-] as const;

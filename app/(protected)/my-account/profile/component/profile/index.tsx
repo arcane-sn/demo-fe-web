@@ -1,16 +1,18 @@
 import { useFormik } from "formik";
-import { SidebarNavigation } from "@/app/(protected)/merchant/components/shared/sidebar-navigation";
+import { useRef } from "react";
+import ProfileNavigation from "../navigation-tab/profile-navigation";
 import GeneralProfile from "./component/general-profile/index";
 import AccountRole from "./component/account-role/index";
 import AccountLog from "./component/account-log/index";
 
 const Profile = () => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const formik = useFormik({
     initialValues: {
-      status: "",
-      userID: "",
-      clientID: "",
-      userName: "",
+      status: "Active",
+      userID: "1234567890",
+      clientID: "1234567890",
+      userName: "John Doe",
       fullName: "",
       dialCode: "+62",
       phoneNumber: "85156075344",
@@ -46,16 +48,19 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-1 min-h-0 bg-white rounded-lg ">
+    <div className="flex flex-1 min-h-0 bg-white rounded-lg overflow-hidden max-h-[calc(100vh-200px)]">
       {/* Left Sidebar - Navigation */}
-      <div className="hidden lg:block flex-shrink-0 ">
+      <div className="hidden lg:block flex-shrink-0">
         <div className="h-full pr-8">
-          <SidebarNavigation sections={sections} />
+          <ProfileNavigation
+            sections={sections}
+            targetRef={scrollContainerRef}
+          />
         </div>
       </div>
 
       {/* Right Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto" ref={scrollContainerRef}>
         <div className="py-6 px-6">
           <div className="max-w-4xl space-y-8">
             {/* General Profile */}

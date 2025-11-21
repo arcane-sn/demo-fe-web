@@ -28,6 +28,7 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
       { label: "Transaction Date", value: "transactionDate" },
       { label: "Requested Date", value: "requestedDate" },
     ],
+    presetDisplayValue,
     onClear,
     onDateChange,
     onDateTypeChange,
@@ -36,20 +37,43 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
 
   const DISPLAY_FORMAT = "MMM dd, yyyy";
 
-  const parseValueToRange = useMemo(
-    () => (input?: string): DateRange | undefined => {
+  const parseValueToRange = useMemo(() => {
+    const normalizedPlaceholder = placeholder?.trim() || "";
+    return (input?: string): DateRange | undefined => {
       if (!input) return undefined;
-      const [fromStr, toStr] = input.split("-");
-      const from = parse(fromStr.trim(), DISPLAY_FORMAT, new Date());
-      const to = toStr ? parse(toStr.trim(), DISPLAY_FORMAT, new Date()) : undefined;
-      if (!isValid(from)) return undefined;
-      if (toStr && to && isValid(to)) {
-        return { from, to };
+
+      const raw = input.trim();
+      if (!raw || raw === normalizedPlaceholder) {
+        return undefined;
       }
-      return { from };
-    },
-    [DISPLAY_FORMAT],
-  );
+
+      const [fromStr, toStr] = raw.split("-");
+      if (!fromStr) return undefined;
+
+      const parseWithFormats = (...formats: string[]) => {
+        for (const fmt of formats) {
+          const parsed = parse(fromStr.trim(), fmt, new Date());
+          if (isValid(parsed)) {
+            const toParsed =
+              toStr && toStr.trim()
+                ? parse(toStr.trim(), fmt, new Date())
+                : undefined;
+
+              if (!toStr || !toStr.trim()) {
+                return { from: parsed };
+              }
+
+              if (toParsed && isValid(toParsed)) {
+                return { from: parsed, to: toParsed };
+              }
+          }
+        }
+        return undefined;
+      };
+
+      return parseWithFormats(DISPLAY_FORMAT, "dd/MM/yyyy");
+    };
+  }, [placeholder]);
 
   const [internalRange, setInternalRange] = useState<DateRange | undefined>(() =>
     dateRange ?? parseValueToRange(value),
@@ -67,15 +91,15 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
       }
       return prev;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, dateRange]);
+  }, [value, dateRange, parseValueToRange]);
 
   const formatRange = (range?: DateRange): string => {
-    if (!range?.from) return "";
+    if (!range?.from) return presetDisplayValue ?? "";
+    const start = format(range.from, "dd/MM/yyyy");
     if (range.to) {
-      return `${format(range.from, DISPLAY_FORMAT)} - ${format(range.to, DISPLAY_FORMAT)}`;
+      return `${start} - ${format(range.to, "dd/MM/yyyy")}`;
     }
-    return format(range.from, DISPLAY_FORMAT);
+    return start;
   };
 
   const handleApply = (range?: DateRange) => {
@@ -99,12 +123,12 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
         {onClear && (
           <button
             onClick={handleReset}
-            className="px-1 py-1 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-b-11-12-500 text-red-500">Clear</span>
-          </button>
-        )}
-      </div>
+          className="px-1 py-1 rounded-md hover:bg-gray-50 transition-colors"
+        >
+          <span className="text-b-11-12-500 text-red-500">Clear</span>
+        </button>
+      )}
+    </div>
 
       {/* Input Fields */}
       <div className="flex flex-col items-start gap-2.5 w-full">
@@ -131,7 +155,7 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
           onChange={setInternalRange}
           onApply={handleApply}
           onReset={handleReset}
-          placeholder={placeholder}
+          placeholder={presetDisplayValue ?? placeholder}
           className="w-full"
         />
       </div>

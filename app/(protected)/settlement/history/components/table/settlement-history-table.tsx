@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { DataTable } from "@/components/reusable/table";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2, FileDown, Send, Download } from "lucide-react";
 import {
   FilterModal,
   ExportModal,
@@ -72,7 +72,7 @@ export function SettlementHistoryTable({
         label: dateType === "reportDate" ? "Report Date" : "Settlement Date",
         value: activeDateFilter,
         onRemove: handleRemoveDate,
-  });
+      });
     }
     if (selectedStatuses.length > 0) {
       tags.push({
@@ -83,7 +83,13 @@ export function SettlementHistoryTable({
       });
     }
     return tags;
-  }, [activeDateFilter, dateType, handleRemoveDate, handleRemoveStatus, selectedStatuses]);
+  }, [
+    activeDateFilter,
+    dateType,
+    handleRemoveDate,
+    handleRemoveStatus,
+    selectedStatuses,
+  ]);
 
   const toolbarActions = useMemo(
     () =>
@@ -96,15 +102,12 @@ export function SettlementHistoryTable({
                 setIsExportOpen(true);
               },
       })),
-    [openFilterModal, setIsExportOpen],
+    [openFilterModal, setIsExportOpen]
   );
 
-  const handleExport = useCallback(
-    (format: string, email: string) => {
-      console.log("Export settlement history table", { format, email });
-    },
-    [],
-  );
+  const handleExport = useCallback((format: string, email: string) => {
+    console.log("Export settlement history table", { format, email });
+  }, []);
 
   return (
     <>
@@ -115,19 +118,19 @@ export function SettlementHistoryTable({
           showDropdown: true,
           actions: [
             {
-              label: "View details",
-              icon: <Eye className="h-4 w-4" />,
+              label: "Export Data For Invoicing",
+              icon: <FileDown className="h-4 w-4" />,
+              variant: "primary",
               onClick: (row) => console.log("View", row.original.id),
             },
             {
-              label: "Edit settlement",
-              icon: <Edit className="h-4 w-4" />,
+              label: "Resend Report",
+              icon: <Send className="h-4 w-4" />,
               onClick: (row) => console.log("Edit", row.original.id),
             },
             {
-              label: "Delete settlement",
-              icon: <Trash2 className="h-4 w-4" />,
-              variant: "destructive",
+              label: "Export Settlement",
+              icon: <Download className="h-4 w-4" />,
               onClick: (row) => console.log("Delete", row.original.id),
             },
           ],
@@ -160,7 +163,8 @@ export function SettlementHistoryTable({
             activeFilterCount > 0 || searchValue.trim()
               ? SETTLEMENT_EMPTY_STATE.filteredDescription
               : SETTLEMENT_EMPTY_STATE.defaultDescription,
-          hasActiveFilters: activeFilterCount > 0 || searchValue.trim().length > 0,
+          hasActiveFilters:
+            activeFilterCount > 0 || searchValue.trim().length > 0,
         }}
         pagination={{
           totalItems: filteredData.length,

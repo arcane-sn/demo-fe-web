@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { Clock, Settings } from 'lucide-react';
 import { SchedulerConfig } from '../types';
 import { HexagonBadge } from '@/app/components/partials/common/hexagon-badge';
+import { KeenIcon } from '@/components/keenicons';
 
 interface SchedulerSectionProps {
   title: string;
@@ -127,7 +127,7 @@ export function SchedulerSection({
               size="w-10 h-10" 
               fill="fill-gray-50" 
               stroke="stroke-gray-400"
-              badge={<Settings className="h-5 w-5 text-gray-400" />}
+              badge={<KeenIcon icon="disconnect" style="outline" className="text-gray-600" />}
             />
             <div>
               <p className="font-semibold text-gray-700">Inactive</p>

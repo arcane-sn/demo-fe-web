@@ -140,7 +140,7 @@ export function MerchantBalanceContent() {
                   <RefreshCcw />
                   Refresh Balance
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => setShowBalanceDetailModal(true)}
                 >
@@ -239,7 +239,6 @@ export function MerchantBalanceContent() {
           releaseBalance={handleReleaseFlow}
           holdBalance={handleHoldFlow}
           onRowClick={handleRowClick}
-          onSelectionChange={handleSelectionChange}
           loading={loading}
           error={error}
           onOpenExport={() => setShowExportModal(true)}

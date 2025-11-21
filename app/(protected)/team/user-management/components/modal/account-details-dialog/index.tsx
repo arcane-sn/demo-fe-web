@@ -1,73 +1,65 @@
-import { SidebarNavigation } from "@/app/(protected)/merchant/components/shared/sidebar-navigation";
-import { Button } from "@/components/ui/button";
 import DialogContent, {
   Dialog,
   DialogBody,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import React, { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Scrollspy } from "@/components/ui/scrollspy";
+import {
+  ScrollspyMenu,
+  ScrollspyMenuItems,
+} from "@/app/components/partials/navbar/scrollspy-menu";
+import React, { useMemo, useRef } from "react";
 import { AccountDetailsDialogProps } from "./core/types/account-details";
 import { accountDetailsSection } from "./core/hooks/account-details-section";
 import AccountDetailsForm from "./component/account-details-form";
+
 const AccountDetailsDialog: React.FC<AccountDetailsDialogProps> = ({
   visible,
   close,
   accountData,
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const sections = useMemo(
+    () => accountDetailsSection[0]?.sections ?? [],
+    [],
+  );
+
+  const menuItems = useMemo<ScrollspyMenuItems>(
+    () =>
+      sections.map((section, index) => ({
+        title: section.title,
+        target: section.id,
+        active: index === 0,
+      })),
+    [sections],
+  );
+
   const handleClose = () => {
     close();
   };
 
   return (
     <Dialog open={visible} onOpenChange={handleClose}>
-      <DialogContent
-        close={false}
-        className="max-w-7xl p-0 h-[90vh] md:h-[80vh] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                   [&_[data-slot=dialog-close]]:top-5.5 [&_[data-slot=dialog-close]]:end-5.5 flex flex-col"
-      >
-        <DialogHeader className="px-4 py-1 mb-1 border-b flex-shrink-0">
-          <DialogTitle>
-            <div className="flex w-full justify-between ">
-              <div className="p-8 ">
-                <div className="">
-                  <p className="text-b-20-20-500 flex items-center gap-2">
-                    Account Details
-                  </p>
-                  <p className="pt-2 text-b-14-14-400 text-[var(--color-gray-700)]">
+      <DialogContent className="max-w-[1100px]">
+        <DialogHeader>
+          <DialogTitle>Account Details</DialogTitle>
+          <DialogDescription>
                     View and update account information
-                  </p>
-                </div>
-              </div>
-              <div className="self-center items-center justify-center">
-                <Button
-                  mode={"icon"}
-                  onClick={handleClose}
-                  className="bg-transparent hover:bg-bg-transparent"
-                >
-                  <div className="text-[var(--color-gray-600)]">X</div>
-                </Button>
-              </div>
-            </div>
-          </DialogTitle>
+          </DialogDescription>
         </DialogHeader>
 
-        {/* <DialogDescription></DialogDescription> */}
-        <div className="flex flex-1 min-h-0">
-          {/* Sidebar - Fixed, not scrollable */}
-          <div className="hidden lg:block flex-shrink-0 border-r">
-            <div className="p-8 h-full">
-              <SidebarNavigation
-                sections={accountDetailsSection[currentStep].sections}
-              />
-            </div>
+        <DialogBody className="flex gap-8 px-2 pb-2 lg:px-6 lg:pb-6">
+          <div className="hidden w-56 flex-shrink-0 lg:block">
+            <Scrollspy targetRef={scrollRef} offset={100}>
+              <ScrollspyMenu items={menuItems} />
+            </Scrollspy>
           </div>
-
-          {/* Content - Scrollable */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="py-8 px-8">
-              <div className="max-w-4xl">
+          <div className="flex-1 min-w-0">
+            <ScrollArea className="h-[600px]" viewportRef={scrollRef}>
+              <div className="space-y-7 min-w-0">
                 {accountData && (
                   <AccountDetailsForm
                     accountData={accountData}
@@ -75,9 +67,9 @@ const AccountDetailsDialog: React.FC<AccountDetailsDialogProps> = ({
                   />
                 )}
               </div>
-            </div>
+            </ScrollArea>
           </div>
-        </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

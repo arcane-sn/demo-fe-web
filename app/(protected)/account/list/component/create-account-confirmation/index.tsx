@@ -3,9 +3,12 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import DialogContent, {
   Dialog,
   DialogBody,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DialogAccountConfirmationProps {
   visible: boolean;
@@ -19,32 +22,23 @@ const DialogAccountConfirmation: React.FC<DialogAccountConfirmationProps> = ({
 }) => {
   return (
     <Dialog open={visible}>
-      <DialogContent close={false}>
-        <DialogHeader>
+      <DialogContent close className="p-0">
+        <DialogHeader className="border-b border-border p-5">
           <DialogTitle>
             <div className="flex w-full justify-between ">
               <div className="">
                 <div className="">
-                  <p className="text-b-20-20-500 flex items-center gap-2">
+                  <p className="text-sm text-gray-800 font-semibold flex items-center gap-2">
                     Confirmation
                   </p>
                 </div>
-              </div>
-              <div className="self-center items-center justify-center">
-                <Button
-                  mode={"icon"}
-                  onClick={close}
-                  className="bg-transparent hover:bg-bg-transparent"
-                >
-                  <div className="text-[var(--color-gray-600)]">X</div>
-                </Button>
               </div>
             </div>
           </DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <div className="">
-            <div className="flex justify-center pt-4 pb-4">
+          <div className="p-5">
+            <div className="flex justify-center pb-4">
               <Illustration.accountCreateConfirmation />
             </div>
             <div>
@@ -57,30 +51,32 @@ const DialogAccountConfirmation: React.FC<DialogAccountConfirmationProps> = ({
                 Please review the details before proceeding.
               </p>
             </div>
-            <div className="flex w-full pt-10">
-              <div className="flex-1/2 flex justify-end pr-2">
-                <Button
-                  onClick={() => {
-                    close();
-                  }}
-                  variant={"outline"}
-                >
-                  Cancel
-                </Button>
-              </div>
-              <div className="flex-1/2 pl-2">
-                <Button
-                  onClick={() => {
-                    confirm();
-                  }}
-                  className="w-full"
-                >
-                  Okay!
-                </Button>
-              </div>
-            </div>
           </div>
         </DialogBody>
+        <DialogFooter className="border-t border-border p-5">
+          <div className="flex w-full">
+            <div className="flex-1/2 flex justify-end pr-2">
+              <Button
+                onClick={() => {
+                  close();
+                }}
+                variant={"outline"}
+              >
+                Cancel
+              </Button>
+            </div>
+            <div className="flex-1/2 pl-2">
+              <Button
+                onClick={() => {
+                  confirm();
+                }}
+                className="w-full"
+              >
+                Confirm & Create Account
+              </Button>
+            </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

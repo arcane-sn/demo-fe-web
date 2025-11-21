@@ -19,23 +19,17 @@ export function DataTableFooter({
 }: DataTableFooterProps) {
   // Get total count from pagination or table
   const finalTotalCount =
-    totalCount || pagination?.totalItems || table.getFilteredRowModel().rows.length || 0;
+    totalCount ||
+    pagination?.totalItems ||
+    table.getFilteredRowModel().rows.length ||
+    0;
 
   return (
     <CardFooter>
       <div className="flex items-center justify-between w-full">
-      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {/* Row count */}
-          <span className="text-sm text-muted-foreground">
-            {finalTotalCount} total records
-          </span>
-
-          {/* Selected count */}
-          {selectedCount > 0 && (
-            <span className="text-sm text-muted-foreground">
-              {selectedCount} selected
-        </span>
-          )}
+          <span className="text-sm text-muted-foreground mr-2">Show </span>
         </div>
 
         {/* Pagination */}
@@ -44,6 +38,3 @@ export function DataTableFooter({
     </CardFooter>
   );
 }
-
-
-

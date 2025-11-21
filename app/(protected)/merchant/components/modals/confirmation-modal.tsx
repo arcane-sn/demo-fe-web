@@ -10,6 +10,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 
+import Image from 'next/image';
+
 interface ConfirmationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -38,10 +40,13 @@ export function ConfirmationModal({
           {/* Illustration */}
           <div className="flex justify-center mb-6">
             <div className="relative w-24 h-24">
-              <img 
+              <Image 
                 src="/media/illustrations/29.svg" 
                 alt="Confirmation illustration"
+                width={96}
+                height={96}
                 className="w-full h-full object-contain"
+               
               />
             </div>
           </div>

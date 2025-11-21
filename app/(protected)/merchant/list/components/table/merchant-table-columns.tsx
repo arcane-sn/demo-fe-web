@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { Fragment, useMemo, useEffect, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,8 +9,19 @@ import { Badge, BadgeDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { MerchantData } from '../../../types/merchant';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { KeenIcon } from '@/components/keenicons';
+import { MERCHANT_LIST_ROW_ACTIONS, MerchantListRowActionKey } from '../../core/constants';
 
-export function useMerchantTableColumns(): ColumnDef<MerchantData>[] {
+type MerchantActionHandlers = {
+  onView?: (merchant: MerchantData) => void;
+  onEdit?: (merchant: MerchantData) => void;
+  onDeactivateProduction?: (merchant: MerchantData) => void;
+  onDeactivateSandbox?: (merchant: MerchantData) => void;
+  onDelete?: (merchant: MerchantData) => void;
+};
+
+export function useMerchantTableColumns(actionHandlers: MerchantActionHandlers = {}): ColumnDef<MerchantData>[] {
   const [isMounted, setIsMounted] = useState(false);
   
   // Only call useCopyToClipboard after mount to prevent state update before mount
@@ -162,8 +173,17 @@ export function useMerchantTableColumns(): ColumnDef<MerchantData>[] {
         enableSorting: true,
         size: 200,
       },
+      {
+        id: 'actions',
+        header: '',
+        size: 70,
+        enableSorting: false,
+        cell: ({ row }) => (
+          <RowActionsMenu merchant={row.original} handlers={actionHandlers} />
+        ),
+      },
     ],
-    [copyToClipboard, isMounted]
+    [copyToClipboard, isMounted, actionHandlers]
   );
 }
 
@@ -202,8 +222,8 @@ function MerchantLevelCell({ merchantLevel }: MerchantLevelCellProps) {
   return (
     <Badge
       variant="secondary"
-      size="sm"
-      className="bg-purple-100 text-purple-800 hover:bg-purple-200"
+      size="md"
+      className="bg-purple-100 text-purple-800 border border-purple-600"
     >
       {merchantLevel.label}
     </Badge>
@@ -218,8 +238,8 @@ function StatusBadgeCell({ status }: StatusBadgeCellProps) {
   return (
     <Badge
       variant={status.status === 'active' ? 'success' : 'destructive'}
-      size="sm"
-      appearance="light"
+      size="md"
+      appearance="outline"
       shape="circle"
     >
       <BadgeDot className={status.status === 'active' ? 'success' : 'destructive'} />
@@ -243,4 +263,86 @@ function DateCell({ dateInfo }: DateCellProps) {
       </div>
     </div>
   );
+}
+
+interface RowActionsMenuProps {
+  merchant: MerchantData;
+  handlers: MerchantActionHandlers;
+}
+
+function RowActionsMenu({ merchant, handlers }: RowActionsMenuProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-10 h-10 rounded-xl border border-gray-300 text-gray-600 flex items-center justify-center"
+          aria-label="Open actions menu"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <KeenIcon icon="dots-vertical" style="outline" className="text-lg" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="bottom"
+        align="end"
+        className=" rounded-lg border border-gray-100 bg-white p-2 shadow-xl "
+        onClick={(event) => event.stopPropagation()}
+      >
+        {MERCHANT_LIST_ROW_ACTIONS.map((item, index) => {
+          const action = getActionHandler(item.actionKey, handlers);
+          const nextItem = MERCHANT_LIST_ROW_ACTIONS[index + 1];
+          const showSectionDivider =
+            nextItem && nextItem.section !== item.section;
+
+          const content = (
+            <div className="flex w-full items-center justify-start gap-3 p-1">
+              <KeenIcon
+                icon={item.icon.name}
+                style="outline"
+                className={`text-lg ${item.icon.className}`}
+              />
+              <span className={`text-sm font-medium ${item.colorClass}`}>
+                {item.label}
+              </span>
+            </div>
+          );
+
+          return (
+            <Fragment key={item.id}>
+              <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  action?.(merchant);
+                }}
+              >
+                {content}
+              </DropdownMenuItem>
+              {showSectionDivider && (
+                <div className="mx-2  border-t border-gray-200" />
+              )}
+            </Fragment>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function getActionHandler(actionKey: MerchantListRowActionKey, handlers: MerchantActionHandlers) {
+  switch (actionKey) {
+    case 'view':
+      return handlers.onView;
+    case 'edit':
+      return handlers.onEdit;
+    case 'deactivateProduction':
+      return handlers.onDeactivateProduction;
+    case 'deactivateSandbox':
+      return handlers.onDeactivateSandbox;
+    case 'delete':
+      return handlers.onDelete;
+    default:
+      return undefined;
+  }
 }

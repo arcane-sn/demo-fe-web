@@ -5,152 +5,61 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch, SwitchWrapper } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import React from "react";
-import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import { Info } from "lucide-react";
+import React, { useState } from "react";
 
 const CardDefaultPricing = () => {
+  const [percentagePrice, setPercentagePrice] = useState("0.7%");
+  const [fixedPrice, setFixedPrice] = useState("IDR 0");
+
   return (
-    <Card className="mb-7" id="Default Pricing (MDR)-2">
-      <CardHeader className="justify-start gap-5">
-        <CardTitle className="text-b-16-16-600 text-gray-900">
-          Default Pricing (MDR)
-        </CardTitle>
-        <CardDescription className="text-b-13-14-400 text-gray-600">
+    <Card id="Default Pricing (MDR)-2" className="min-w-0 max-w-full">
+      <CardHeader>
+        <CardTitle>Default Pricing (MDR)</CardTitle>
+        <CardDescription>
           Set a default pricing for this provider
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        {/* ON US Section */}
-        <div className="flex items-center mb-4">
-          <Label className="text-base font-semibold text-slate-900 w-1/4">
-            ON US
-          </Label>
-          <div className="flex items-center gap-2.5">
-            <SwitchWrapper>
-              <Switch defaultChecked />
-            </SwitchWrapper>
-            <span className="text-sm font-medium text-slate-800">Active</span>
-          </div>
+      <CardContent className="min-w-0 max-w-full">
+        <div className="flex items-start gap-2 mb-5">
+          <Info className="size-4 text-slate-500 mt-0.5 shrink-0" />
+          <p className="text-xs text-muted-foreground">
+            Modifying the default pricing will not impact any previously
+            configured pricing
+          </p>
         </div>
-
-        {/* Pricing Type Section */}
-        <div className="flex items-center mb-5">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Pricing Type
-          </Label>
-          <Select defaultValue="medium">
-            <SelectTrigger className="w-full max-w-xs">
-              <SelectValue placeholder="Select pricing type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low - Inactive</SelectItem>
-              <SelectItem value="medium">Medium - Active</SelectItem>
-              <SelectItem value="high">High - Active</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Fee Rate Section */}
-        <div className="flex items-center">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Fee Rate
-          </Label>
-          <div className="flex items-center gap-2.5 w-full max-w-xs">
-            <div className="flex-1 relative">
-              <Input
-                value="0%"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Percentage Price
-              </Label>
-            </div>
-            <span className="text-xs font-normal text-slate-800">+</span>
-            <div className="flex-1 relative">
-              <Input
-                value="IDR 0"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Fixed Price
-              </Label>
-            </div>
-          </div>
-        </div>
-
-        <Separator className="my-4" />
-
-        {/* OFF US Section */}
-        <div className="flex items-center mb-4">
-          <Label className="text-base font-semibold text-slate-900 w-1/4">
-            OFF US
-          </Label>
-          <div className="flex items-center gap-2.5">
-            <SwitchWrapper>
-              <Switch defaultChecked />
-            </SwitchWrapper>
-            <span className="text-sm font-medium text-slate-800">Active</span>
-          </div>
-        </div>
-
-        {/* Pricing Type Section */}
-        <div className="flex items-center mb-5">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Pricing Type
-          </Label>
-          <Select defaultValue="medium">
-            <SelectTrigger className="w-full max-w-xs">
-              <SelectValue placeholder="Select pricing type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low - Inactive</SelectItem>
-              <SelectItem value="medium">Medium - Active</SelectItem>
-              <SelectItem value="high">High - Active</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Fee Rate Section */}
-        <div className="flex items-center">
-          <Label className="text-xs font-normal text-slate-800 w-1/4">
-            Fee Rate
-          </Label>
-          <div className="flex items-center gap-2.5 w-full max-w-xs">
-            <div className="flex-1 relative">
-              <Input
-                value="0%"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Percentage Price
-              </Label>
-            </div>
-            <span className="text-xs font-normal text-slate-800">+</span>
-            <div className="flex-1 relative">
-              <Input
-                value="IDR 0"
-                disabled
-                className="bg-stone-50 text-slate-300"
-              />
-              <Label className="absolute -top-2 left-2 bg-stone-50 px-1 text-xs text-slate-300">
-                Fixed Price
-              </Label>
-            </div>
-          </div>
-        </div>
+        <Table>
+          <TableBody>
+            {/* Provider Rate Section */}
+            <TableRow className="border-0 hover:!bg-transparent">
+              <TableCell className="w-1/4">
+                <Label>Provider Rate</Label>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2.5 max-w-full">
+                  <FloatingLabelInput
+                    label="Percentage Price"
+                    value={percentagePrice}
+                    onChange={setPercentagePrice}
+                    placeholder="0%"
+                    className="bg-white"
+                  />
+                  <span className="text-xs">+</span>
+                  <FloatingLabelInput
+                    label="Fixed Price"
+                    value={fixedPrice}
+                    onChange={setFixedPrice}
+                    placeholder="IDR 0"
+                    className="bg-white"
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

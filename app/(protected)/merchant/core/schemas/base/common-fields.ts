@@ -23,20 +23,34 @@ export const commonFields = {
   /**
    * Email validation
    */
-  email: (message?: string) => 
-    z.string().email({ message: message || 'Please enter a valid email address.' }),
+  email: (messages?: { required?: string; invalid?: string }) =>
+    z
+      .string()
+      .min(1, { message: messages?.required || 'This field is required.' })
+      .email({ message: messages?.invalid || 'Please enter a valid email address.' }),
 
   /**
    * URL validation (optional)
    */
-  optionalUrl: (message?: string) => 
+  optionalUrl: (message?: string) =>
     z.string().url({ message: message || 'Please enter a valid URL.' }).optional().or(z.literal('')),
 
   /**
-   * Phone number validation
+   * URL validation (required)
+   */
+  requiredUrl: (messages?: { required?: string; invalid?: string }) =>
+    z
+      .string()
+      .min(1, { message: messages?.required || 'This field is required.' })
+      .url({ message: messages?.invalid || 'Please enter a valid URL.' }),
+
+  /**
+   * Phone number validation (numbers only)
    */
   phoneNumber: (message?: string) => 
-    z.string().min(1, { message: message || 'Phone number is required.' }),
+    z.string()
+      .min(1, { message: message || 'Phone number is required.' })
+      .regex(/^\d+$/, { message: 'Phone number must contain only numbers.' }),
 
   /**
    * Boolean field
@@ -60,12 +74,14 @@ export const commonFields = {
  */
 export const fieldMessages = {
   required: {
-    companyName: 'Company name is required.',
-    brandName: 'Brand name is required.',
-    phoneNumber: 'Phone number is required.',
-    email: 'Email is required.',
-    businessType: 'Business type is required.',
-    businessIndustry: 'Business industry is required.',
+    companyName: 'This field is required.',
+    brandName: 'This field is required.',
+    phoneNumber: 'This field is required.',
+    email: 'This field is required.',
+    businessType: 'Please select an option.',
+    businessIndustry: 'Please select an option.',
+    website: 'This field is required.',
+    atLeastOnePic: 'Add at least one PIC in the section below.',
     address: 'Address is required.',
     country: 'Country is required.',
     province: 'Province is required.',
@@ -101,12 +117,18 @@ export const baseSchemaParts = {
    */
   companyProfile: {
     companyName: commonFields.requiredString(fieldMessages.required.companyName),
-    brandName: commonFields.optionalString(),
+    brandName: commonFields.requiredString(fieldMessages.required.brandName),
     phoneNumber: commonFields.phoneNumber(fieldMessages.required.phoneNumber),
-    email: commonFields.email(fieldMessages.validation.email),
+    email: commonFields.email({
+      required: fieldMessages.required.email,
+      invalid: fieldMessages.validation.email,
+    }),
     businessType: commonFields.requiredString(fieldMessages.required.businessType),
     businessIndustry: commonFields.requiredString(fieldMessages.required.businessIndustry),
-    website: commonFields.optionalUrl(fieldMessages.validation.url),
+    website: commonFields.requiredUrl({
+      required: fieldMessages.required.website,
+      invalid: fieldMessages.validation.url,
+    }),
   },
 
   /**
@@ -121,6 +143,13 @@ export const baseSchemaParts = {
     subDistrict: commonFields.requiredString(fieldMessages.required.subDistrict),
     postalCode: commonFields.requiredString(fieldMessages.required.postalCode),
     legalAddressSame: commonFields.boolean(),
+    legalAddress: commonFields.optionalString(),
+    legalCountry: commonFields.optionalString(),
+    legalProvince: commonFields.optionalString(),
+    legalCity: commonFields.optionalString(),
+    legalDistrict: commonFields.optionalString(),
+    legalSubDistrict: commonFields.optionalString(),
+    legalPostalCode: commonFields.optionalString(),
   },
 
   /**
@@ -139,7 +168,10 @@ export const baseSchemaParts = {
     fullName: commonFields.requiredString(fieldMessages.required.fullName),
     position: commonFields.requiredString(fieldMessages.required.position),
     phoneNumber: commonFields.phoneNumber(fieldMessages.required.phoneNumber),
-    email: commonFields.email(fieldMessages.validation.email),
+    email: commonFields.email({
+      required: fieldMessages.required.email,
+      invalid: fieldMessages.validation.email,
+    }),
   },
 };
 

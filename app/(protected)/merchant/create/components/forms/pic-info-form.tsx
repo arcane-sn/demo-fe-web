@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertOctagon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { getPicInfoSchema, type PicInfoSchemaType } from '../../../core/schemas';
 import { PublicFlag } from '@/components/ui/public-flag';
+import { cn } from '@/lib/utils';
 
 
 export function PicInfoForm() {
@@ -47,6 +49,12 @@ export function PicInfoForm() {
       }
     }
   });
+
+  const rootError = (form.formState.errors as typeof form.formState.errors & {
+    root?: { message?: string };
+  }).root;
+
+  const globalErrorMessage = rootError?.message;
 
   const onSubmit = (data: PicInfoSchemaType) => {
     // TODO: Implement form submission
@@ -144,7 +152,16 @@ export function PicInfoForm() {
                     </SelectContent>
                   </Select>
                   <FormControl>
-                    <Input placeholder="e.g. 81234567890" {...field} />
+                    <Input 
+                      placeholder="e.g. 81234567890" 
+                      type="tel"
+                      {...field}
+                      onChange={(e) => {
+                        // Only allow numbers
+                        const value = e.target.value.replace(/\D/g, '');
+                        field.onChange(value);
+                      }}
+                    />
                   </FormControl>
                 </div>
                 <FormMessage />
@@ -181,15 +198,35 @@ export function PicInfoForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-4xl mx-auto space-y-8">
         {/* Header Instructions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>PIC</CardTitle>
+        <Card
+          className={cn(
+            'transition-colors',
+            globalErrorMessage && 'border-destructive/40 bg-destructive/5'
+          )}
+        >
+          <CardHeader className="flex items-center justify-between space-y-0">
+            <CardTitle className="text-base font-semibold">PIC</CardTitle>
+            {globalErrorMessage && (
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-destructive/30 bg-white text-destructive">
+                <AlertOctagon className="h-4 w-4" />
+              </span>
+            )}
           </CardHeader>
-          <CardContent>
-            <p className="text-gray-600">
-              Add at least one PIC in the section below.
+          <CardContent className="space-y-1">
+            <p
+              className={cn(
+                'text-sm',
+                globalErrorMessage ? 'text-destructive font-medium' : 'text-gray-600'
+              )}
+            >
+              {globalErrorMessage ?? 'Add at least one PIC in the section below.'}
             </p>
-            <p className="text-sm text-gray-500">
+            <p
+              className={cn(
+                'text-xs',
+                globalErrorMessage ? 'text-destructive/70' : 'text-gray-500'
+              )}
+            >
               You can update or add more PICs later
             </p>
           </CardContent>

@@ -18,7 +18,7 @@ const IndexingSection = ({ lists, ref }: IndexingSectionProps) => {
       {lists.map((list, index) => (
         <div
           key={index}
-          className="relative text-gray-800 text-b-13-14-400 py-3 px-4 rounded-md data-[active=true]:text-primary data-[active=true]:bg-secondary-active cursor-pointer before:content-[''] before:absolute before:-left-1 before:top-1/2 before:-translate-y-1/2 before:h-2 before:w-2 before:rounded-full  data-[active=true]:before:bg-primary"
+          className="relative text-gray-800 text-b-13-14-400 py-3 px-4 rounded-md data-[active=true]:text-primary cursor-pointer before:content-[''] before:absolute before:-left-1 before:top-1/2 before:-translate-y-1/2 before:h-2 before:w-2 before:rounded-full  data-[active=true]:before:bg-primary"
           data-scrollspy-anchor={`${list}-${index}`}
         >
           {list}

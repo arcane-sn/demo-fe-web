@@ -80,10 +80,10 @@ const DatePickerRange = ({
     if (!date?.from) return placeholder;
 
     if (date.to) {
-      return `${format(date.from, "LLL dd, y")} - ${format(date.to, "LLL dd, y")}`;
+      return `${format(date.from, "dd/MM/yyyy")} - ${format(date.to, "dd/MM/yyyy")}`;
     }
 
-    return format(date.from, "LLL dd, y");
+    return format(date.from, "dd/MM/yyyy");
   };
 
   return (

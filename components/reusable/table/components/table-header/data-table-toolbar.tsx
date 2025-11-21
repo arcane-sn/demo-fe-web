@@ -34,17 +34,25 @@ function ToolbarActions({
     <div className="flex items-center gap-2">
       {actions.map((action) => {
         // Special handling for filter button when filters are active
-        if (action.id === "filter" && activeFilterCount && activeFilterCount > 0) {
+        if (
+          action.id === "filter" &&
+          activeFilterCount &&
+          activeFilterCount > 0
+        ) {
           return (
             <div
               key={action.id}
               className={cn(
                 "inline-flex items-center gap-2 px-3 py-2 rounded-md bg-black text-white cursor-pointer whitespace-nowrap",
-                buttonClassName,
+                buttonClassName
               )}
               onClick={action.onClick}
             >
-              <KeenIcon icon="filter" style="outline" className="w-4 h-4 text-white flex-shrink-0" />
+              <KeenIcon
+                icon="filter"
+                style="outline"
+                className="w-4 h-4 text-white flex-shrink-0"
+              />
               <span className="text-sm font-medium text-white whitespace-nowrap">
                 Filter Applied ({activeFilterCount})
               </span>
@@ -56,7 +64,11 @@ function ToolbarActions({
                 className="ml-1 hover:opacity-70 transition-opacity cursor-pointer flex-shrink-0"
                 aria-label="Clear all filters"
               >
-                <KeenIcon icon="cross-circle" style="outline" className="w-4 h-4 text-white" />
+                <KeenIcon
+                  icon="cross-circle"
+                  style="outline"
+                  className="w-4 h-4 text-white"
+                />
               </button>
             </div>
           );
@@ -71,7 +83,7 @@ function ToolbarActions({
             disabled={action.disabled}
             className={cn(
               "inline-flex items-center gap-1.5 text-gray-700 hover:text-gray-700",
-              buttonClassName,
+              buttonClassName
             )}
           >
             {action.icon}
@@ -93,7 +105,7 @@ export function DataTableToolbar<TData>({
   mode = "default",
   activeFilterCount,
   onClearFilters,
-}: DataTableToolbarProps & { 
+}: DataTableToolbarProps & {
   table?: Table<TData>;
   activeFilterCount?: number;
   onClearFilters?: () => void;
@@ -120,6 +132,11 @@ export function DataTableToolbar<TData>({
     search?.onChange(value);
   };
 
+  const handleClear = () => {
+    setInternalValue("");
+    search?.onChange("");
+  };
+
   const isCompact = mode === "compact";
 
   const buttonHeight = isCompact ? "h-9" : "h-9";
@@ -130,7 +147,7 @@ export function DataTableToolbar<TData>({
         "flex w-full flex-col gap-2",
         isCompact
           ? "md:flex-row md:items-center md:justify-end md:gap-3"
-          : "lg:flex-row lg:items-center lg:justify-between",
+          : "lg:flex-row lg:items-center lg:justify-between"
       )}
     >
       {search ? (
@@ -138,7 +155,7 @@ export function DataTableToolbar<TData>({
           onSubmit={handleSubmit}
           className={cn(
             "flex items-center justify-start gap-0 rounded-md border border-gray-300 bg-gray-50",
-            isCompact ? "w-full md:w-[420px]" : "flex-1",
+            isCompact ? "w-full md:w-[420px]" : "flex-1"
           )}
         >
           {search.fields?.length ? (
@@ -159,17 +176,33 @@ export function DataTableToolbar<TData>({
             </Select>
           ) : null}
 
-          <Input
+          <div className="relative flex-1">
+            <Input
               value={internalValue}
               onChange={(event) => handleChange(event.target.value)}
               placeholder={search.placeholder}
-              className="h-9 flex-1 rounded-none border-0 bg-transparent text-b-13-14-400 text-gray-700 focus-visible:ring-0"
-          />
+              className="h-9 flex-1 rounded-none border-0 bg-transparent text-b-13-14-400 text-gray-700 focus-visible:ring-0 pr-8"
+            />
+            {internalValue && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="Clear search"
+              >
+                <KeenIcon
+                  icon="cross-circle"
+                  style="outline"
+                  className="w-4 h-4 text-gray-600"
+                />
+              </button>
+            )}
+          </div>
 
           <Button
             type="submit"
             variant="ghost"
-            className="h-9` rounded-l-none bg-gray-200 border-l border-gray-200 px-4 text-gray-600 hover:bg-gray-200"
+            className="h-9 rounded-l-none bg-gray-200 border-l border-gray-200 px-4 text-gray-600 hover:bg-gray-200"
           >
             <KeenIcon icon="magnifier" />
           </Button>
@@ -181,7 +214,7 @@ export function DataTableToolbar<TData>({
       <div
         className={cn(
           "flex items-center gap-2",
-          isCompact ? "justify-end" : "justify-end",
+          isCompact ? "justify-end" : "justify-end"
         )}
       >
         {showColumnVisibility && table ? (
@@ -194,7 +227,7 @@ export function DataTableToolbar<TData>({
                   size="sm"
                   className={cn(
                     "inline-flex items-center gap-1.5 text-gray-700 hover:text-gray-700",
-                    buttonHeight,
+                    buttonHeight
                   )}
                 >
                   <Settings2 className="size-4" />
@@ -205,8 +238,8 @@ export function DataTableToolbar<TData>({
           />
         ) : null}
         {extra}
-        <ToolbarActions 
-          actions={actions} 
+        <ToolbarActions
+          actions={actions}
           buttonClassName={buttonHeight}
           activeFilterCount={activeFilterCount}
           onClearFilters={onClearFilters}
@@ -215,5 +248,3 @@ export function DataTableToolbar<TData>({
     </div>
   );
 }
-
-

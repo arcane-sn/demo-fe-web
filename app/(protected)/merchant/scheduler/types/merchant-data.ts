@@ -1,4 +1,4 @@
-import { BaseTableData } from '@/components/table/types';
+import { BaseTableData } from "@/components/reusable/table";
 
 // Merchant data interface based on the image
 export interface MerchantData extends BaseTableData {

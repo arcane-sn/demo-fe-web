@@ -19,7 +19,6 @@ export function MerchantListEmptyDemo() {
     handleDelete,
     handleCreate,
     handleSelectionChange,
-    clearError,
   } = useMerchantList();
 
   // Data kosong untuk demo empty state
@@ -46,23 +45,6 @@ export function MerchantListEmptyDemo() {
           </Button>
         </div>
       </div>
-
-      {/* Error Display */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-red-800">{error}</p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearError}
-              className="text-red-600 hover:text-red-800"
-            >
-              Dismiss
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Table dengan data kosong untuk demo empty state */}
       <MerchantTable
