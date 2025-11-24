@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/reusable/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { KeenIcon } from "@/components/keenicons";
@@ -505,15 +505,12 @@ interface SameDaySettlementCellProps {
 
 function SameDaySettlementCell({ sameDaySettlement }: SameDaySettlementCellProps) {
   return (
-    <Badge
+    <StatusBadge
       variant={sameDaySettlement ? 'success' : 'secondary'}
-      appearance="outline"
-      shape="circle"
       size="sm"
     >
-      <BadgeDot />
       {sameDaySettlement ? 'Active' : 'Inactive'}
-    </Badge>
+    </StatusBadge>
   );
 }
 

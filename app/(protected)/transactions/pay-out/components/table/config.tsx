@@ -16,6 +16,7 @@ const ACTION_TO_MODAL_KEY: Record<string, keyof import("../../core/_models").IsM
 
 export const useActionConfig = (): ActionCellConfig<PayOutTransaction> => {
   const setModal = usePayoutStore((state) => state.setModal);
+  const setSelectedTransactions = usePayoutStore((state) => state.setSelectedTransactions);
 
   return {
     actions: PAY_OUT_TRANSACTION_ACTIONS.map((action) => {
@@ -23,17 +24,20 @@ export const useActionConfig = (): ActionCellConfig<PayOutTransaction> => {
       
       return {
         label: action.label,
-        icon: action.icon ? (
+        icon: (
           <div className="flex items-center justify-center w-5 h-5">
-            <action.icon className="size-4 text-slate-700" />
+            <KeenIcon
+              icon={action.icon}
+              style="outline"
+              className="size-4 text-slate-700"
+            />
           </div>
-        ) : undefined,
+        ),
         onClick: (row: Row<PayOutTransaction>) => {
           if (modalKey) {
+            // When clicking from table row, set this single transaction as selected
+            setSelectedTransactions([row.original]);
             setModal(modalKey, true);
-          } else if (action.value === "see_detail") {
-            // Handle see detail - navigate to detail page
-            window.location.href = `/transactions/pay-out/${row.original.id}`;
           }
         },
       };

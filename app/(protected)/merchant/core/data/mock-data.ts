@@ -1,6 +1,6 @@
 import { MerchantData } from '../../types/merchant';
 import { MerchantReviewData } from '../../review/core/types/merchant-review';
-import { BankData } from '../../[id]/edit/core/types/disbursement';
+import { BankData } from '../../list/edit/[id]/core/types/disbursement';
 
 // ============================================================================
 // MERCHANT DATA
@@ -700,107 +700,6 @@ export const generateMoreBankData = (): BankData[] => {
 export const allBankData = [...mockBankData, ...generateMoreBankData()];
 
 // ============================================================================
-// CHANNEL DATA
-// ============================================================================
-
-export interface Channel {
-  id: string;
-  name: string;
-  setupFeeRate: string;
-  provider: string;
-  logo: string;
-  logoColor: string;
-}
-
-export type ChannelType = 'ewallet' | 'qr' | 'virtual-account' | 'direct-debit' | 'credit-card';
-
-export const channelData: Record<ChannelType, Channel[]> = {
-  ewallet: [
-    {
-      id: 'dana',
-      name: 'Dana',
-      setupFeeRate: '1.35%',
-      provider: 'Upay',
-      logo: '/media/chanels/dana.png',
-      logoColor: 'bg-blue-600'
-    },
-    {
-      id: 'shopeepay',
-      name: 'ShopeePay',
-      setupFeeRate: '1.7%',
-      provider: 'Upay',
-      logo: '/media/chanels/shopeepay.png',
-      logoColor: 'bg-orange-500'
-    },
-    {
-      id: 'ovo',
-      name: 'OVO',
-      setupFeeRate: '1.35%',
-      provider: 'Upay',
-      logo: 'OVO',
-      logoColor: 'bg-purple-600'
-    }
-  ],
-  qr: [
-    {
-      id: 'qris',
-      name: 'QRIS',
-      setupFeeRate: '0.7%',
-      provider: 'HLA Cash',
-      logo: '/media/chanels/qris.png',
-      logoColor: 'bg-red-600'
-    }
-  ],
-  'virtual-account': [
-    {
-      id: 'permata',
-      name: 'VA Permata Bank',
-      setupFeeRate: '1.3%',
-      provider: 'Permata',
-      logo: '/media/chanels/permata.png',
-      logoColor: 'bg-green-600'
-    },
-    {
-      id: 'cimb',
-      name: 'VA CIMB Niaga',
-      setupFeeRate: '1.7%',
-      provider: 'User',
-      logo: '/media/chanels/cimb.png',
-      logoColor: 'bg-red-700'
-    }
-  ],
-  'direct-debit': [
-    // Add direct debit channels here when available
-  ],
-  'credit-card': [
-    {
-      id: 'regular',
-      name: 'Regular',
-      setupFeeRate: '1.7% + IDR 5,000',
-      provider: 'Card Provider',
-      logo: '',
-      logoColor: ''
-    },
-    {
-      id: 'recurring',
-      name: 'Recurring',
-      setupFeeRate: '1.7% + IDR 5,000',
-      provider: 'Card Provider',
-      logo: '',
-      logoColor: ''
-    },
-    {
-      id: 'installment',
-      name: 'Installment',
-      setupFeeRate: '1.7% + IDR 5,000',
-      provider: 'Card Provider',
-      logo: '',
-      logoColor: ''
-    }
-  ]
-};
-
-// ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
 
@@ -839,7 +738,7 @@ export const getMerchantReviewsByTab = (tabId: string): MerchantData[] => {
       );
     case 'merchant-adjustment':
       return mockMerchants.filter(merchant => 
-        merchant.reviewStatus === 'approved' || merchant.reviewStatus === 'rejected'
+        merchant.reviewStatus === 'pending-review' || merchant.reviewStatus === 'draft'
       );
     default:
       return mockMerchants;
@@ -847,7 +746,8 @@ export const getMerchantReviewsByTab = (tabId: string): MerchantData[] => {
 };
 
 // Convert MerchantData to MerchantReviewData format
-const convertToReviewData = (merchant: MerchantData): MerchantReviewData => ({
+const convertToReviewData = (merchant: MerchantData, tabId?: string): MerchantReviewData => {
+  const baseData: MerchantReviewData = {
   id: merchant.id,
   companyName: merchant.companyName,
   brandName: merchant.brandName,
@@ -869,16 +769,45 @@ const convertToReviewData = (merchant: MerchantData): MerchantReviewData => ({
   },
   paymentChannels: merchant.activePaymentChannels,
   submittedAt: merchant.updatedDate.date + 'T' + merchant.updatedDate.time + 'Z',
-});
+  };
+
+  // Add merchant adjustment specific fields
+  if (tabId === 'merchant-adjustment') {
+    // Format date untuk merchant adjustment sesuai gambar: "Thu, Dec 16, 2025" dan "23:12:32 (GMT +7)"
+    const updatedDate = new Date();
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayName = days[updatedDate.getDay()];
+    const monthName = months[updatedDate.getMonth()];
+    const day = updatedDate.getDate();
+    const year = updatedDate.getFullYear();
+    const hours = String(updatedDate.getHours()).padStart(2, '0');
+    const minutes = String(updatedDate.getMinutes()).padStart(2, '0');
+    const seconds = String(updatedDate.getSeconds()).padStart(2, '0');
+    
+    return {
+      ...baseData,
+      updatedDate: {
+        date: `${dayName}, ${monthName} ${day}, ${year}`,
+        time: `${hours}:${minutes}:${seconds}`,
+        timezone: 'GMT +7',
+      },
+      actions: ['Create', 'Update', 'Delete'] as ('Create' | 'Update' | 'Delete')[],
+      totalUpdatedSections: 10,
+      updatedBy: {
+        name: 'Wakwaw Waw',
+        email: 'wakwaw@gmail.com',
+        avatar: '/media/avatars/300-1.png',
+      },
+    };
+  }
+
+  return baseData;
+};
 
 export const getMerchantReviewsByTabForReview = (tabId: string): MerchantReviewData[] => {
   const merchantData = getMerchantReviewsByTab(tabId);
-  return merchantData.map(convertToReviewData);
-};
-
-// Channel helper functions
-export const getChannelsByType = (type: ChannelType): Channel[] => {
-  return channelData[type] || [];
+  return merchantData.map(merchant => convertToReviewData(merchant, tabId));
 };
 
 // Bank helper functions
@@ -1045,9 +974,176 @@ export const getMockHierarchyData = () => ({
                 color: "red",
                 letter: "S"
               }
+            },
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }, {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
             }
           ]
-        }
+        },
+        {
+          id: "1.1",
+          name: "PT JAYA JAYA JAYA",
+          clientId: "UP12920398747",
+          level: 2,
+          icon: {
+            type: "circle" as const,
+            color: "orange"
+          },
+          children: [
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            },
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }, {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }
+          ]
+        },
+        
+      ]
+    },
+    {
+      id: "1",
+      name: "PT ABADI JAYA TEKNOLOGI",
+      clientId: "UP12920398747",
+      level: 1,
+      icon: {
+        type: "circle" as const,
+        color: "blue"
+      },
+      children: [
+        {
+          id: "1.1",
+          name: "PT JAYA JAYA JAYA",
+          clientId: "UP12920398747",
+          level: 2,
+          icon: {
+            type: "circle" as const,
+            color: "orange"
+          },
+          children: [
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            },
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }, {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }
+          ]
+        },
+        {
+          id: "1.1",
+          name: "PT JAYA JAYA JAYA",
+          clientId: "UP12920398747",
+          level: 2,
+          icon: {
+            type: "circle" as const,
+            color: "orange"
+          },
+          children: [
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            },
+            {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }, {
+              id: "1.1.1",
+              name: "Smart Market",
+              clientId: "UP12920398747",
+              level: 3,
+              icon: {
+                type: "square" as const,
+                color: "red",
+                letter: "S"
+              }
+            }
+          ]
+        },
+        
       ]
     }
   ]

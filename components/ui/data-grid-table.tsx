@@ -257,7 +257,19 @@ function DataGridTableBodyRow<TData>({
       ref={dndRef}
       style={{ ...(dndStyle ? dndStyle : null) }}
       data-state={table.options.enableRowSelection && row.getIsSelected() ? 'selected' : undefined}
-      onClick={() => props.onRowClick && props.onRowClick(row.original)}
+      onClick={(e) => {
+        // Don't trigger row click if clicking on checkbox, button, or interactive elements
+        const target = e.target as HTMLElement;
+        if (
+          target.closest('input[type="checkbox"]') ||
+          target.closest('button') ||
+          target.closest('[role="button"]') ||
+          target.closest('a')
+        ) {
+          return;
+        }
+        props.onRowClick && props.onRowClick(row.original);
+      }}
       className={cn(
         'hover:bg-muted/40 data-[state=selected]:bg-muted/50',
         props.onRowClick && 'cursor-pointer',
@@ -385,13 +397,15 @@ function DataGridTableRowSelect<TData>({ row, size }: { row: Row<TData>; size?: 
       <div
         className={cn('hidden absolute top-0 bottom-0 start-0 w-[2px] bg-primary', row.getIsSelected() && 'block')}
       ></div>
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        size={size ?? 'sm'}
-        className="align-[inherit]"
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          size={size ?? 'sm'}
+          className="align-[inherit]"
+        />
+      </div>
     </>
   );
 }

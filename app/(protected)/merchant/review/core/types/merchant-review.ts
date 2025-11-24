@@ -39,6 +39,20 @@ export interface MerchantReviewData extends BaseTableData {
   };
   reviewNotes?: string;
   rejectionReason?: string;
+  
+  // Fields for merchant adjustment
+  updatedDate?: {
+    date: string;
+    time: string;
+    timezone: string;
+  };
+  actions?: ('Create' | 'Update' | 'Delete')[];
+  totalUpdatedSections?: number;
+  updatedBy?: {
+    name: string;
+    email: string;
+    avatar?: string;
+  };
 }
 
 export interface MerchantReviewTableConfig {

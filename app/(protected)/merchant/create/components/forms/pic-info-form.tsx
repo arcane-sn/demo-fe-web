@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertOctagon } from 'lucide-react';
+import { KeenIcon } from '@/components/keenicons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -208,7 +208,7 @@ export function PicInfoForm() {
             <CardTitle className="text-base font-semibold">PIC</CardTitle>
             {globalErrorMessage && (
               <span className="flex h-8 w-8 items-center justify-center rounded-full border border-destructive/30 bg-white text-destructive">
-                <AlertOctagon className="h-4 w-4" />
+                <KeenIcon icon="danger" className="h-4 w-4" />
               </span>
             )}
           </CardHeader>

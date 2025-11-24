@@ -16,7 +16,6 @@ import {
   DialogBody, 
   DialogFooter 
 } from '@/components/ui/dialog';
-import { SidebarNavigation } from '../../shared/sidebar-navigation';
 
 export interface EditChannelData {
   id: string;

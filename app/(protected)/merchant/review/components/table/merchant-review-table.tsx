@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
-import { Eye, CheckCircle, XCircle, FileText } from "lucide-react";
+import { useMemo, useCallback, useState } from "react";
 import { DataTable } from "@/components/reusable/table";
+import { KeenIcon } from "@/components/keenicons";
 import {
   FilterModal,
   ExportModal,
 } from "@/components/reusable/table/components/modals";
+import { ModalApproval } from "@/components/shared/modals/modal-approved";
+import { ModalSubmit } from "@/components/shared/modals/modal-submit";
+import { ModalReject } from "@/components/shared/modals/modal-reject";
 import { MerchantReviewData } from "../../core";
 import { useMerchantReviewTableColumns } from "./merchant-review-table-columns";
 import { useMerchantReviewTableFilters } from "./hooks/useMerchantReviewTableFilters";
@@ -34,6 +37,7 @@ interface MerchantReviewTableProps {
   onSelectionChange?: (selectedMerchants: MerchantReviewData[]) => void;
   loading?: boolean;
   error?: string;
+  activeTab?: string;
 }
 
 export function MerchantReviewTable({
@@ -45,7 +49,17 @@ export function MerchantReviewTable({
   onSelectionChange,
   loading = false,
   error,
+  activeTab = 'new-merchant',
 }: MerchantReviewTableProps) {
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [selectedMerchantForApproval, setSelectedMerchantForApproval] = useState<MerchantReviewData | null>(null);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [selectedMerchantForReject, setSelectedMerchantForReject] = useState<MerchantReviewData | null>(null);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [isRejectSuccessModalOpen, setIsRejectSuccessModalOpen] = useState(false);
+
   const {
     searchValue,
     setSearchValue,
@@ -77,7 +91,63 @@ export function MerchantReviewTable({
     activeFilterCount,
   } = useMerchantReviewTableFilters(data);
 
-  const columns = useMerchantReviewTableColumns();
+  const columns = useMerchantReviewTableColumns(activeTab);
+
+  const handleOpenApprovalModal = useCallback((merchant: MerchantReviewData) => {
+    setSelectedMerchantForApproval(merchant);
+    setIsApprovalModalOpen(true);
+  }, []);
+
+  const handleConfirmApprove = useCallback(async () => {
+    if (!selectedMerchantForApproval) return;
+    
+    setIsApproving(true);
+    try {
+      await onApprove?.(selectedMerchantForApproval);
+      setIsApprovalModalOpen(false);
+      setSelectedMerchantForApproval(null);
+      // Show success modal after approval
+      setIsSuccessModalOpen(true);
+    } catch (err) {
+      // Error handling is done by parent component
+    } finally {
+      setIsApproving(false);
+    }
+  }, [selectedMerchantForApproval, onApprove]);
+
+  const handleCancelApproval = useCallback(() => {
+    setIsApprovalModalOpen(false);
+    setSelectedMerchantForApproval(null);
+  }, []);
+
+  const handleOpenRejectModal = useCallback((merchant: MerchantReviewData) => {
+    setSelectedMerchantForReject(merchant);
+    setIsRejectModalOpen(true);
+  }, []);
+
+  const handleConfirmReject = useCallback(async (reason: string) => {
+    if (!selectedMerchantForReject) return;
+    
+    setIsRejecting(true);
+    try {
+      // Call onReject with merchant and reason
+      // Note: onReject might need to be updated to accept reason parameter
+      await onReject?.(selectedMerchantForReject);
+      setIsRejectModalOpen(false);
+      setSelectedMerchantForReject(null);
+      // Show success modal after rejection
+      setIsRejectSuccessModalOpen(true);
+    } catch (err) {
+      // Error handling is done by parent component
+    } finally {
+      setIsRejecting(false);
+    }
+  }, [selectedMerchantForReject, onReject]);
+
+  const handleCancelReject = useCallback(() => {
+    setIsRejectModalOpen(false);
+    setSelectedMerchantForReject(null);
+  }, []);
 
   const actionConfig = useMemo(
     () => ({
@@ -85,33 +155,35 @@ export function MerchantReviewTable({
       actions: [
         {
           label: "See Detail",
-          icon: <Eye className="h-4 w-4 text-gray-600" />,
+          icon: <KeenIcon icon="eye" style="outline" className="h-4 w-4 text-gray-600" />,
           onClick: (row: { original: MerchantReviewData }) => onView?.(row.original),
         },
         {
           label: "Continue Draft",
-          icon: <FileText className="h-4 w-4 text-gray-600" />,
+          icon: <KeenIcon icon="notepad-edit" style="outline" className="h-4 w-4 text-gray-600" />,
           onClick: (row: { original: MerchantReviewData }) => onContinueDraft?.(row.original),
-          show: (row: { original: MerchantReviewData }) =>
-            row.original.reviewStatus === "draft",
+          separatorAfter: true,
         },
         {
           label: "Approve Merchant",
-          icon: <CheckCircle className="h-4 w-4 text-green-600" />,
-          onClick: (row: { original: MerchantReviewData }) => onApprove?.(row.original),
+          icon: <KeenIcon icon="check-circle" style="outline" className="h-4 w-4 text-green-600" />,
+          onClick: (row: { original: MerchantReviewData }) => handleOpenApprovalModal(row.original),
           show: (row: { original: MerchantReviewData }) =>
             row.original.reviewStatus === "pending-review",
+          className: "text-green-600",
         },
         {
           label: "Reject Merchant",
-          icon: <XCircle className="h-4 w-4 text-red-600" />,
-          onClick: (row: { original: MerchantReviewData }) => onReject?.(row.original),
+          icon: <KeenIcon icon="cross-circle" style="outline" className="h-4 w-4 text-red-600" />,
+          onClick: (row: { original: MerchantReviewData }) => handleOpenRejectModal(row.original),
           show: (row: { original: MerchantReviewData }) =>
             row.original.reviewStatus === "pending-review",
+          variant: "destructive" as const,
+          className: "text-red-600",
         },
       ],
     }),
-    [onView, onContinueDraft, onApprove, onReject],
+    [onView, onContinueDraft, handleOpenApprovalModal, handleOpenRejectModal],
   );
 
   const toolbarActions = useMemo(
@@ -262,6 +334,58 @@ export function MerchantReviewTable({
         title="Export Merchant Review"
         description="Download the merchant review table data"
         onExport={handleExport}
+      />
+
+      {/* Approval Confirmation Modal */}
+      <ModalApproval
+        open={isApprovalModalOpen}
+        onOpenChange={setIsApprovalModalOpen}
+        headerTitle="Approve Confirmation"
+        title="Approve Merchant Request?"
+        description="Please review the details before proceeding."
+        onApprove={handleConfirmApprove}
+        onCancel={handleCancelApproval}
+        isLoading={isApproving}
+      />
+
+      {/* Success Modal */}
+      <ModalSubmit
+        open={isSuccessModalOpen}
+        onOpenChange={setIsSuccessModalOpen}
+        title="Merchant Approved"
+        imageSrc="/media/illustrations/32.svg"
+        imageAlt="Merchant approved successfully"
+        imageWidth={200}
+        imageHeight={188}
+        message="Merchant Approved Successfully!"
+        description="This merchant has been successfully approved and is now active"
+        buttonText="Okay!"
+      />
+
+      {/* Reject Confirmation Modal */}
+      <ModalReject
+        open={isRejectModalOpen}
+        onOpenChange={setIsRejectModalOpen}
+        headerTitle="Reject Confirmation"
+        title="Are You Sure You Want to Reject This Merchant?"
+        description="Once rejected, this merchant will be deleted."
+        onReject={handleConfirmReject}
+        onCancel={handleCancelReject}
+        isLoading={isRejecting}
+      />
+
+      {/* Reject Success Modal */}
+      <ModalSubmit
+        open={isRejectSuccessModalOpen}
+        onOpenChange={setIsRejectSuccessModalOpen}
+        title="Merchant Rejected"
+        imageSrc="/media/illustrations/10.svg"
+        imageAlt="Merchant rejected successfully"
+        imageWidth={200}
+        imageHeight={188}
+        message="Merchant Rejected!"
+        description="This merchant has been rejected and deleted."
+        buttonText="Okay!"
       />
     </>
   );

@@ -1,20 +1,12 @@
 import { Fragment } from 'react/jsx-runtime';
-import {
-  Building2,
-  User,
-  FileText,
-  Settings,
-  Layers,
-  MessageSquare,
-  LucideIcon,
-} from 'lucide-react';
+import { KeenIcon } from '@/components/keenicons';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/common/container';
 import { STEPS_CONFIG } from '../config/steps.config';
 
 interface StepIcon {
   title: string;
-  icon: LucideIcon;
+  icon: string;
 }
 
 interface StepsProps {
@@ -22,19 +14,19 @@ interface StepsProps {
 }
 
 // Icon mapping untuk setiap step
-const STEP_ICONS: Record<string, LucideIcon> = {
-  'business-info': Building2,
-  'pic-info': User,
-  'documents': FileText,
-  'services': Settings,
-  'hierarchy': Layers,
-  'others': MessageSquare,
+const STEP_ICONS: Record<string, string> = {
+  'business-info': 'shop',
+  'pic-info': 'user',
+  'documents': 'document',
+  'services': 'setting-2',
+  'hierarchy': 'element-6',
+  'others': 'note-2',
 };
 
 export function Steps({ currentStep }: StepsProps) {
   const steps: StepIcon[] = STEPS_CONFIG.map(step => ({
     title: step.title,
-    icon: STEP_ICONS[step.id] || Building2, // fallback icon
+    icon: STEP_ICONS[step.id] || 'shop', // fallback icon
   }));
 
   return (
@@ -48,8 +40,6 @@ export function Steps({ currentStep }: StepsProps) {
             : isActive
               ? 'active'
               : 'pending';
-
-          const Icon = step.icon;
 
           return (
             <Fragment key={step.title}>
@@ -84,7 +74,7 @@ export function Steps({ currentStep }: StepsProps) {
                   </svg>
                 )}
 
-                <Icon className="kt-step-icon size-4" />
+                <KeenIcon icon={step.icon} className="kt-step-icon size-4" />
                 {step.title}
               </div>
 

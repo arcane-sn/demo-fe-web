@@ -6,8 +6,8 @@ export function useMerchantNavigation() {
   const router = useRouter();
   
   return {
-    toDetails: (merchantId: string) => router.push(`/merchant/${merchantId}/details`),
-    toEdit: (merchantId: string) => router.push(`/merchant/${merchantId}/edit`),
+    toDetails: (merchantId: string) => router.push(`/merchant/list/details/${merchantId}`),
+    toEdit: (merchantId: string) => router.push(`/merchant/list/edit/${merchantId}`),
     toList: () => router.push('/merchant/list'),
     toCreate: () => router.push('/merchant/create'),
     toReview: () => router.push('/merchant/review'),
@@ -35,7 +35,7 @@ export const navigateToMerchantDetails = (merchantId: string): void => {
     return;
   }
   
-  routerInstance.push(`/merchant/${merchantId}/details`);
+  routerInstance.push(`/merchant/list/details/${merchantId}`);
 };
 
 export const navigateToMerchantEdit = (merchantId: string): void => {
@@ -52,7 +52,7 @@ export const navigateToMerchantEdit = (merchantId: string): void => {
     return;
   }
   
-  routerInstance.push(`/merchant/${merchantId}/edit`);
+  routerInstance.push(`/merchant/list/edit/${merchantId}`);
 };
 
 export const navigateToCreateMerchant = (): void => {

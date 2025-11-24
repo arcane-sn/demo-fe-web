@@ -1,22 +1,28 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { MerchantReviewData } from '../types';
 import { MerchantService } from '../../../core/services/merchant.service';
 import { useMerchantNavigation } from '../../../utils/navigation';
 
-export function useMerchantReviewActions() {
+export function useMerchantReviewActions(activeTab?: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const router = useRouter();
   const navigation = useMerchantNavigation();
 
   const handleView = useCallback((merchant: MerchantReviewData) => {
     try {
-      navigation.toDetails(merchant.id);
+      // Navigate to review detail page with tab query parameter
+      const url = activeTab 
+        ? `/merchant/review/${merchant.id}?tab=${activeTab}`
+        : `/merchant/review/${merchant.id}`;
+      router.push(url);
     } catch (err) {
       setError('Failed to navigate to merchant details');
     }
-  }, [navigation]);
+  }, [router, activeTab]);
 
   const handleApprove = useCallback(async (merchant: MerchantReviewData) => {
     setLoading(true);

@@ -44,7 +44,7 @@ export function useMerchantReview(
     handleReject, 
     handleContinueDraft, 
     clearError 
-  } = useMerchantReviewActions();
+  } = useMerchantReviewActions(activeTab);
   const { 
     selectedMerchants, 
     setSelectedMerchants, 
@@ -54,7 +54,8 @@ export function useMerchantReview(
   } = useMerchantReviewSelection();
 
   // Helper function to convert MerchantData to MerchantReviewData
-  const convertToReviewData = (merchant: MerchantData): MerchantReviewData => ({
+  const convertToReviewData = (merchant: MerchantData, tabId?: string): MerchantReviewData => {
+    const baseData: MerchantReviewData = {
     id: merchant.id,
     companyName: merchant.companyName,
     brandName: merchant.brandName,
@@ -76,14 +77,48 @@ export function useMerchantReview(
     },
     paymentChannels: merchant.activePaymentChannels,
     submittedAt: merchant.updatedDate.date + 'T' + merchant.updatedDate.time + 'Z',
-  });
+    };
+
+    // Add merchant adjustment specific fields
+    if (tabId === 'merchant-adjustment') {
+      // Format date untuk merchant adjustment sesuai gambar: "Thu, Dec 16, 2025" dan "23:12:32 (GMT +7)"
+      const updatedDate = new Date();
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const dayName = days[updatedDate.getDay()];
+      const monthName = months[updatedDate.getMonth()];
+      const day = updatedDate.getDate();
+      const year = updatedDate.getFullYear();
+      const hours = String(updatedDate.getHours()).padStart(2, '0');
+      const minutes = String(updatedDate.getMinutes()).padStart(2, '0');
+      const seconds = String(updatedDate.getSeconds()).padStart(2, '0');
+      
+      return {
+        ...baseData,
+        updatedDate: {
+          date: `${dayName}, ${monthName} ${day}, ${year}`,
+          time: `${hours}:${minutes}:${seconds}`,
+          timezone: 'GMT +7',
+        },
+        actions: ['Create', 'Update', 'Delete'] as ('Create' | 'Update' | 'Delete')[],
+        totalUpdatedSections: 10,
+        updatedBy: {
+          name: 'Wakwaw Waw',
+          email: 'wakwaw@gmail.com',
+          avatar: '/media/avatars/300-1.png',
+        },
+      };
+    }
+
+    return baseData;
+  };
 
   // Get filtered data based on active tab
   // Use initial merchants if provided (from server), otherwise use mock data
   const filteredData = useMemo(() => {
     if (initialMerchants && initialMerchants.length > 0) {
       // Convert MerchantData[] to MerchantReviewData[] and filter by tab
-      const reviewData = initialMerchants.map(convertToReviewData);
+      const reviewData = initialMerchants.map(merchant => convertToReviewData(merchant, activeTab));
       
       // Filter by active tab
       switch (activeTab) {
@@ -93,7 +128,7 @@ export function useMerchantReview(
           );
         case 'merchant-adjustment':
           return reviewData.filter(merchant => 
-            merchant.reviewStatus === 'approved' || merchant.reviewStatus === 'rejected'
+            merchant.reviewStatus === 'pending-review' || merchant.reviewStatus === 'draft'
           );
         default:
           return reviewData;

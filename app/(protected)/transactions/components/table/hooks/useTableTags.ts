@@ -5,7 +5,9 @@ export interface BaseTagConfig {
   dateFilter?: {
     dateType: string;
     startDate: string;
-    endDate: string;
+    endDate?: string;
+    label?: string;
+    displayValue?: string;
   };
   [key: string]: any;
 }
@@ -15,17 +17,22 @@ export interface UseTableTagsOptions {
   onRemoveDate?: () => void;
 }
 
-export function useTableTags(options?: UseTableTagsOptions): DataTableHeaderTag[] {
+export function useTableTags(
+  options?: UseTableTagsOptions
+): DataTableHeaderTag[] {
   const tags = useMemo(() => {
     const result: DataTableHeaderTag[] = [];
 
     if (options?.dateFilter) {
-      const { startDate, endDate } = options.dateFilter;
-      if (startDate && endDate) {
+      const { startDate, endDate, label, displayValue } = options.dateFilter;
+      if (startDate) {
+        // Use displayValue if provided, otherwise format the dates
+        const value =
+          displayValue || (endDate ? `${startDate} - ${endDate}` : startDate);
         result.push({
           id: "date",
-          label: "Date",
-          value: `${startDate} - ${endDate}`,
+          label: label || "Date",
+          value,
           onRemove: options.onRemoveDate,
         });
       }
@@ -36,4 +43,3 @@ export function useTableTags(options?: UseTableTagsOptions): DataTableHeaderTag[
 
   return tags;
 }
-

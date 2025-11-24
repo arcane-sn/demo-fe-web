@@ -3,8 +3,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { Upload, Eye, SquareMousePointer, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { KeenIcon } from '@/components/keenicons';
+import { HexagonBadge } from '@/app/components/partials/common/hexagon-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, InputWrapper } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,6 +27,34 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { getOthersSchema, type OthersSchemaType } from '../../../core/schemas';
+
+// Helper function to check if color is light/bright
+function isLightColor(hex: string | undefined): boolean {
+  if (!hex) return false;
+  
+  // Remove # if present and trim whitespace
+  hex = hex.replace('#', '').trim();
+  
+  // Handle 3-digit hex (e.g., #fff -> #ffffff)
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+  
+  // Validate hex format
+  if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+    return false;
+  }
+  
+  // Convert to RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate brightness using relative luminance formula
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  return luminance > 0.7;
+}
 
 export function OthersForm() {
   const [showPreview, setShowPreview] = useState(false);
@@ -174,7 +203,7 @@ export function OthersForm() {
                                   />
                                 </svg>
                                 <div className="absolute leading-none left-2/4 top-2/4 -translate-y-2/4 -translate-x-2/4">
-                                  <ImageIcon className="text-xl ps-px text-orange-400" />
+                                  <KeenIcon icon="picture" className="text-xl ps-px text-orange-400" />
                                 </div>
                               </div>
                             </div>
@@ -205,7 +234,7 @@ export function OthersForm() {
                   className="flex items-center gap-2 text-blue-500 bg-white border border-blue-500 hover:bg-blue-50" 
                   onClick={() => setShowPreview(true)}
                 >
-                  <Eye className="w-4 h-4" />
+                  <KeenIcon icon="eye" className="w-4 h-4" />
                   <span className="text-sm">Preview</span>
                 </Button>
               </div>
@@ -237,14 +266,19 @@ export function OthersForm() {
                               className="h-8 w-8 p-0 -me-2"
                               onClick={() => document.getElementById('primary-color')?.click()}
                             >
-                               <SquareMousePointer 
-                                 size={16} 
-                                 fill={field.value}
-                                 stroke={field.value}
-                                 strokeWidth={1}
-                                 style={{ opacity: 1 }}
-                                 className="transition-colors duration-200"
-                               />
+                              <HexagonBadge
+                                size="size-[32px]"
+                                stroke="stroke-gray-300"
+                                fill="fill-transparent"
+                                badge={
+                                  <div 
+                                    className={`w-4 h-4 rounded transition-all duration-200 ${
+                                      isLightColor(field.value) ? 'border-1 border-gray-500' : ''
+                                    }`}
+                                    style={{ backgroundColor: field.value }}
+                                  />
+                                }
+                              />
                             </Button>
                             <FormControl>
                               <Input
@@ -287,14 +321,19 @@ export function OthersForm() {
                               className="h-8 w-8 p-0 -me-2"
                               onClick={() => document.getElementById('secondary-color')?.click()}
                             >
-                               <SquareMousePointer 
-                                 size={16} 
-                                 fill={field.value}
-                                 stroke="white"
-                                 strokeWidth={1}
-                                 style={{ opacity: 1 }}
-                                 className="transition-colors duration-200"
-                               />
+                              <HexagonBadge
+                                size="size-[32px]"
+                                stroke="stroke-gray-300"
+                                fill="fill-transparent"
+                                badge={
+                                  <div 
+                                    className={`w-4 h-4 rounded transition-all duration-200 ${
+                                      isLightColor(field.value) ? 'border-1 border-gray-500' : ''
+                                    }`}
+                                    style={{ backgroundColor: field.value }}
+                                  />
+                                }
+                              />
                             </Button>
                             <FormControl>
                               <Input
@@ -337,14 +376,19 @@ export function OthersForm() {
                               className="h-8 w-8 p-0 -me-2"
                               onClick={() => document.getElementById('accent-color')?.click()}
                             >
-                               <SquareMousePointer 
-                                 size={16} 
-                                 fill={field.value}
-                                 stroke="white"
-                                 strokeWidth={1}
-                                 style={{ opacity: 1 }}
-                                 className="transition-colors duration-200"
-                               />
+                              <HexagonBadge
+                                size="size-[32px]"
+                                stroke="stroke-gray-300"
+                                fill="fill-transparent"
+                                badge={
+                                  <div 
+                                    className={`w-4 h-4 rounded transition-all duration-200 ${
+                                      isLightColor(field.value) ? 'border-1 border-gray-500' : ''
+                                    }`}
+                                    style={{ backgroundColor: field.value }}
+                                  />
+                                }
+                              />
                             </Button>
                             <FormControl>
                               <Input
@@ -387,14 +431,19 @@ export function OthersForm() {
                               className="h-8 w-8 p-0 -me-2"
                               onClick={() => document.getElementById('background-color')?.click()}
                             >
-                               <SquareMousePointer 
-                                 size={16} 
-                                 fill={field.value}
-                                 stroke="white"
-                                 strokeWidth={1}
-                                 style={{ opacity: 1 }}
-                                 className="transition-colors duration-200"
-                               />
+                              <HexagonBadge
+                                size="size-[32px]"
+                                stroke="stroke-gray-300"
+                                fill="fill-transparent"
+                                badge={
+                                  <div 
+                                    className={`w-4 h-4 rounded transition-all duration-200 ${
+                                      isLightColor(field.value) ? 'border-1 border-gray-500' : ''
+                                    }`}
+                                    style={{ backgroundColor: field.value }}
+                                  />
+                                }
+                              />
                             </Button>
                             <FormControl>
                               <Input

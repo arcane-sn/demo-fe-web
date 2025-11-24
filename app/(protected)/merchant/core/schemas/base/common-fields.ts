@@ -32,7 +32,7 @@ export const commonFields = {
   /**
    * URL validation (optional)
    */
-  optionalUrl: (message?: string) =>
+  optionalUrl: (message?: string) => 
     z.string().url({ message: message || 'Please enter a valid URL.' }).optional().or(z.literal('')),
 
   /**

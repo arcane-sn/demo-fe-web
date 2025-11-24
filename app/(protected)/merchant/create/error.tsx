@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
+import { KeenIcon } from '@/components/keenicons';
 import { useRouter } from 'next/navigation';
 
 interface ErrorProps {
@@ -16,7 +16,7 @@ export default function Error({ error, reset }: ErrorProps) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center max-w-md">
-        <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+        <KeenIcon icon="danger-circle" className="h-12 w-12 text-destructive mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-destructive mb-2">
           Something went wrong!
         </h1>

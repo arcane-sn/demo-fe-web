@@ -150,6 +150,8 @@ export interface ActionCellConfig<TData extends BaseTableData> {
       | "inverse";
     onClick: (row: Row<TData>) => void;
     show?: (row: Row<TData>) => boolean;
+    separatorAfter?: boolean;
+    className?: string;
   }>;
   showDropdown?: boolean;
   maxVisibleActions?: number;

@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
-import { Badge, BadgeDot } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/reusable/StatusBadge";
 import { InitialsAvatar } from "@/components/reusable/InitialsAvatar";
 import { MerchantData, StatusIndicatorProps } from "../../types/merchant-data";
 import { KeenIcon } from "@/components/keenicons";
@@ -13,20 +13,12 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ status, label }) => {
   const isActive = status === 'active';
 
   return (
-    <Badge
-      variant="outline"
-      className={`gap-2 rounded-full ${
-        isActive
-          ? 'border-green-500 text-green-700 bg-green-50'
-          : 'border-gray-400 text-gray-600 bg-gray-50'
-      }`}
+    <StatusBadge
+      variant={isActive ? 'success' : 'secondary'}
+      size="sm"
     >
-      <BadgeDot
-        className={isActive ? 'bg-green-500' : 'bg-gray-400'}
-        aria-hidden="true"
-      />
       {label}
-    </Badge>
+    </StatusBadge>
   );
 };
 

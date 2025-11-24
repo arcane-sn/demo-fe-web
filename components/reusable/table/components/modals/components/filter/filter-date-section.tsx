@@ -59,13 +59,13 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
                 ? parse(toStr.trim(), fmt, new Date())
                 : undefined;
 
-              if (!toStr || !toStr.trim()) {
-                return { from: parsed };
-              }
+            if (!toStr || !toStr.trim()) {
+              return { from: parsed };
+            }
 
-              if (toParsed && isValid(toParsed)) {
-                return { from: parsed, to: toParsed };
-              }
+            if (toParsed && isValid(toParsed)) {
+              return { from: parsed, to: toParsed };
+            }
           }
         }
         return undefined;
@@ -75,8 +75,8 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
     };
   }, [placeholder]);
 
-  const [internalRange, setInternalRange] = useState<DateRange | undefined>(() =>
-    dateRange ?? parseValueToRange(value),
+  const [internalRange, setInternalRange] = useState<DateRange | undefined>(
+    () => dateRange ?? parseValueToRange(value)
   );
 
   useEffect(() => {
@@ -123,31 +123,33 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
         {onClear && (
           <button
             onClick={handleReset}
-          className="px-1 py-1 rounded-md hover:bg-gray-50 transition-colors"
-        >
-          <span className="text-b-11-12-500 text-red-500">Clear</span>
-        </button>
-      )}
-    </div>
+            className="px-1 py-1 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            <span className="text-b-11-12-500 text-red-500">Clear</span>
+          </button>
+        )}
+      </div>
 
       {/* Input Fields */}
       <div className="flex flex-col items-start gap-2.5 w-full">
         {/* Date Type Dropdown */}
-        <Select
-          value={dateType}
-          onValueChange={onDateTypeChange || (() => {})}
-        >
-          <SelectTrigger className="w-full h-10 bg-white border border-gray-300">
-            <SelectValue placeholder="Select date type" />
-          </SelectTrigger>
-          <SelectContent>
-            {dateTypeOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="w-full">
+          <Select
+            value={dateType}
+            onValueChange={onDateTypeChange || (() => {})}
+          >
+            <SelectTrigger className="flex-1 w-full h-10 bg-white border border-gray-300">
+              <SelectValue placeholder="Select date type" />
+            </SelectTrigger>
+            <SelectContent>
+              {dateTypeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Date Range Picker */}
         <DatePickerRange
@@ -162,4 +164,3 @@ export function FilterDateSection({ config }: FilterDateSectionProps) {
     </div>
   );
 }
-

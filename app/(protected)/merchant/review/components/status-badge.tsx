@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { StatusBadge as ReusableStatusBadge, StatusBadgeVariant } from '@/components/reusable/StatusBadge';
 
 interface StatusBadgeProps {
   status: 'draft' | 'pending-review' | 'approved' | 'rejected';
@@ -8,44 +8,33 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const statusConfig = {
+  const statusConfig: Record<string, { label: string; variant: StatusBadgeVariant }> = {
     'draft': {
       label: 'Draft',
-      variant: 'info' as const,
-      appearance: 'light' as const,
-      dotColor: 'bg-violet-500',
+      variant: 'info',
     },
     'pending-review': {
       label: 'Pending Review',
-      variant: 'warning' as const,
-      appearance: 'light' as const,
-      dotColor: 'bg-yellow-500',
+      variant: 'warning',
     },
     'approved': {
       label: 'Approved',
-      variant: 'success' as const,
-      appearance: 'light' as const,
-      dotColor: 'bg-green-500',
+      variant: 'success',
     },
     'rejected': {
       label: 'Rejected',
-      variant: 'destructive' as const,
-      appearance: 'light' as const,
-      dotColor: 'bg-red-500',
+      variant: 'destructive',
     },
   };
 
   const config = statusConfig[status];
 
   return (
-    <Badge 
+    <ReusableStatusBadge 
       variant={config.variant}
-      appearance={config.appearance}
-      shape="circle"
       className={className}
     >
-      <BadgeDot className={config.dotColor} />
       {config.label}
-    </Badge>
+    </ReusableStatusBadge>
   );
 }

@@ -19,10 +19,6 @@ export {
   getBankById,
   getBanksByCode,
   
-  // Channel data
-  channelData,
-  getChannelsByType,
-  
   // Mock Data Service
   MockDataService,
   getMockActivityData,
@@ -30,8 +26,15 @@ export {
   getMockHierarchyData,
   getMockOthersData,
   getMockMetricsData,
-  
-  // Types
-  type Channel,
-  type ChannelType,
 } from './mock-data';
+
+// Re-export Channel data from centralized location
+export {
+  channelData,
+  getChannelsByType,
+} from '../../components/modals/chanels/channel-data';
+
+export type {
+  Channel,
+  ChannelType,
+} from '../../components/modals/chanels/add-channel-modal';

@@ -17,9 +17,11 @@ import { HEADER_TITLE, DEFAULT_DATE_TYPE } from "../../../core/_constants";
 import { useActionConfig, searchFields } from "./config";
 import { usePayOutFilters } from "./hooks/usePayOutFilters";
 import { usePayOutTableTags } from "./hooks/usePayOutTableTags";
+import { usePayoutStore } from "../../hooks/usePayoutStore";
 
 export function TablePayoutHistory() {
   const router = useRouter();
+  const setSelectedTransactions = usePayoutStore((state) => state.setSelectedTransactions);
 
   const columns = useColumnPayOut();
   const actionConfig = useActionConfig();
@@ -74,9 +76,9 @@ export function TablePayoutHistory() {
 
   const handleSelectionChange = useCallback(
     (selectedRows: PayOutTransaction[]) => {
-      console.log("Selected transactions:", selectedRows);
+      setSelectedTransactions(selectedRows);
     },
-    [],
+    [setSelectedTransactions],
   );
 
   const activeFilterCount = useMemo(() => {

@@ -11,9 +11,25 @@ import {
   PAY_OUT_TRANSACTION_TYPE_OPTIONS,
   PAY_OUT_PROVIDER_NAME_OPTIONS,
 } from "../../../core/_consts";
-import { parse, isValid, startOfDay, endOfDay, isAfter, isBefore } from "date-fns";
-import { DATA_DATE_FORMAT, INITIAL_DATE_RANGE_STRING, DEFAULT_DATE_TYPE } from "../../../../core/_constants";
-import { formatDateRange, parseDateRangeString, collectCheckedValues, buildSectionFromOptions } from "../../../../components/shared/utils";
+import {
+  parse,
+  isValid,
+  startOfDay,
+  endOfDay,
+  isAfter,
+  isBefore,
+} from "date-fns";
+import {
+  DATA_DATE_FORMAT,
+  INITIAL_DATE_RANGE_STRING,
+  DEFAULT_DATE_TYPE,
+} from "../../../../core/_constants";
+import {
+  formatDateRange,
+  parseDateRangeString,
+  collectCheckedValues,
+  buildSectionFromOptions,
+} from "../../../../components/shared/utils";
 
 const STATUS_FILTER_TO_DATA_MAPPING: Record<string, string> = {
   success: "Success",
@@ -37,7 +53,7 @@ const PROVIDER_NAME_FILTER_TO_DATA_MAPPING: Record<string, string> = {
 export function usePayOutFilters() {
   const initialRange = useMemo(
     () => parseDateRangeString(INITIAL_DATE_RANGE_STRING),
-    [],
+    []
   );
 
   const [searchValue, setSearchValue] = useState("");
@@ -48,29 +64,44 @@ export function usePayOutFilters() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeDateFilter, setActiveDateFilter] = useState<string>("");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [selectedTransactionTypes, setSelectedTransactionTypes] = useState<string[]>([]);
-  const [selectedProviderNames, setSelectedProviderNames] = useState<string[]>([]);
-  const [draftDateRange, setDraftDateRange] = useState<DateRange | undefined>(dateRange);
+  const [selectedTransactionTypes, setSelectedTransactionTypes] = useState<
+    string[]
+  >([]);
+  const [selectedProviderNames, setSelectedProviderNames] = useState<string[]>(
+    []
+  );
+  const [draftDateRange, setDraftDateRange] = useState<DateRange | undefined>(
+    dateRange
+  );
   const [draftDateType, setDraftDateType] = useState(dateType);
   const [draftDateFilterString, setDraftDateFilterString] = useState<string>(
-    formatDateRange(dateRange),
+    formatDateRange(dateRange)
   );
 
   const activeRange = useMemo(
     () => dateRange ?? parseDateRangeString(activeDateFilter),
-    [dateRange, activeDateFilter],
+    [dateRange, activeDateFilter]
   );
 
   const filteredData = useMemo(() => {
     const normalizedSearch = searchValue.trim().toLowerCase();
-    const statusesSet = selectedStatuses.length ? new Set(selectedStatuses) : null;
-    const transactionTypesSet = selectedTransactionTypes.length ? new Set(selectedTransactionTypes) : null;
-    const providerNamesSet = selectedProviderNames.length ? new Set(selectedProviderNames) : null;
+    const statusesSet = selectedStatuses.length
+      ? new Set(selectedStatuses)
+      : null;
+    const transactionTypesSet = selectedTransactionTypes.length
+      ? new Set(selectedTransactionTypes)
+      : null;
+    const providerNamesSet = selectedProviderNames.length
+      ? new Set(selectedProviderNames)
+      : null;
 
     return MOCK_PAY_OUT_TRANSACTIONS.filter((row) => {
       if (normalizedSearch) {
         const target = row[searchField as keyof PayOutTransaction];
-        if (!target || !String(target).toLowerCase().includes(normalizedSearch)) {
+        if (
+          !target ||
+          !String(target).toLowerCase().includes(normalizedSearch)
+        ) {
           return false;
         }
       }
@@ -87,7 +118,8 @@ export function usePayOutFilters() {
 
       if (transactionTypesSet) {
         const mappedTypes = Array.from(transactionTypesSet).map(
-          (filterId) => TRANSACTION_TYPE_FILTER_TO_DATA_MAPPING[filterId] || filterId
+          (filterId) =>
+            TRANSACTION_TYPE_FILTER_TO_DATA_MAPPING[filterId] || filterId
         );
         const typesSetMapped = new Set(mappedTypes);
         if (!typesSetMapped.has(row.transactionType)) {
@@ -97,16 +129,21 @@ export function usePayOutFilters() {
 
       if (providerNamesSet) {
         const mappedProviderNames = Array.from(providerNamesSet).map(
-          (filterId) => PROVIDER_NAME_FILTER_TO_DATA_MAPPING[filterId] || filterId
+          (filterId) =>
+            PROVIDER_NAME_FILTER_TO_DATA_MAPPING[filterId] || filterId
         );
         const providerNamesSetMapped = new Set(mappedProviderNames);
-        if (!row.providerName || !providerNamesSetMapped.has(row.providerName)) {
+        if (
+          !row.providerName ||
+          !providerNamesSetMapped.has(row.providerName)
+        ) {
           return false;
         }
       }
 
       if (activeRange?.from) {
-        const dateField = dateType === "transactionDate" ? row.transactionDate : row.servedDate;
+        const dateField =
+          dateType === "transactionDate" ? row.transactionDate : row.servedDate;
         const parsedDate = parse(dateField, DATA_DATE_FORMAT, new Date());
         if (isValid(parsedDate)) {
           const from = startOfDay(activeRange.from);
@@ -131,9 +168,24 @@ export function usePayOutFilters() {
 
   const filterSections = useMemo<FilterSectionConfig[]>(() => {
     return [
-      buildSectionFromOptions("status", "Status", PAY_OUT_STATUS_OPTIONS, selectedStatuses),
-      buildSectionFromOptions("transactionType", "Transaction Type", PAY_OUT_TRANSACTION_TYPE_OPTIONS, selectedTransactionTypes),
-      buildSectionFromOptions("providerName", "Provider Name", PAY_OUT_PROVIDER_NAME_OPTIONS, selectedProviderNames),
+      buildSectionFromOptions(
+        "status",
+        "Status",
+        PAY_OUT_STATUS_OPTIONS,
+        selectedStatuses
+      ),
+      buildSectionFromOptions(
+        "transactionType",
+        "Transaction Type",
+        PAY_OUT_TRANSACTION_TYPE_OPTIONS,
+        selectedTransactionTypes
+      ),
+      buildSectionFromOptions(
+        "providerName",
+        "Provider Name",
+        PAY_OUT_PROVIDER_NAME_OPTIONS,
+        selectedProviderNames
+      ),
     ];
   }, [selectedStatuses, selectedTransactionTypes, selectedProviderNames]);
 
@@ -146,17 +198,34 @@ export function usePayOutFilters() {
         [...selectedTransactionTypes].sort().join(","),
         [...selectedProviderNames].sort().join(","),
       ].join("|"),
-    [dateType, activeDateFilter, selectedStatuses, selectedTransactionTypes, selectedProviderNames],
+    [
+      dateType,
+      activeDateFilter,
+      selectedStatuses,
+      selectedTransactionTypes,
+      selectedProviderNames,
+    ]
   );
 
-  const handleFilterApply = useCallback((filters: FilterModalState) => {
-    setActiveDateFilter(draftDateFilterString);
-    setDateRange(draftDateRange);
-    setDateType(draftDateType);
-    setSelectedStatuses(collectCheckedValues(filters.sections?.status));
-    setSelectedTransactionTypes(collectCheckedValues(filters.sections?.transactionType));
-    setSelectedProviderNames(collectCheckedValues(filters.sections?.providerName));
-  }, [draftDateFilterString, draftDateRange, draftDateType]);
+  const handleFilterApply = useCallback(
+    (filters: FilterModalState) => {
+      // Format the date range directly to ensure we use the latest draftDateRange
+      const formattedDateFilter = draftDateRange
+        ? formatDateRange(draftDateRange)
+        : "";
+      setActiveDateFilter(formattedDateFilter);
+      setDateRange(draftDateRange);
+      setDateType(draftDateType);
+      setSelectedStatuses(collectCheckedValues(filters.sections?.status));
+      setSelectedTransactionTypes(
+        collectCheckedValues(filters.sections?.transactionType)
+      );
+      setSelectedProviderNames(
+        collectCheckedValues(filters.sections?.providerName)
+      );
+    },
+    [draftDateRange, draftDateType]
+  );
 
   const handleResetFilters = useCallback(() => {
     setDateRange(undefined);
@@ -226,4 +295,3 @@ export function usePayOutFilters() {
     handleRemoveProviderName,
   };
 }
-

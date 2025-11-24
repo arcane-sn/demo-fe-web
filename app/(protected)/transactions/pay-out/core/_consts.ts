@@ -1,7 +1,5 @@
-import { MessageSquareMore, Search } from "lucide-react";
 import {
   PayOutStatItem,
-  PayOutTransactionAction,
   PayOutTransaction,
   PayOutDetailTransaction,
   IsModalPayout,
@@ -26,24 +24,18 @@ export const PAY_OUT_PAYMENT_METHODS = [
   { label: "Cash Pickup", value: "cash_pickup" },
 ];
 
-export const PAY_OUT_TRANSACTION_ACTIONS: PayOutTransactionAction[] = [
-  {
-    label: "Action",
-    value: "action",
-  },
+export const PAY_OUT_TRANSACTION_ACTIONS = [
   {
     label: "Resend Callback",
     value: "resend_callback",
-    icon: MessageSquareMore,
-    color: "text-blue-500",
+    icon: "message-programming",
   },
   {
-    label: "See Detail",
-    value: "see_detail",
-    icon: Search,
-    color: "text-slate-800",
+    label: "Force Update Status",
+    value: "force_update_status",
+    icon: "switch",
   },
-];
+] as const;
 
 // Helper function to create pay-out transaction
 function createPayOutTransaction(

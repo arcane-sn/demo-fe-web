@@ -57,9 +57,9 @@ export function ModalSubmit({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md px-0" close={false}>
+      <DialogContent className="max-w-lg px-0" close={false}>
         {/* Header */}
-        <DialogHeader className="flex-row items-center justify-between border-b border-gray-100 px-5 pb-3">
+        <DialogHeader className="flex-row items-center justify-between border-b border-gray-300 px-5 pb-3">
           <DialogTitle className="text-slate-700 text-sm font-semibold">
             {title}
           </DialogTitle>
@@ -70,9 +70,9 @@ export function ModalSubmit({
         </DialogHeader>
 
         {/* Body */}
-        <DialogBody className="flex flex-col gap-5 px-5 py-4">
+        <DialogBody className="flex flex-col gap-5 px-5 py-4 pb-7">
           {/* Illustration Section */}
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center ">
             <Image
               src={imageSrc}
               alt={imageAlt}
@@ -92,7 +92,7 @@ export function ModalSubmit({
         </DialogBody>
 
         {/* Footer */}
-        <DialogFooter className="px-5 border-t border-gray-100">
+        <DialogFooter className="px-5 border-t border-gray-300">
           <Button
             variant="primary"
             size="md"

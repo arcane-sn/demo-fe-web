@@ -5,7 +5,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/reusable/StatusBadge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { MerchantData } from '../../../types/merchant';
@@ -236,15 +237,12 @@ interface StatusBadgeCellProps {
 
 function StatusBadgeCell({ status }: StatusBadgeCellProps) {
   return (
-    <Badge
+    <StatusBadge
       variant={status.status === 'active' ? 'success' : 'destructive'}
       size="md"
-      appearance="outline"
-      shape="circle"
     >
-      <BadgeDot className={status.status === 'active' ? 'success' : 'destructive'} />
       {status.label}
-    </Badge>
+    </StatusBadge>
   );
 }
 

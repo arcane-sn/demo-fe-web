@@ -47,30 +47,31 @@ export function usePayInTableTags({
   onRemoveVABanks,
   onRemoveQRISAcquirer,
 }: UsePayInTableTagsProps) {
-  const dateRange = activeDateFilter ? parseDateRangeString(activeDateFilter) : undefined;
+  const dateRange = activeDateFilter
+    ? parseDateRangeString(activeDateFilter)
+    : undefined;
+  const dateLabel =
+    dateType === "transactionDate" ? "Transaction Date" : "Requested Date";
+
   const baseTags = useTableTags({
-    dateFilter: activeDateFilter ? {
-      dateType,
-      startDate: dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "",
-      endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "",
-    } : undefined,
+    dateFilter: activeDateFilter
+      ? {
+          dateType,
+          startDate: dateRange?.from
+            ? format(dateRange.from, "yyyy-MM-dd")
+            : "",
+          endDate: dateRange?.to
+            ? format(dateRange.to, "yyyy-MM-dd")
+            : undefined,
+          label: dateLabel,
+          displayValue: activeDateFilter,
+        }
+      : undefined,
     onRemoveDate,
   });
 
   const headerTags = useMemo<DataTableHeaderTag[]>(() => {
     const tags: DataTableHeaderTag[] = [...baseTags];
-
-    if (activeDateFilter) {
-      const dateTagIndex = tags.findIndex(tag => tag.id === "date");
-      if (dateTagIndex !== -1) {
-        tags[dateTagIndex] = {
-          id: "date",
-          label: dateType === "transactionDate" ? "Transaction Date" : "Requested Date",
-          value: activeDateFilter,
-          onRemove: onRemoveDate,
-        };
-      }
-    }
 
     if (selectedStatuses.length) {
       tags.push({
@@ -170,4 +171,3 @@ export function usePayInTableTags({
 
   return headerTags;
 }
-

@@ -28,30 +28,31 @@ export function usePayOutTableTags({
   onRemoveTransactionType,
   onRemoveProviderName,
 }: UsePayOutTableTagsProps) {
-  const dateRange = activeDateFilter ? parseDateRangeString(activeDateFilter) : undefined;
+  const dateRange = activeDateFilter
+    ? parseDateRangeString(activeDateFilter)
+    : undefined;
+  const dateLabel =
+    dateType === "transactionDate" ? "Transaction Date" : "Served Date";
+
   const baseTags = useTableTags({
-    dateFilter: activeDateFilter ? {
-      dateType,
-      startDate: dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "",
-      endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "",
-    } : undefined,
+    dateFilter: activeDateFilter
+      ? {
+          dateType,
+          startDate: dateRange?.from
+            ? format(dateRange.from, "yyyy-MM-dd")
+            : "",
+          endDate: dateRange?.to
+            ? format(dateRange.to, "yyyy-MM-dd")
+            : undefined,
+          label: dateLabel,
+          displayValue: activeDateFilter,
+        }
+      : undefined,
     onRemoveDate,
   });
 
   const headerTags = useMemo<DataTableHeaderTag[]>(() => {
     const tags: DataTableHeaderTag[] = [...baseTags];
-
-    if (activeDateFilter) {
-      const dateTagIndex = tags.findIndex(tag => tag.id === "date");
-      if (dateTagIndex !== -1) {
-        tags[dateTagIndex] = {
-          id: "date",
-          label: dateType === "transactionDate" ? "Transaction Date" : "Served Date",
-          value: activeDateFilter,
-          onRemove: onRemoveDate,
-        };
-      }
-    }
 
     if (selectedStatuses.length) {
       tags.push({
@@ -73,7 +74,9 @@ export function usePayOutTableTags({
 
     if (selectedProviderNames.length) {
       const providerLabels = selectedProviderNames.map((id) => {
-        const option = PAY_OUT_PROVIDER_NAME_OPTIONS.find((opt) => opt.id === id);
+        const option = PAY_OUT_PROVIDER_NAME_OPTIONS.find(
+          (opt) => opt.id === id
+        );
         return option?.label || id;
       });
       tags.push({
@@ -100,4 +103,3 @@ export function usePayOutTableTags({
 
   return headerTags;
 }
-

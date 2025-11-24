@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { createScrollSpyMenu } from '../../../[id]/edit/_components/navigation/scrollspy-menu-factory';
+import { createScrollSpyMenu } from '../../../list/edit/[id]/_components/navigation/scrollspy-menu-factory';
 import { STEPS_CONFIG } from '../../config/steps.config';
-import type { ScrollSpyItem } from '../../../[id]/edit/_components/navigation/scrollspy-menu-factory';
+import type { ScrollSpyItem } from '../../../list/edit/[id]/_components/navigation/scrollspy-menu-factory';
 
 function createScrollSpyItemsFromSections(stepId: string): ScrollSpyItem[] {
   const stepConfig = STEPS_CONFIG.find(step => step.id === stepId);

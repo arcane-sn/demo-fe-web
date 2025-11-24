@@ -181,7 +181,7 @@ export function DataTableToolbar<TData>({
               value={internalValue}
               onChange={(event) => handleChange(event.target.value)}
               placeholder={search.placeholder}
-              className="h-9 flex-1 rounded-none border-0 bg-transparent text-b-13-14-400 text-gray-700 focus-visible:ring-0 pr-8"
+              className="h-9 flex-1 bg-light-active rounded-none border-0 text-b-13-14-400 text-gray-700 focus-visible:ring-0 pr-8"
             />
             {internalValue && (
               <button
@@ -202,9 +202,9 @@ export function DataTableToolbar<TData>({
           <Button
             type="submit"
             variant="ghost"
-            className="h-9 rounded-l-none bg-gray-200 border-l border-gray-200 px-4 text-gray-600 hover:bg-gray-200"
+            className="h-9 rounded-l-none bg-gray-100 border-l border-gray-300 px-4 hover:bg-gray-200"
           >
-            <KeenIcon icon="magnifier" />
+            <KeenIcon icon="magnifier" className="text-lg text-gray-500" />
           </Button>
         </form>
       ) : (

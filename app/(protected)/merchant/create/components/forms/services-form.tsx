@@ -3,10 +3,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { Settings, Info, Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components/keenicons';
-import { CreditCard, Rocket, QrCode, Building2, ArrowDownToLine, Wallet, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -24,6 +22,7 @@ import {
 import { getServicesSchema, type ServicesSchemaType } from '../../../core/schemas';
 import { AddChannelModal, channelData, getChannelsByType } from '../../../components/modals/chanels';
 import type { ChannelType } from '../../../components/modals/chanels';
+import { PaymentMethodTableSection } from './payment-method-table-section';
 
 export function ServicesForm() {
   const [isAddChannelModalOpen, setIsAddChannelModalOpen] = useState(false);
@@ -124,7 +123,7 @@ export function ServicesForm() {
                     stroke="stroke-gray-300 dark:stroke-gray-600"
                     fill="fill-gray-100 dark:fill-gray-800"
                     size="size-[40px]"
-                    badge={<CreditCard size={20} className="text-xl text-gray-600" />}
+                    badge={<KeenIcon icon="two-credit-cart" className="text-xl text-gray-600" />}
                   />
                   <div>
                     <h3 className="font-medium">Payment Gateway</h3>
@@ -157,7 +156,7 @@ export function ServicesForm() {
                     stroke="stroke-gray-300 dark:stroke-gray-600"
                     fill="fill-gray-100 dark:fill-gray-800"
                     size="size-[40px]"
-                    badge={<Rocket size={20} className="text-xl text-gray-600" />}
+                    badge={<KeenIcon icon="rocket" className="text-xl text-gray-600" />}
                   />
                   <div>
                     <h3 className="font-medium">Disbursement Service</h3>
@@ -190,7 +189,7 @@ export function ServicesForm() {
                     stroke="stroke-gray-300 dark:stroke-gray-600"
                     fill="fill-gray-100 dark:fill-gray-800"
                     size="size-[40px]"
-                    badge={<Building2 size={20} className="text-xl text-gray-600" />}
+                    badge={<KeenIcon icon="shop" className="text-xl text-gray-600" />}
                   />
                   <div>
                     <h3 className="font-medium">Account Inquiry Service</h3>
@@ -231,184 +230,46 @@ export function ServicesForm() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* e-Wallet */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-white">
-                  <div className="flex items-center gap-3">
-                    <HexagonBadge
-                      stroke="stroke-gray-300 dark:stroke-gray-600"
-                      fill="fill-gray-100 dark:fill-gray-800"
-                      size="size-[40px]"
-                      badge={<Wallet size={20} className="text-xl text-gray-600" />}
-                    />
-                    <div>
-                      <h3 className="font-medium">e-Wallet</h3>
-                      <p className="text-sm text-muted-foreground">Fee Rate Exclude VAT</p>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => openAddChannelModal('ewallet')}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus size={16} />
-                    Add Channel
-                  </Button>
-                </div>
-
-                {/* Show added e-wallet channels */}
-                {form.watch('addedChannels.ewallet').length > 0 && (
-                  <div className="ml-6 space-y-3 border-l-2 border-gray-100 pl-4">
-                    {form.watch('addedChannels.ewallet').map((channelId) => {
-                      const channel = getChannelById(channelId, 'ewallet');
-                      if (!channel) return null;
-                      
-                      return (
-                        <div key={channelId} className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <ChannelLogo channel={channel} />
-                            <div>
-                              <p className="font-medium text-sm">{channel.name}</p>
-                              <p className="text-xs text-muted-foreground">Setup Fee Rate: {channel.setupFeeRate}</p>
-                              <p className="text-xs text-muted-foreground">Provider: {channel.provider}</p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveChannel('ewallet', channelId)}
-                            className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+              <PaymentMethodTableSection
+                title="e-Wallet"
+                icon={<KeenIcon icon="wallet" className="text-xl text-gray-600" />}
+                channelType="ewallet"
+                addedChannelIds={form.watch('addedChannels.ewallet')}
+                onChannelsSelected={(selectedIds) => {
+                  const currentChannels = form.getValues('addedChannels.ewallet');
+                  const newChannels = selectedIds.filter(id => !currentChannels.includes(id));
+                  form.setValue('addedChannels.ewallet', [...currentChannels, ...newChannels]);
+                }}
+                onRemoveChannel={(channelId) => handleRemoveChannel('ewallet', channelId)}
+              />
 
               {/* QR Code */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-white">
-                  <div className="flex items-center gap-3">
-                    <HexagonBadge
-                      stroke="stroke-gray-300 dark:stroke-gray-600"
-                      fill="fill-gray-100 dark:fill-gray-800"
-                      size="size-[40px]"
-                      badge={<QrCode size={20} className="text-xl text-gray-600" />}
-                    />
-                    <div>
-                      <h3 className="font-medium">QR Code</h3>
-                      <p className="text-sm text-muted-foreground">Fee Rate Exclude VAT</p>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => openAddChannelModal('qr')}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus size={16} />
-                    Add Channel
-                  </Button>
-                </div>
-
-                {/* Show added QR channels */}
-                {form.watch('addedChannels.qr').length > 0 && (
-                  <div className="ml-6 space-y-3 border-l-2 border-gray-100 pl-4">
-                    {form.watch('addedChannels.qr').map((channelId) => {
-                      const channel = getChannelById(channelId, 'qr');
-                      if (!channel) return null;
-                      
-                      return (
-                        <div key={channelId} className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <ChannelLogo channel={channel} />
-                            <div>
-                              <p className="font-medium text-sm">{channel.name}</p>
-                              <p className="text-xs text-muted-foreground">Setup Fee Rate: {channel.setupFeeRate}</p>
-                              <p className="text-xs text-muted-foreground">Provider: {channel.provider}</p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveChannel('qr', channelId)}
-                            className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+              <PaymentMethodTableSection
+                title="QR Code"
+                icon={<KeenIcon icon="scan-barcode" className="text-xl text-gray-600" />}
+                channelType="qr"
+                addedChannelIds={form.watch('addedChannels.qr')}
+                onChannelsSelected={(selectedIds) => {
+                  const currentChannels = form.getValues('addedChannels.qr');
+                  const newChannels = selectedIds.filter(id => !currentChannels.includes(id));
+                  form.setValue('addedChannels.qr', [...currentChannels, ...newChannels]);
+                }}
+                onRemoveChannel={(channelId) => handleRemoveChannel('qr', channelId)}
+              />
 
               {/* Virtual Account */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-white">
-                  <div className="flex items-center gap-3">
-                    <HexagonBadge
-                      stroke="stroke-gray-300 dark:stroke-gray-600"
-                      fill="fill-gray-100 dark:fill-gray-800"
-                      size="size-[40px]"
-                      badge={<Building2 size={20} className="text-xl text-gray-600" />}
-                    />
-                    <div>
-                      <h3 className="font-medium">Virtual Account</h3>
-                      <p className="text-sm text-muted-foreground">Fee Rate Exclude VAT</p>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => openAddChannelModal('virtual-account')}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus size={16} />
-                    Add Channel
-                  </Button>
-                </div>
-
-                {/* Show added Virtual Account channels */}
-                {form.watch('addedChannels.virtual-account').length > 0 && (
-                  <div className="ml-6 space-y-3 border-l-2 border-gray-100 pl-4">
-                    {form.watch('addedChannels.virtual-account').map((channelId) => {
-                      const channel = getChannelById(channelId, 'virtual-account');
-                      if (!channel) return null;
-                      
-                      return (
-                        <div key={channelId} className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <ChannelLogo channel={channel} />
-                            <div>
-                              <p className="font-medium text-sm">{channel.name}</p>
-                              <p className="text-xs text-muted-foreground">Setup Fee Rate: {channel.setupFeeRate}</p>
-                              <p className="text-xs text-muted-foreground">Provider: {channel.provider}</p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveChannel('virtual-account', channelId)}
-                            className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+              <PaymentMethodTableSection
+                title="Virtual Account"
+                icon={<KeenIcon icon="bank" className="text-xl text-gray-600" />}
+                channelType="virtual-account"
+                addedChannelIds={form.watch('addedChannels.virtual-account')}
+                onChannelsSelected={(selectedIds) => {
+                  const currentChannels = form.getValues('addedChannels.virtual-account');
+                  const newChannels = selectedIds.filter(id => !currentChannels.includes(id));
+                  form.setValue('addedChannels.virtual-account', [...currentChannels, ...newChannels]);
+                }}
+                onRemoveChannel={(channelId) => handleRemoveChannel('virtual-account', channelId)}
+              />
 
               {/* Direct Debit */}
               <div className="space-y-4">
@@ -418,7 +279,7 @@ export function ServicesForm() {
                       stroke="stroke-gray-300 dark:stroke-gray-600"
                       fill="fill-gray-100 dark:fill-gray-800"
                       size="size-[40px]"
-                      badge={<ArrowDownToLine size={20} className="text-xl text-gray-600" />}
+                      badge={<KeenIcon icon="arrow-down" className="text-xl text-gray-600" />}
                     />
                     <div>
                       <h3 className="font-medium">Direct Debit</h3>
@@ -432,7 +293,7 @@ export function ServicesForm() {
                     onClick={() => openAddChannelModal('direct-debit')}
                     className="flex items-center gap-2"
                   >
-                    <Plus size={16} />
+                    <KeenIcon icon="plus" className="w-4 h-4" />
                     Add Channel
                   </Button>
                 </div>
@@ -461,7 +322,7 @@ export function ServicesForm() {
                             onClick={() => handleRemoveChannel('direct-debit', channelId)}
                             className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <KeenIcon icon="trash" className="w-4 h-4" />
                           </Button>
                         </div>
                       );
@@ -471,105 +332,19 @@ export function ServicesForm() {
               </div>
 
               {/* Debit / Credit Card */}
-              <div className="space-y-4">
-                <div className="flex items-centexr justify-between p-4 border rounded-lg bg-white">
-                  <div className="flex items-center gap-3">
-                    <HexagonBadge
-                      stroke="stroke-gray-300 dark:stroke-gray-600"
-                      fill="fill-gray-100 dark:fill-gray-800"
-                      size="size-[40px]"
-                      badge={<CreditCard size={20} className="text-xl text-gray-600" />}
-                    />
-                    <div>
-                      <h3 className="font-medium">Debit / Credit Card</h3>
-                      <p className="text-sm text-muted-foreground">Fee Rate Exclude VAT</p>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => openAddChannelModal('credit-card')}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus size={16} />
-                    Add Payment Type
-                  </Button>
-                </div>
-
-                {/* Show added Credit Card channels */}
-                {form.watch('addedChannels.credit-card').length > 0 && (
-                  <div className="ml-6 space-y-3 border-l-2 border-gray-100 pl-4">
-                    {form.watch('addedChannels.credit-card').map((channelId) => {
-                      const channel = getChannelById(channelId, 'credit-card');
-                      if (!channel) return null;
-                      
-                      // Special handling for installment to show sub-options
-                      if (channelId === 'installment') {
-                        return (
-                          <div key={channelId} className="space-y-3">
-                            {/* Main Installment item */}
-                            <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                              <div className="flex items-center gap-3">
-                                <div>
-                                  <p className="font-medium text-sm">{channel.name}</p>
-                                </div>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleRemoveChannel('credit-card', channelId)}
-                                className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                            
-                            {/* Installment sub-options */}
-                            <div className="ml-6 space-y-2">
-                              <div className="p-3 bg-white border rounded-lg">
-                                <p className="text-xs text-muted-foreground">1 Month Installment: 1.7% + IDR 5,000</p>
-                              </div>
-                              <div className="p-3 bg-white border rounded-lg">
-                                <p className="text-xs text-muted-foreground">3 Month Installment: 1.7% + IDR 5,000</p>
-                              </div>
-                              <div className="p-3 bg-white border rounded-lg">
-                                <p className="text-xs text-muted-foreground">6 Month Installment: 1.7% + IDR 5,000</p>
-                              </div>
-                              <div className="p-3 bg-white border rounded-lg">
-                                <p className="text-xs text-muted-foreground">12 Month Installment: 1.7% + IDR 5,000</p>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      }
-                      
-                      // Regular and Recurring items
-                      return (
-                        <div key={channelId} className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <p className="font-medium text-sm">{channel.name}</p>
-                              <p className="text-xs text-muted-foreground">Setup Fee Rate: {channel.setupFeeRate}</p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveChannel('credit-card', channelId)}
-                            className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-              </div>
+              <PaymentMethodTableSection
+                title="Debit / Credit Card"
+                icon={<KeenIcon icon="two-credit-cart" className="text-xl text-gray-600" />}
+                channelType="credit-card"
+                addedChannelIds={form.watch('addedChannels.credit-card')}
+                onChannelsSelected={(selectedIds) => {
+                  const currentChannels = form.getValues('addedChannels.credit-card');
+                  const newChannels = selectedIds.filter(id => !currentChannels.includes(id));
+                  form.setValue('addedChannels.credit-card', [...currentChannels, ...newChannels]);
+                }}
+                onRemoveChannel={(channelId) => handleRemoveChannel('credit-card', channelId)}
+                addButtonText="Add Payment Type"
+              />
             </CardContent>
           </Card>
         )}
@@ -596,7 +371,7 @@ export function ServicesForm() {
                     stroke="stroke-purple-300 dark:stroke-gray-600"
                     fill="fill-purple-100 dark:fill-gray-800"
                     size="size-[40px]"
-                    badge={<MapPin size={20} className="text-xl text-purple-600" />}
+                    badge={<KeenIcon icon="shop" className="text-xl text-purple-600" />}
                   />
                   <div>
                     <div className="flex items-center gap-2">

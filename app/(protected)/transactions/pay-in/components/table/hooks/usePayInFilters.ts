@@ -16,9 +16,25 @@ import {
   PAY_IN_VA_BANKS_OPTIONS,
   PAY_IN_QRIS_ACQUIRER_OPTIONS,
 } from "../../../core/_consts";
-import { parse, isValid, startOfDay, endOfDay, isAfter, isBefore } from "date-fns";
-import { DATA_DATE_FORMAT, INITIAL_DATE_RANGE_STRING, DEFAULT_DATE_TYPE } from "../../../../core/_constants";
-import { formatDateRange, parseDateRangeString, collectCheckedValues, buildSectionFromOptions } from "../../../../components/shared/utils";
+import {
+  parse,
+  isValid,
+  startOfDay,
+  endOfDay,
+  isAfter,
+  isBefore,
+} from "date-fns";
+import {
+  DATA_DATE_FORMAT,
+  INITIAL_DATE_RANGE_STRING,
+  DEFAULT_DATE_TYPE,
+} from "../../../../core/_constants";
+import {
+  formatDateRange,
+  parseDateRangeString,
+  collectCheckedValues,
+  buildSectionFromOptions,
+} from "../../../../components/shared/utils";
 import { usePayinStore } from "../../../hooks/usePayinStore";
 
 const PAYMENT_METHOD_MAPPING: Record<string, string> = {
@@ -37,18 +53,18 @@ const PAYMENT_METHOD_FILTER_TO_DATA_MAPPING: Record<string, string> = {
 };
 
 const PAYMENT_CHANNEL_FILTER_TO_DATA_MAPPING: Record<string, string> = {
-  "cimbpg": "CIMBPG",
-  "bricc": "BRICC",
-  "permatacc": "PermataCC",
-  "dana": "DANA",
-  "shopeepay": "ShopeePay",
-  "ovo": "OVO",
-  "gopay": "GoPay",
-  "linkaja": "LinkAja",
+  cimbpg: "CIMBPG",
+  bricc: "BRICC",
+  permatacc: "PermataCC",
+  dana: "DANA",
+  shopeepay: "ShopeePay",
+  ovo: "OVO",
+  gopay: "GoPay",
+  linkaja: "LinkAja",
   "va-bca": "BCA VA",
   "va-mandiri": "Mandiri VA",
   "va-bni": "BNI VA",
-  "qris": "QRIS",
+  qris: "QRIS",
 };
 
 const STATUS_FILTER_TO_DATA_MAPPING: Record<string, string> = {
@@ -98,7 +114,7 @@ export function usePayInFilters() {
 
   const initialRange = useMemo(
     () => parseDateRangeString(INITIAL_DATE_RANGE_STRING),
-    [],
+    []
   );
 
   const [searchValue, setSearchValue] = useState("");
@@ -111,16 +127,24 @@ export function usePayInFilters() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedMerchants, setSelectedMerchants] = useState<string[]>([]);
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-  const [selectedProviderNames, setSelectedProviderNames] = useState<string[]>([]);
-  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([]);
+  const [selectedProviderNames, setSelectedProviderNames] = useState<string[]>(
+    []
+  );
+  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<
+    string[]
+  >([]);
   const [selectedVATypes, setSelectedVATypes] = useState<string[]>([]);
   const [selectedVAStatuses, setSelectedVAStatuses] = useState<string[]>([]);
   const [selectedVABanks, setSelectedVABanks] = useState<string[]>([]);
-  const [selectedQRISAcquirers, setSelectedQRISAcquirers] = useState<string[]>([]);
-  const [draftDateRange, setDraftDateRange] = useState<DateRange | undefined>(dateRange);
+  const [selectedQRISAcquirers, setSelectedQRISAcquirers] = useState<string[]>(
+    []
+  );
+  const [draftDateRange, setDraftDateRange] = useState<DateRange | undefined>(
+    dateRange
+  );
   const [draftDateType, setDraftDateType] = useState(dateType);
   const [draftDateFilterString, setDraftDateFilterString] = useState<string>(
-    formatDateRange(dateRange),
+    formatDateRange(dateRange)
   );
 
   useEffect(() => {
@@ -142,53 +166,84 @@ export function usePayInFilters() {
     setIsFilterOpen(false);
   }, [selectedPaymentMethodFromStore]);
   const allStatuses = useMemo(
-    () => Array.from(new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.paymentStatus))),
-    [],
+    () =>
+      Array.from(
+        new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.paymentStatus))
+      ),
+    []
   );
   const allMerchants = useMemo(
-    () => Array.from(new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.merchantName))),
-    [],
+    () =>
+      Array.from(
+        new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.merchantName))
+      ),
+    []
   );
   const allActivities = useMemo(
-    () => Array.from(new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.activity))),
-    [],
+    () =>
+      Array.from(
+        new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.activity))
+      ),
+    []
   );
   const allProviderNames = useMemo(
-    () => Array.from(new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.providerName))),
-    [],
+    () =>
+      Array.from(
+        new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.providerName))
+      ),
+    []
   );
   const allPaymentMethods = useMemo(
-    () => Array.from(new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.paymentMethod))),
-    [],
+    () =>
+      Array.from(
+        new Set(MOCK_PAY_IN_TRANSACTIONS.map((item) => item.paymentMethod))
+      ),
+    []
   );
 
   const activeRange = useMemo(
     () => dateRange ?? parseDateRangeString(activeDateFilter),
-    [dateRange, activeDateFilter],
+    [dateRange, activeDateFilter]
   );
 
   const filteredData = useMemo(() => {
     const normalizedSearch = searchValue.trim().toLowerCase();
-    const statusesSet = selectedStatuses.length ? new Set(selectedStatuses) : null;
-    const merchantsSet = selectedMerchants.length ? new Set(selectedMerchants) : null;
-    const activitiesSet = selectedActivities.length ? new Set(selectedActivities) : null;
-    const providerNamesSet = selectedProviderNames.length ? new Set(selectedProviderNames) : null;
-    const storePaymentMethod = PAYMENT_METHOD_MAPPING[selectedPaymentMethodFromStore] || "";
+    const statusesSet = selectedStatuses.length
+      ? new Set(selectedStatuses)
+      : null;
+    const merchantsSet = selectedMerchants.length
+      ? new Set(selectedMerchants)
+      : null;
+    const activitiesSet = selectedActivities.length
+      ? new Set(selectedActivities)
+      : null;
+    const providerNamesSet = selectedProviderNames.length
+      ? new Set(selectedProviderNames)
+      : null;
+    const storePaymentMethod =
+      PAYMENT_METHOD_MAPPING[selectedPaymentMethodFromStore] || "";
     const selectedPaymentMethodsMapped = new Set<string>();
     const selectedPaymentChannels = new Set<string>();
 
     selectedPaymentMethods.forEach((filterId) => {
       if (PAYMENT_METHOD_FILTER_TO_DATA_MAPPING[filterId]) {
-        selectedPaymentMethodsMapped.add(PAYMENT_METHOD_FILTER_TO_DATA_MAPPING[filterId]);
+        selectedPaymentMethodsMapped.add(
+          PAYMENT_METHOD_FILTER_TO_DATA_MAPPING[filterId]
+        );
       } else if (PAYMENT_CHANNEL_FILTER_TO_DATA_MAPPING[filterId]) {
-        selectedPaymentChannels.add(PAYMENT_CHANNEL_FILTER_TO_DATA_MAPPING[filterId]);
+        selectedPaymentChannels.add(
+          PAYMENT_CHANNEL_FILTER_TO_DATA_MAPPING[filterId]
+        );
       }
     });
 
     return MOCK_PAY_IN_TRANSACTIONS.filter((row) => {
       if (normalizedSearch) {
         const target = row[searchField as keyof PayInTransaction];
-        if (!target || !String(target).toLowerCase().includes(normalizedSearch)) {
+        if (
+          !target ||
+          !String(target).toLowerCase().includes(normalizedSearch)
+        ) {
           return false;
         }
       }
@@ -219,7 +274,8 @@ export function usePayInFilters() {
 
       if (providerNamesSet) {
         const mappedProviderNames = Array.from(providerNamesSet).map(
-          (filterId) => PROVIDER_NAME_FILTER_TO_DATA_MAPPING[filterId] || filterId
+          (filterId) =>
+            PROVIDER_NAME_FILTER_TO_DATA_MAPPING[filterId] || filterId
         );
         const providerNamesSetMapped = new Set(mappedProviderNames);
         if (!providerNamesSetMapped.has(row.providerName)) {
@@ -280,7 +336,8 @@ export function usePayInFilters() {
       if (storePaymentMethod === "QR Code") {
         if (selectedQRISAcquirers.length > 0) {
           const mappedAcquirers = Array.from(selectedQRISAcquirers).map(
-            (filterId) => QRIS_ACQUIRER_FILTER_TO_DATA_MAPPING[filterId] || filterId
+            (filterId) =>
+              QRIS_ACQUIRER_FILTER_TO_DATA_MAPPING[filterId] || filterId
           );
           const acquirersSet = new Set(mappedAcquirers);
           if (!row.acquirerBank || !acquirersSet.has(row.acquirerBank)) {
@@ -290,7 +347,11 @@ export function usePayInFilters() {
       }
 
       if (activeRange?.from) {
-        const parsedDate = parse(row.transactionDate, DATA_DATE_FORMAT, new Date());
+        const parsedDate = parse(
+          row.transactionDate,
+          DATA_DATE_FORMAT,
+          new Date()
+        );
         if (isValid(parsedDate)) {
           const from = startOfDay(activeRange.from);
           const to = startOfDay(activeRange.to ?? activeRange.from);
@@ -335,31 +396,83 @@ export function usePayInFilters() {
       return PAY_IN_PAYMENT_METHOD_OPTIONS;
     }
 
-    return PAY_IN_PAYMENT_METHOD_OPTIONS.filter((option) => option.id === optionId);
+    return PAY_IN_PAYMENT_METHOD_OPTIONS.filter(
+      (option) => option.id === optionId
+    );
   }, [selectedPaymentMethodFromStore]);
 
   const filterSections = useMemo<FilterSectionConfig[]>(() => {
     if (selectedPaymentMethodFromStore === "va") {
       return [
-        buildSectionFromOptions("status", "Payment Status", PAY_IN_PAYMENT_STATUS_OPTIONS, selectedStatuses),
-        buildSectionFromOptions("vaType", "VA Type", PAY_IN_VA_TYPE_OPTIONS, selectedVATypes),
-        buildSectionFromOptions("vaStatus", "VA Status", PAY_IN_VA_STATUS_OPTIONS, selectedVAStatuses),
-        buildSectionFromOptions("vaBanks", "Banks", PAY_IN_VA_BANKS_OPTIONS, selectedVABanks),
+        buildSectionFromOptions(
+          "status",
+          "Payment Status",
+          PAY_IN_PAYMENT_STATUS_OPTIONS,
+          selectedStatuses
+        ),
+        buildSectionFromOptions(
+          "vaType",
+          "VA Type",
+          PAY_IN_VA_TYPE_OPTIONS,
+          selectedVATypes
+        ),
+        buildSectionFromOptions(
+          "vaStatus",
+          "VA Status",
+          PAY_IN_VA_STATUS_OPTIONS,
+          selectedVAStatuses
+        ),
+        buildSectionFromOptions(
+          "vaBanks",
+          "Banks",
+          PAY_IN_VA_BANKS_OPTIONS,
+          selectedVABanks
+        ),
       ];
     }
-    
+
     if (selectedPaymentMethodFromStore === "qr_code") {
       return [
-        buildSectionFromOptions("status", "Payment Status", PAY_IN_PAYMENT_STATUS_OPTIONS, selectedStatuses),
-        buildSectionFromOptions("qrisAcquirer", "Acquirer", PAY_IN_QRIS_ACQUIRER_OPTIONS, selectedQRISAcquirers),
+        buildSectionFromOptions(
+          "status",
+          "Payment Status",
+          PAY_IN_PAYMENT_STATUS_OPTIONS,
+          selectedStatuses
+        ),
+        buildSectionFromOptions(
+          "qrisAcquirer",
+          "Acquirer",
+          PAY_IN_QRIS_ACQUIRER_OPTIONS,
+          selectedQRISAcquirers
+        ),
       ];
     }
-    
+
     return [
-      buildSectionFromOptions("status", "Payment Status", PAY_IN_PAYMENT_STATUS_OPTIONS, selectedStatuses),
-      buildSectionFromOptions("activity", "Activity", PAY_IN_ACTIVITY_OPTIONS, selectedActivities),
-      buildSectionFromOptions("providerName", "Provider Name", PAY_IN_PROVIDER_NAME_OPTIONS, selectedProviderNames),
-      buildSectionFromOptions("paymentMethod", "Payment Method", filteredPaymentMethodOptions, selectedPaymentMethods),
+      buildSectionFromOptions(
+        "status",
+        "Payment Status",
+        PAY_IN_PAYMENT_STATUS_OPTIONS,
+        selectedStatuses
+      ),
+      buildSectionFromOptions(
+        "activity",
+        "Activity",
+        PAY_IN_ACTIVITY_OPTIONS,
+        selectedActivities
+      ),
+      buildSectionFromOptions(
+        "providerName",
+        "Provider Name",
+        PAY_IN_PROVIDER_NAME_OPTIONS,
+        selectedProviderNames
+      ),
+      buildSectionFromOptions(
+        "paymentMethod",
+        "Payment Method",
+        filteredPaymentMethodOptions,
+        selectedPaymentMethods
+      ),
     ];
   }, [
     selectedPaymentMethodFromStore,
@@ -401,27 +514,40 @@ export function usePayInFilters() {
       selectedVAStatuses,
       selectedVABanks,
       selectedQRISAcquirers,
-    ],
+    ]
   );
 
-  const handleFilterApply = useCallback((filters: FilterModalState) => {
-    setActiveDateFilter(draftDateFilterString);
-    setDateRange(draftDateRange);
-    setDateType(draftDateType);
-    setSelectedStatuses(collectCheckedValues(filters.sections?.status));
-    
-    if (selectedPaymentMethodFromStore === "va") {
-      setSelectedVATypes(collectCheckedValues(filters.sections?.vaType));
-      setSelectedVAStatuses(collectCheckedValues(filters.sections?.vaStatus));
-      setSelectedVABanks(collectCheckedValues(filters.sections?.vaBanks));
-    } else if (selectedPaymentMethodFromStore === "qr_code") {
-      setSelectedQRISAcquirers(collectCheckedValues(filters.sections?.qrisAcquirer));
-    } else {
-    setSelectedActivities(collectCheckedValues(filters.sections?.activity));
-    setSelectedProviderNames(collectCheckedValues(filters.sections?.providerName));
-    setSelectedPaymentMethods(collectCheckedValues(filters.sections?.paymentMethod));
-    }
-  }, [draftDateFilterString, draftDateRange, draftDateType, selectedPaymentMethodFromStore]);
+  const handleFilterApply = useCallback(
+    (filters: FilterModalState) => {
+      // Format the date range directly to ensure we use the latest draftDateRange
+      const formattedDateFilter = draftDateRange
+        ? formatDateRange(draftDateRange)
+        : "";
+      setActiveDateFilter(formattedDateFilter);
+      setDateRange(draftDateRange);
+      setDateType(draftDateType);
+      setSelectedStatuses(collectCheckedValues(filters.sections?.status));
+
+      if (selectedPaymentMethodFromStore === "va") {
+        setSelectedVATypes(collectCheckedValues(filters.sections?.vaType));
+        setSelectedVAStatuses(collectCheckedValues(filters.sections?.vaStatus));
+        setSelectedVABanks(collectCheckedValues(filters.sections?.vaBanks));
+      } else if (selectedPaymentMethodFromStore === "qr_code") {
+        setSelectedQRISAcquirers(
+          collectCheckedValues(filters.sections?.qrisAcquirer)
+        );
+      } else {
+        setSelectedActivities(collectCheckedValues(filters.sections?.activity));
+        setSelectedProviderNames(
+          collectCheckedValues(filters.sections?.providerName)
+        );
+        setSelectedPaymentMethods(
+          collectCheckedValues(filters.sections?.paymentMethod)
+        );
+      }
+    },
+    [draftDateRange, draftDateType, selectedPaymentMethodFromStore]
+  );
 
   const handleResetFilters = useCallback(() => {
     setDateRange(undefined);
@@ -526,4 +652,3 @@ export function usePayInFilters() {
     handleRemoveQRISAcquirer,
   };
 }
-

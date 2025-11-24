@@ -24,7 +24,7 @@ export function SidebarHeader() {
           src="/assets/image/g4.png"
           width={120}
           height={22}
-          className="w-20 pt-5"
+          className="default-logo w-20 pt-5"
           alt="Logo"
           priority
           unoptimized
@@ -33,7 +33,7 @@ export function SidebarHeader() {
           src="/assets/image/g4.png"
           width={120}
           height={22}
-          className="small-logo h-[22px] max-w-none object-contain"
+          className="small-logo mt-4"
           alt="Logo"
           priority
           unoptimized

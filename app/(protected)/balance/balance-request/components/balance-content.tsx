@@ -140,6 +140,18 @@ const BalanceRequestContent = () => {
           error={error || undefined}
           onOpenExport={() => setShowExportModal(true)}
           onOpenFilter={() => setShowFilterModal(true)}
+          onRowClick={(row) => {
+            setDetailModalRequest(row);
+            if (row.activityType.type === "adjustment") {
+              setIsModal((prev) => ({ ...prev, balanceAdjustmentModal: true }));
+            } else if (row.activityType.type === "hold") {
+              setIsModal((prev) => ({ ...prev, balanceHoldModal: true }));
+            } else if (row.activityType.type === "topup") {
+              setIsModal((prev) => ({ ...prev, balanceTopupModal: true }));
+            } else if (row.activityType.type === "release") {
+              setIsModal((prev) => ({ ...prev, balanceReleaseModal: true }));
+            }
+          }}
           seeDetail={(e) => {
             setDetailModalRequest(e);
             if (e.activityType.type === "adjustment") {

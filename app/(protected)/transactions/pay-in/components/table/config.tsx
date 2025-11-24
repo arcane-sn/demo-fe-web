@@ -20,6 +20,7 @@ const ACTION_TO_MODAL_KEY: Record<string, keyof IsModalPayIn> = {
 
 export const useActionConfig = (): ActionCellConfig<PayInTransaction> => {
   const setModal = usePayinStore((state) => state.setModal);
+  const setSelectedTransactions = usePayinStore((state) => state.setSelectedTransactions);
 
   return {
     actions: TRANSACTION_ACTIONS.map((action) => {
@@ -46,6 +47,8 @@ export const useActionConfig = (): ActionCellConfig<PayInTransaction> => {
             : undefined,
         onClick: (row: Row<PayInTransaction>) => {
           if (modalKey) {
+            // When clicking from table row, set this single transaction as selected
+            setSelectedTransactions([row.original]);
             setModal(modalKey, true);
           }
         },

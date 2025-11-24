@@ -114,6 +114,10 @@ export interface RangeInputProps {
   rightPlaceholder?: string;
   onLeftChange?: (value: string) => void;
   onRightChange?: (value: string) => void;
+  onLeftFocus?: () => void;
+  onLeftBlur?: () => void;
+  onRightFocus?: () => void;
+  onRightBlur?: () => void;
   onSeparatorClick?: () => void;
   separator?: 'plus' | 'minus';
   size?: 'sm' | 'md' | 'lg';
@@ -137,6 +141,10 @@ const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
       rightPlaceholder,
       onLeftChange,
       onRightChange,
+      onLeftFocus,
+      onLeftBlur,
+      onRightFocus,
+      onRightBlur,
       onSeparatorClick,
       separator = 'minus',
       size = 'md',
@@ -168,8 +176,14 @@ const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
             value={leftValue}
             placeholder={leftPlaceholder}
             onChange={(e) => onLeftChange?.(e.target.value)}
-            onFocus={() => setLeftFocused(true)}
-            onBlur={() => setLeftFocused(false)}
+            onFocus={() => {
+              setLeftFocused(true);
+              onLeftFocus?.();
+            }}
+            onBlur={() => {
+              setLeftFocused(false);
+              onLeftBlur?.();
+            }}
             disabled={disabled}
           />
           <label
@@ -208,8 +222,14 @@ const RangeInput = React.forwardRef<HTMLDivElement, RangeInputProps>(
             value={rightValue}
             placeholder={rightPlaceholder}
             onChange={(e) => onRightChange?.(e.target.value)}
-            onFocus={() => setRightFocused(true)}
-            onBlur={() => setRightFocused(false)}
+            onFocus={() => {
+              setRightFocused(true);
+              onRightFocus?.();
+            }}
+            onBlur={() => {
+              setRightFocused(false);
+              onRightBlur?.();
+            }}
             disabled={disabled}
           />
           <label

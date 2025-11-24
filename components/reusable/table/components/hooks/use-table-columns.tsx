@@ -77,14 +77,12 @@ export function useTableColumns<TData extends BaseTableData = BaseTableData>(
                       variant={
                         action.variant === "destructive" ? "destructive" : undefined
                       }
-                      className={
-                        action.label === "Approve Request" ? "text-green-600" : undefined
-                      }
+                      className={action.className}
                     >
                       {action.icon}
                       {action.label}
                     </DropdownMenuItem>
-                    {index < visibleActions.length - 1 && (
+                    {action.separatorAfter && index < visibleActions.length - 1 && (
                       <DropdownMenuSeparator />
                     )}
                   </div>

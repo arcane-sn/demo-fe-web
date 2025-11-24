@@ -1,5 +1,5 @@
-import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { KeenIcon } from '@/components/keenicons';
 import { Container } from '@/components/common/container';
 import { Steps } from './steps';
 
@@ -24,7 +24,7 @@ export function MerchantCreationHeader({
               onClick={onBack}
               className="flex items-center gap-2 border"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <KeenIcon icon="arrow-left" className="h-4 w-4" />
             </Button>
             <div>
               <h1 className="text-2xl font-bold">Create New Merchant</h1>

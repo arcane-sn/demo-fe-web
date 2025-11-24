@@ -13,14 +13,22 @@ import {
 } from "../data";
 import { httpService } from "@/services";
 
-// Check if we should use mock data
-// Default to mock data in development unless explicitly set to use real API
-const USE_MOCK_DATA =
-  process.env.NODE_ENV === "development" &&
-  process.env.NEXT_PUBLIC_USE_MOCK_DATA !== "false";
+// Helper function to check if we should use mock data
+// Default to mock data unless explicitly set to use real API
+// In production/Vercel, always use mock data unless NEXT_PUBLIC_USE_MOCK_DATA is explicitly 'false'
+const shouldUseMockData = (): boolean => {
+  // If explicitly set to false, use real API
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'false') {
+    return false;
+  }
+  // Otherwise, always use mock data (safe default for Vercel)
+  return true;
+};
 
-// Check if we're in server-side context
-const IS_SERVER = typeof window === "undefined";
+// Helper function to check if we're in server-side context (runtime check)
+const isServerSide = (): boolean => {
+  return typeof window === 'undefined';
+};
 
 export class MerchantService {
   static async getAllMerchants(): Promise<MerchantData[]> {
@@ -54,8 +62,8 @@ export class MerchantService {
 
   static async fetchMerchant(merchantId: string): Promise<MerchantData> {
     try {
-      // Use mock data in development by default
-      if (USE_MOCK_DATA) {
+      // Use mock data by default (safe for Vercel)
+      if (shouldUseMockData()) {
         const merchant = await MockDataService.getMerchantById(merchantId);
         if (!merchant) {
           throw new Error(`Merchant with ID ${merchantId} not found`);
@@ -65,9 +73,8 @@ export class MerchantService {
 
       // Try to use real API (only if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'false')
       // In server components, use native fetch instead of httpService
-      if (IS_SERVER) {
-        const baseURL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      if (isServerSide()) {
+        const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
         const url = `${baseURL}/merchants/${merchantId}`;
 
         try {
@@ -101,28 +108,23 @@ export class MerchantService {
       }
 
       // In client components, use httpService
-      try {
-        const response = await httpService.get<MerchantData>(
-          `/merchants/${merchantId}`
-        );
+      // Only use httpService if window is available (client-side)
+      if (typeof window !== 'undefined') {
+        const response = await httpService.get<MerchantData>(`/merchants/${merchantId}`);
         return response.data;
-      } catch (apiError) {
-        // If API call fails, fallback to mock data
-        console.warn("API call failed, falling back to mock data:", apiError);
-        const merchant = await MockDataService.getMerchantById(merchantId);
-        if (!merchant) {
-          throw new Error(
-            `Merchant with ID ${merchantId} not found in mock data`
-          );
-        }
-        return merchant;
       }
+
+      // Fallback to mock data if we can't determine context
+      const merchant = await MockDataService.getMerchantById(merchantId);
+      if (!merchant) {
+        throw new Error(`Merchant with ID ${merchantId} not found`);
+      }
+      return merchant;
     } catch (error) {
-      // Final fallback: try mock data one more time if all else fails
+      // Fallback to mock data if API call fails (safe for Vercel)
       try {
         const merchant = await MockDataService.getMerchantById(merchantId);
         if (merchant) {
-          console.warn("Using mock data as final fallback");
           return merchant;
         }
       } catch (mockError) {
@@ -184,19 +186,18 @@ export class MerchantService {
     merchantData: Partial<MerchantData>
   ): Promise<MerchantData> {
     try {
-      if (USE_MOCK_DATA) {
-        // Use mock data in development
+      if (shouldUseMockData()) {
+        // Use mock data by default
         const existingMerchant = await this.fetchMerchant(id);
         const updatedMerchant = { ...existingMerchant, ...merchantData };
         // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         return updatedMerchant;
       }
 
-      // Use real API in production
-      if (IS_SERVER) {
-        const baseURL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      // Use real API (only if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'false')
+      if (isServerSide()) {
+        const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
         const url = `${baseURL}/merchants/${id}`;
 
         const response = await fetch(url, {
@@ -218,11 +219,17 @@ export class MerchantService {
       }
 
       // In client components, use httpService
-      const response = await httpService.put<MerchantData>(
-        `/merchants/${id}`,
-        merchantData
-      );
-      return response.data;
+      if (typeof window !== 'undefined') {
+        const response = await httpService.put<MerchantData>(
+          `/merchants/${id}`,
+          merchantData
+        );
+        return response.data;
+      }
+
+      // Fallback to mock data
+      const existingMerchant = await this.fetchMerchant(id);
+      return { ...existingMerchant, ...merchantData };
     } catch (error) {
       throw error;
     }
@@ -230,16 +237,15 @@ export class MerchantService {
 
   static async deleteMerchant(id: string): Promise<void> {
     try {
-      if (USE_MOCK_DATA) {
-        // Use mock data in development
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (shouldUseMockData()) {
+        // Use mock data by default
+        await new Promise(resolve => setTimeout(resolve, 1000));
         return;
       }
 
-      // Use real API in production
-      if (IS_SERVER) {
-        const baseURL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      // Use real API (only if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'false')
+      if (isServerSide()) {
+        const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
         const url = `${baseURL}/merchants/${id}`;
 
         const response = await fetch(url, {
@@ -258,7 +264,13 @@ export class MerchantService {
       }
 
       // In client components, use httpService
-      await httpService.delete(`/merchants/${id}`);
+      if (typeof window !== 'undefined') {
+        await httpService.delete(`/merchants/${id}`);
+        return;
+      }
+
+      // Fallback to mock data
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
       throw error;
     }
@@ -339,15 +351,14 @@ export class MerchantService {
     totalMDR: string;
   }> {
     try {
-      if (USE_MOCK_DATA) {
-        // Use mock data in development
+      if (shouldUseMockData()) {
+        // Use mock data by default
         return await MockDataService.getMetricsData();
       }
 
-      // Try to use real API in production
-      if (IS_SERVER) {
-        const baseURL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      // Use real API (only if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'false')
+      if (isServerSide()) {
+        const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
         const url = `${baseURL}/merchants/${merchantId}/metrics`;
 
         try {
@@ -379,26 +390,22 @@ export class MerchantService {
       }
 
       // In client components, use httpService
-      try {
+      if (typeof window !== 'undefined') {
         const response = await httpService.get<{
           totalTransactionAmount: string;
           totalTransactionVolume: string;
           totalMDR: string;
         }>(`/merchants/${merchantId}/metrics`);
         return response.data;
-      } catch (apiError) {
-        // If API call fails, fallback to mock data
-        console.warn(
-          "API call failed, falling back to mock metrics data:",
-          apiError
-        );
-        return await MockDataService.getMetricsData();
       }
+
+      // Fallback to mock data
+      return await MockDataService.getMetricsData();
     } catch (error) {
-      // Final fallback: try mock data one more time
+      // Fallback to mock data on error
       try {
         return await MockDataService.getMetricsData();
-      } catch (mockError) {
+      } catch {
         throw error;
       }
     }
@@ -406,15 +413,14 @@ export class MerchantService {
 
   static async getMerchantActivity(merchantId: string): Promise<any> {
     try {
-      if (USE_MOCK_DATA) {
-        // Use mock data in development
+      if (shouldUseMockData()) {
+        // Use mock data by default
         return await MockDataService.getActivityData();
       }
 
-      // Try to use real API in production
-      if (IS_SERVER) {
-        const baseURL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      // Use real API (only if NEXT_PUBLIC_USE_MOCK_DATA is explicitly set to 'false')
+      if (isServerSide()) {
+        const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
         const url = `${baseURL}/merchants/${merchantId}/activity`;
 
         try {
@@ -446,24 +452,18 @@ export class MerchantService {
       }
 
       // In client components, use httpService
-      try {
-        const response = await httpService.get(
-          `/merchants/${merchantId}/activity`
-        );
+      if (typeof window !== 'undefined') {
+        const response = await httpService.get(`/merchants/${merchantId}/activity`);
         return response.data;
-      } catch (apiError) {
-        // If API call fails, fallback to mock data
-        console.warn(
-          "API call failed, falling back to mock activity data:",
-          apiError
-        );
-        return await MockDataService.getActivityData();
       }
+
+      // Fallback to mock data
+      return await MockDataService.getActivityData();
     } catch (error) {
-      // Final fallback: try mock data one more time
+      // Fallback to mock data on error
       try {
         return await MockDataService.getActivityData();
-      } catch (mockError) {
+      } catch {
         throw error;
       }
     }

@@ -2,9 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useMemo, Fragment } from "react";
-import { Building2, Copy, User, Store } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { KeenIcon } from "@/components/keenicons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -20,7 +20,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/reusable/StatusBadge";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { DialogBody } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -33,13 +36,14 @@ import {
   getHierarchySchema,
   type HierarchySchemaType,
 } from "../../../core/schemas";
-import { ReusableTable } from "@/components/table";
-import type { TableConfig, BaseTableData } from "@/components/table";
-import { ColumnDef } from "@tanstack/react-table";
 import { mockMerchants } from "../../../core/data/mock-data";
 import type { MerchantData } from "../../../types/merchant";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { HexagonBadge } from "@/app/components/partials/common/hexagon-badge";
+import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
+import { DataGridTableBase, DataGridTableHead, DataGridTableHeadRow, DataGridTableHeadRowCell, DataGridTableBody, DataGridTableBodyRow, DataGridTableBodyRowCell, DataGridTableEmpty, DataGridTableRowSpacer } from "@/components/ui/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid-pagination";
+import { useReactTable, getCoreRowModel, getPaginationRowModel, getSortedRowModel, getFilteredRowModel, type ColumnDef, flexRender } from "@tanstack/react-table";
 
 interface MerchantLevel {
   id: string;
@@ -57,6 +61,8 @@ interface ParentMerchant extends MerchantData {
 
 export function HierarchyForm() {
   const [showAvailableParents, setShowAvailableParents] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const form = useForm<HierarchySchemaType>({
     resolver: zodResolver(getHierarchySchema()),
@@ -120,7 +126,7 @@ export function HierarchyForm() {
   const filteredParents = useMemo(() => {
     if (!selectedLevelData?.hasParent) return [];
 
-    return availableParents.filter((parent) => {
+    let filtered = availableParents.filter((parent) => {
       const parentType = parent.type || "";
       const selectedLevel = form.watch("selectedLevel");
       if (selectedLevel === "level-1") return parentType.includes("Level 0");
@@ -130,10 +136,54 @@ export function HierarchyForm() {
         return parentType.includes("Level 1") || parentType.includes("Level 2");
       return false;
     });
-  }, [selectedLevelData, availableParents, form.watch("selectedLevel")]);
+
+    // Apply level filter
+    if (levelFilter !== 'all') {
+      filtered = filtered.filter((parent) => {
+        const levelLabel = parent.merchantLevel?.label || '';
+        return levelLabel === levelFilter;
+      });
+    }
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((parent) => {
+        return (
+          parent.companyName.toLowerCase().includes(query) ||
+          parent.clientId.toLowerCase().includes(query) ||
+          parent.brandName?.toLowerCase().includes(query) ||
+          false
+        );
+      });
+    }
+
+    return filtered;
+  }, [selectedLevelData, availableParents, form.watch("selectedLevel"), levelFilter, searchQuery]);
+
+  // Helper function to get merchant level badge color
+  const getMerchantLevelBadgeClass = (level: number) => {
+    switch (level) {
+      case 0:
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 1:
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 2:
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 3:
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
+    }
+  };
+
+  const handleSelectParent = (parentId: string) => {
+    form.setValue("selectedParent", parentId);
+    setShowAvailableParents(false);
+  };
 
   // Table columns configuration
-  const columns: ColumnDef<ParentMerchant>[] = [
+  const columns: ColumnDef<ParentMerchant>[] = useMemo(() => [
     {
       accessorKey: "companyName",
       header: "Company Name",
@@ -154,7 +204,7 @@ export function HierarchyForm() {
             className="h-6 w-6 p-0"
             onClick={() => navigator.clipboard.writeText(row.original.clientId)}
           >
-            <Copy className="h-3 w-3" />
+            <KeenIcon icon="copy" className="h-3 w-3" />
           </Button>
         </div>
       ),
@@ -177,26 +227,39 @@ export function HierarchyForm() {
                 navigator.clipboard.writeText(row.original.parentClientId!)
               }
             >
-              <Copy className="h-3 w-3" />
+              <KeenIcon icon="copy" className="h-3 w-3" />
             </Button>
           )}
         </div>
       ),
     },
     {
+      accessorKey: "merchantLevel",
+      header: "Merchant Level",
+      cell: ({ row }) => {
+        const level = row.original.merchantLevel?.level ?? 0;
+        const label = row.original.merchantLevel?.label || `Level ${level}`;
+        return (
+          <Badge
+            variant="outline"
+            size="sm"
+            className={getMerchantLevelBadgeClass(level)}
+          >
+            {label}
+          </Badge>
+        );
+      },
+    },
+    {
       accessorKey: "productionStatus",
       header: "Production Status",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-2 h-2 rounded-full ${
-              row.original.productionStatus.status === "active"
-                ? "bg-green-500"
-                : "bg-gray-400"
-            }`}
-          ></div>
-          <span>{row.original.productionStatus.label}</span>
-        </div>
+        <StatusBadge
+          variant={row.original.productionStatus.status === "active" ? "success" : "secondary"}
+          size="sm"
+        >
+          {row.original.productionStatus.label}
+        </StatusBadge>
       ),
     },
     {
@@ -226,26 +289,22 @@ export function HierarchyForm() {
         </Button>
       ),
     },
-  ];
+  ], []);
 
-  // Table configuration
-  const tableConfig: TableConfig<ParentMerchant> = {
+  // Create table instance
+  const table = useReactTable({
     data: filteredParents,
     columns,
-    enableRowSelection: false,
-    enableSorting: true,
-    enablePagination: true,
-    pageSize: 5,
-    pageSizeOptions: [5, 10, 20],
-    searchable: true,
-    searchPlaceholder: "Search Merchants",
-    searchFields: ["companyName", "clientId", "brandName"],
-  };
-
-  const handleSelectParent = (parentId: string) => {
-    form.setValue("selectedParent", parentId);
-    setShowAvailableParents(false);
-  };
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
+  });
 
   return (
     <Form {...form}>
@@ -311,23 +370,28 @@ export function HierarchyForm() {
               }}
             >
               <div className="flex items-center gap-3">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                <HexagonBadge
+                  size="size-[50px]"
+                  stroke={
                     form.watch("hasParentMerchant") &&
                     form.watch("selectedParent")
-                      ? "bg-gray-100 border border-blue-500"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  <Store
-                    className={`w-5 h-5 ${
-                      form.watch("hasParentMerchant") &&
-                      form.watch("selectedParent")
-                        ? "text-blue-600"
-                        : "text-gray-600"
-                    }`}
-                  />
-                </div>
+                      ? "stroke-blue-600"
+                      : "stroke-gray-300"
+                  }
+                  fill="fill-transparent"
+                  badge={
+                    <KeenIcon
+                      icon="shop"
+                      style="outline"
+                      className={`text-lg ${
+                        form.watch("hasParentMerchant") &&
+                        form.watch("selectedParent")
+                          ? "text-blue-600"
+                          : "text-gray-600"
+                      }`}
+                    />
+                  }
+                />
                 <div>
                   <h3
                     className={`font-medium ${
@@ -390,45 +454,98 @@ export function HierarchyForm() {
           open={showAvailableParents}
           onOpenChange={setShowAvailableParents}
         >
-          <DialogContent className="max-w-6xl max-h-[90vh]">
-            <DialogHeader>
-              <DialogTitle>Select Level 0 Parent Merchant</DialogTitle>
+          <DialogContent className="max-w-6xl max-h-[90vh] p-0" close={false}>
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-xl font-semibold text-gray-900">
+                  Select Parent Merchant
+                </DialogTitle>
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <KeenIcon 
+                      icon="magnifier" 
+                      style="outline" 
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" 
+                    />
+                    <Input
+                      placeholder="Search Merchants"
+                      className="pl-10 w-64"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <Select value={levelFilter} onValueChange={setLevelFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="All Level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Level</SelectItem>
+                      <SelectItem value="Level 0">Level 0</SelectItem>
+                      <SelectItem value="Level 1">Level 1</SelectItem>
+                      <SelectItem value="Level 2">Level 2</SelectItem>
+                      <SelectItem value="Level 3">Level 3</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </DialogHeader>
 
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">
-                    Active Merchants
-                  </span>
-                  <Badge
-                    variant="outline"
-                    className="bg-green-100 text-green-800"
-                  >
-                    {filteredParents.length}
-                  </Badge>
-                </div>
-                <div className="text-sm text-gray-600">Other</div>
-              </div>
-
-              <ReusableTable
-                config={tableConfig}
-                headerConfig={{
-                  showRecordCount: false,
+            <DialogBody className="p-0 overflow-y-auto">
+              <DataGrid
+                table={table}
+                recordCount={filteredParents.length}
+                tableLayout={{
+                  rowBorder: true,
+                  headerBorder: true,
+                  headerBackground: true,
                 }}
-                toolbarConfig={{
-                  showSearch: true,
-                  showFilters: false,
-                  showColumnVisibility: false,
-                  searchPlaceholder: "Search Merchants",
-                }}
-                footerConfig={{
-                  showPagination: true,
-                  showRowCount: true,
-                  showSelectedCount: false,
-                }}
-              />
-            </div>
+              >
+                <DataGridContainer border={false} className="p-0">
+                  <DataGridTableBase>
+                    <DataGridTableHead>
+                      {table.getHeaderGroups().map((headerGroup) => (
+                        <DataGridTableHeadRow key={headerGroup.id} headerGroup={headerGroup}>
+                          {headerGroup.headers.map((header) => (
+                            <DataGridTableHeadRowCell key={header.id} header={header}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(header.column.columnDef.header, header.getContext())}
+                            </DataGridTableHeadRowCell>
+                          ))}
+                        </DataGridTableHeadRow>
+                      ))}
+                    </DataGridTableHead>
+                    <DataGridTableRowSpacer />
+                    <DataGridTableBody>
+                      {table.getRowModel().rows.length ? (
+                        table.getRowModel().rows.map((row) => (
+                          <DataGridTableBodyRow key={row.id} row={row}>
+                            {row.getVisibleCells().map((cell) => (
+                              <DataGridTableBodyRowCell key={cell.id} cell={cell}>
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </DataGridTableBodyRowCell>
+                            ))}
+                          </DataGridTableBodyRow>
+                        ))
+                      ) : (
+                        <DataGridTableEmpty />
+                      )}
+                    </DataGridTableBody>
+                    <tfoot className="border-t bg-muted/50">
+                      <tr>
+                        <td colSpan={table.getAllColumns().length} className="px-6 py-4">
+                          <DataGridPagination
+                            sizes={[5, 10, 20]}
+                            sizesLabel="Show"
+                            sizesDescription="per page"
+                          />
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </DataGridTableBase>
+                </DataGridContainer>
+              </DataGrid>
+            </DialogBody>
           </DialogContent>
         </Dialog>
       </form>

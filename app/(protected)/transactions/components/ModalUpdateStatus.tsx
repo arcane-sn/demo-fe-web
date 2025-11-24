@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Dialog } from "@/components/ui/dialog";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -26,8 +26,16 @@ const ModalUpdateStatus = ({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: () => void;
+  onSubmit: (status: string) => void;
 }) => {
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+
+  // Reset status when modal opens/closes
+  useEffect(() => {
+    if (!open) {
+      setSelectedStatus("");
+    }
+  }, [open]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -59,14 +67,12 @@ const ModalUpdateStatus = ({
 
           <Separator />
           <div className="flex justify-between items-center gap-8">
-            <p className="text-b-13-14-400 text-gray-800">Category</p>
+            <p className="text-b-13-14-400 text-gray-800">Status</p>
             <Select
-            // value={params.category || undefined}
-            // onValueChange={(value) =>
-            //   updateParams({ category: value || undefined })
-            // }
+              value={selectedStatus}
+              onValueChange={setSelectedStatus}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Choose Status" />
               </SelectTrigger>
               <SelectContent>
@@ -108,7 +114,16 @@ const ModalUpdateStatus = ({
               Cancel
             </Button>
           </DialogClose>
-          <Button variant="primary" onClick={onSubmit} size="md">
+          <Button 
+            variant="primary" 
+            onClick={() => {
+              if (selectedStatus) {
+                onSubmit(selectedStatus);
+              }
+            }} 
+            size="md"
+            disabled={!selectedStatus}
+          >
             Update Status
           </Button>
         </DialogFooter>

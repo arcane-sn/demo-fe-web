@@ -8,6 +8,8 @@ import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { Button } from "@/components/ui/button";
 import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
 import { BalanceStatementData } from "../../core/_model";
+import { Badge, BadgeDot } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export function useBalanceStatementTableColumns(): ColumnDef<BalanceStatementData>[] {
   const { copyToClipboard } = useCopyToClipboard();
@@ -273,26 +275,28 @@ function TransactionTypeCell({ type }: TransactionTypeCellProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "transfer":
-        return "bg-blue-100 text-blue-800";
+        return "success";
       case "topup":
-        return "bg-green-100 text-green-800";
+        return "warning";
       case "withdrawal":
-        return "bg-orange-100 text-orange-800";
+        return "primary";
       case "adjustment":
-        return "bg-purple-100 text-purple-800";
+        return "info";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "info";
     }
   };
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(
-        type.type
-      )}`}
+    <Badge
+      variant={getTypeColor(type.type)}
+      size="md"
+      appearance="light"
+      shape="circle"
     >
+      <BadgeDot className={getTypeColor(type.type)} />
       {type.label}
-    </span>
+    </Badge>
   );
 }
 
@@ -304,25 +308,27 @@ function StatusCell({ status }: StatusCellProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "success":
-        return "bg-green-100 text-green-800";
+        return "success";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "warning";
       case "failed":
-        return "bg-red-100 text-red-800";
+        return "destructive";
       case "cancelled":
-        return "bg-gray-100 text-gray-800";
+        return "info";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "info";
     }
   };
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-        status.status
-      )}`}
+    <Badge
+      variant={getStatusColor(status.status)}
+      size="md"
+      appearance="light"
+      shape="circle"
     >
+      <BadgeDot className={getStatusColor(status.status)} />
       {status.label}
-    </span>
+    </Badge>
   );
 }

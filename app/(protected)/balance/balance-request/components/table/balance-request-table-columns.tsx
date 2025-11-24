@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BalanceRequestData } from "../../core/_model";
+import { Badge, BadgeDot } from "@/components/ui/badge";
 
 interface UseBalanceRequestTableColumnsProps {
   seeDetail: (row: BalanceRequestData) => void;
@@ -243,24 +244,26 @@ function ActivityTypeCell({ type }: ActivityTypeCellProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "topup":
-        return "bg-green-100 text-green-800";
+        return "success";
       case "withdrawal":
-        return "bg-orange-100 text-orange-800";
+        return "warning";
       case "adjustment":
-        return "bg-purple-100 text-purple-800";
+        return "info";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "info";
     }
   };
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(
-        type.type
-      )}`}
+    <Badge
+      variant={getTypeColor(type.type)}
+      size="md"
+      appearance="light"
+      shape="circle"
     >
-      {type.label}
-    </span>
+      <BadgeDot className={getTypeColor(type.type)} />
+      {type.type.slice(0, 1).toUpperCase() + type.type.slice(1)}
+    </Badge>
   );
 }
 
@@ -272,26 +275,28 @@ function StatusCell({ status }: StatusCellProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "warning";
       case "approved":
-        return "bg-green-100 text-green-800";
+        return "success";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "destructive";
       case "processing":
-        return "bg-blue-100 text-blue-800";
+        return "info";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "info";
     }
   };
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-        status.status
-      )}`}
+    <Badge
+      variant={getStatusColor(status.status)}
+      size="md"
+      appearance="light"
+      shape="circle"
     >
+      <BadgeDot className={getStatusColor(status.status)} />
       {status.label}
-    </span>
+    </Badge>
   );
 }
 
